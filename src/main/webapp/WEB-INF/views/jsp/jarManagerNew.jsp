@@ -58,8 +58,8 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
+					<th>檔案編號</th>
 					<th>檔案名稱</th>
-					<th>編號</th>
 					<th>狀態</th>
 					<th>間隔發送</th>
 					<th>說明</th>
@@ -70,8 +70,8 @@
 			<tbody>
 				<c:forEach var="listValue" items="${jarProjectVOList}">
 					<tr>
-						<td>${listValue.fileName}</td>
 						<td class="listValueBeatID">${listValue.beatID}</td>
+						<td>${listValue.fileName}</td>
 						<td><c:choose>
 								<c:when test="${!isRun}">
 									<span class="red">已關閉</span>
@@ -138,10 +138,10 @@
 			<div class="modal-body">
 				<form data-toggle="validator" role="form">
 					<div>
-						<span>檔案名稱：</span> <span><input type="text" id="dialog_fileName" name="dialog_fileName" class="form-control" required /></span>
+						<span>檔案編號：</span> <span><input type="text" id="dialog_beatID" name="dialog_beatID" class="form-control" required /></span>
 					</div>
 					<div>
-						<span>檔案編號：</span> <span><input type="text" id="dialog_beatID" name="dialog_beatID" class="form-control" required /></span>
+						<span>檔案名稱：</span> <span><input type="text" id="dialog_fileName" name="dialog_fileName" class="form-control" required /></span>
 					</div>
 					<div>
 						<span>檔案路徑：</span> <span><input type="text" id="dialog_jarFilePath" name="dialog_jarFilePath" class="form-control" required /></span>
@@ -298,6 +298,11 @@
 
 		if (isNaN(dialog_timeSeries)) {
 			alert("發送間隔請輸入數字");
+			return false;
+		}
+		
+		if(dialog_timeSeries<30){
+			alert("發送間隔必須大於30秒");
 			return false;
 		}
 
