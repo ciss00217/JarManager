@@ -22,6 +22,7 @@ public class JarManagerService {
 
 	private final Logger logger = LoggerFactory.getLogger(JarManagerService.class);
 
+	
 	public void clearQueue() throws JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("JarManagerPath");
