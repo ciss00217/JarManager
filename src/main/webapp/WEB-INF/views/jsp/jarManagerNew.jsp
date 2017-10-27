@@ -16,9 +16,6 @@
 <script src="${validator}"></script>
 
 
-
-
-
 <style>
 .modal-body div {
 	padding: 10px;
@@ -61,7 +58,7 @@
 		<table class="table table-striped">
 			<thead>
 				<tr>
-					<th>程序名稱</th>
+					<th>檔案名稱</th>
 					<th>編號</th>
 					<th>狀態</th>
 					<th>間隔發送</th>
@@ -153,7 +150,7 @@
 						<span>檔案說明：</span> <span><input type="text" id="dialog_description" name="dialog_description" class="form-control" required /></span>
 					</div>
 					<div>
-						<span>間隔發送：</span> <span><input type="text" id="dialog_timeSeries" name="dialog_timeSeries" class="form-control" required /></span>
+						<span>間隔發送(單位:秒)：</span> <span><input type="text" id="dialog_timeSeries" name="dialog_timeSeries" class="form-control" required /></span>
 					</div>
 					<div>
 
@@ -177,148 +174,256 @@
 
 
 <script type="text/javascript">
-$(function() {
-	
-	$("#insertJarOpen").click(function(){
-		$("#send_jar").val("insert");
-	});
+	$(function() {
 
-
-    $("#dialogModal .btn_close").click(function() {
-        initDialog();
-    });
-    
-    
-    $('#dialogModal').on('hidden.bs.modal', function() {
-    	initDialog();
-	});
-
-    $("#add_xml")
-        .click(
-            function() {
-
-                $("#xml")
-                    .append(
-                        '<input type="text"  name="dialog_filePathXML" class="form-control" required/>');
-            });
-    $("#send_jar").click(function() {
-    	var action=$("#send_jar").val();
-		if(action=="insert"){
-		        insertJar();
-		}else if(action=="update"){
+		$("#insertJarOpen").click(function() {
+			$("#send_jar").val("insert");
 			
+			$("input[name='dialog_beatID']").removeAttr("disabled") 
+
+		});
+
+		$("#dialogModal .btn_close").click(function() {
+			initDialog();
+		});
+
+		$('#dialogModal').on('hidden.bs.modal', function() {
+			initDialog();
+		});
+
+		$("#add_xml")
+				.click(
+						function() {
+
+							$("#xml")
+									.append(
+											'<input type="text"  name="dialog_filePathXML" class="form-control" required/>');
+						});
+		$("#send_jar").click(function() {
+			var isCheck = checkData();
+
+			if (isCheck) {
+				var action = $("#send_jar").val();
+				if (action == "insert") {
+					insertJar();
+				} else if (action == "update") {
+
+					updateJar();
+				}
+			}
+		});
+
+		$(".deleteJar").click(function() {
+			deleteJar($(this).val());
+		});
+
+		$(".edit")
+				.bind(
+						"click",
+						function(e) {
+							$("#send_jar").val("update");
+							$("input[name='dialog_beatID']").attr("disabled","true")
+							
+							var row = $(this).closest("tr");
+							var id = row.children(".listValueBeatID").text();
+
+							getProByID(
+									id,
+									function(jarVO) {
+										if (jarVO != null) {
+
+											var dialog_fileName = $(
+													"input[name='dialog_fileName']")
+													.val(jarVO.fileName);
+											var dialog_beatID = $(
+													"input[name='dialog_beatID']")
+													.val(jarVO.beatID);
+											var dialog_jarFilePath = $(
+													"input[name='dialog_jarFilePath']")
+													.val(jarVO.jarFilePath);
+											var dialog_description = $(
+													"input[name='dialog_description']")
+													.val(jarVO.description);
+											var dialog_timeSeries = $(
+													"input[name='dialog_timeSeries']")
+													.val(
+															(jarVO.timeSeries) / 1000);
+
+											if (jarVO.filePathXMLList != null) {
+
+												for (var i = 0; i < jarVO.filePathXMLList.length; i++) {
+													$("#xml")
+															.append(
+																	'<input type="text"  name="dialog_filePathXML" class="form-control" value="' + jarVO.filePathXMLList[i] + '" />');
+												}
+											}
+											$('#dialogModal').modal('show');
+										} else {
+											alert("error");
+										}
+									});
+
+						});
+
+	});
+
+	function checkData() {
+		var dialog_fileName = $("input[name='dialog_fileName']").val();
+		var dialog_beatID = $("input[name='dialog_beatID']").val();
+		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
+		var dialog_description = $("input[name='dialog_description']").val();
+		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+
+		if (dialog_fileName == "") {
+			alert("請輸入檔案名稱");
+			return false;
 		}
-    });
+		if (dialog_beatID == "") {
+			alert("請輸入檔案編號");
+			return false;
+		}
+		if (dialog_jarFilePath == "") {
+			alert("請輸入檔案路徑");
+			return false;
+		}
+		if (dialog_fileName == "") {
+			alert("請輸入檔案名稱");
+			return false;
+		}
 
-    $(".deleteJar").click(function() {
-        deleteJar($(this).val());
-    });
+		if (dialog_timeSeries == "") {
+			alert("請輸入發送間隔");
+			return false;
+		}
 
-    $(".edit").bind("click", function(e) {
-    	$("#send_jar").val("update");
-    	
-        var row = $(this).closest("tr");
-        var id = row.children(".listValueBeatID").text();
+		if (isNaN(dialog_timeSeries)) {
+			alert("發送間隔請輸入數字");
+			return false;
+		}
 
-        getProByID(id, function(jarVO) {
-            if (jarVO != null) {
+		var action = $("#send_jar").val();
+		if (action == "insert") {
 
-                var dialog_fileName = $("input[name='dialog_fileName']").val(jarVO.fileName);
-                var dialog_beatID = $("input[name='dialog_beatID']").val(jarVO.beatID);
-                var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val(jarVO.jarFilePath);
-                var dialog_description = $("input[name='dialog_description']").val(jarVO.description);
-                var dialog_timeSeries = $("input[name='dialog_timeSeries']").val(jarVO.timeSeries);
+			getProByID(dialog_beatID, function(jarVO) {
+				if (jarVO != null) {
+					alert("此編號已被使用");
+				}
+			});
 
-                if(jarVO.filePathXMLList!=null){
+		}
 
-	                for (var i = 0; i < jarVO.filePathXMLList.length; i++) {
-	                    $("#xml")
-	                        .append(
-	                            '<input type="text"  name="dialog_filePathXML" class="form-control" value="' + jarVO.filePathXMLList[i] + '" />');
-	                }
-                }
-                $('#dialogModal').modal('show');
-            } else {
-                alert("error");
-            }
-        });
+	}
 
+	function initDialog() {
+		var all_Inputs = $("#dialogModal input[type=text]");
+		all_Inputs.val("");
+		$("#xml").empty();
+	}
 
+	function getProByID(Id, callback) {
+		$.ajax({
+			type : "GET",
+			url : "/JarManager/JarProjectVO/" + Id,
+			success : callback
+		});
 
-    });
+	}
 
-});
+	function insertJar() {
+		var dialog_fileName = $("input[name='dialog_fileName']").val();
+		var dialog_beatID = $("input[name='dialog_beatID']").val();
+		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
+		var dialog_description = $("input[name='dialog_description']").val();
+		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+		var dialog_filePathXMLList = new Array();
 
-function initDialog() {
-    var all_Inputs = $("#dialogModal input[type=text]");
-    all_Inputs.val("");
-    $("#xml").empty();
-}
+		$("input[name='dialog_filePathXML']").each(function() {
+			var xmlPath = $(this).val();
+			if (xmlPath != "") {
+				dialog_filePathXMLList.push(xmlPath);
+			}
+		});
 
-function getProByID(Id, callback) {
-    $.ajax({
-        type: "GET",
-        url: "/JarManager/JarProjectVO/" + Id,
-        success: callback
-    });
+		var data = {}
+		data["fileName"] = dialog_fileName;
+		data["beatID"] = dialog_beatID;
+		data["jarFilePath"] = dialog_jarFilePath;
+		data["description"] = dialog_description;
+		data["filePathXMLList"] = dialog_filePathXMLList;
+		data["timeSeries"] = dialog_timeSeries * 1000;
+		console.log(JSON.stringify(data));
+		$.ajax({
+			type : "POST",
+			url : "/JarManager/JarProjectVO",
+			contentType : "application/json",
+			success : function(msg) {
+				if (msg) {
 
-}
+					location.reload(true);
+				} else {
+					alert("error");
+				}
+			},
 
-function insertJar() {
-    var dialog_fileName = $("input[name='dialog_fileName']").val();
-    var dialog_beatID = $("input[name='dialog_beatID']").val();
-    var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
-    var dialog_description = $("input[name='dialog_description']").val();
-    var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
-    var dialog_filePathXMLList = new Array();
+			data : JSON.stringify(data)
+		});
+	}
 
-    $("input[name='dialog_filePathXML']").each(function() {
-    	var xmlPath=$(this).val();
-    	if(xmlPath!=""){
-        dialog_filePathXMLList.push(xmlPath);
-    	}
-    });
+	function updateJar() {
+		var dialog_fileName = $("input[name='dialog_fileName']").val();
+		var dialog_beatID = $("input[name='dialog_beatID']").val();
+		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
+		var dialog_description = $("input[name='dialog_description']").val();
+		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+		var dialog_filePathXMLList = new Array();
 
-    var data = {}
-    data["fileName"] = dialog_fileName;
-    data["beatID"] = dialog_beatID;
-    data["jarFilePath"] = dialog_jarFilePath;
-    data["description"] = dialog_description;
-    data["filePathXMLList"] = dialog_filePathXMLList;
-    data["timeSeries"] = dialog_timeSeries * 1000;
-    console.log(JSON.stringify(data));
-    $.ajax({
-        type: "POST",
-        url: "/JarManager/JarProjectVO",
-        contentType: "application/json",
-        success: function(msg) {
-            if (msg) {
+		$("input[name='dialog_filePathXML']").each(function() {
+			var xmlPath = $(this).val();
+			if (xmlPath != "") {
+				dialog_filePathXMLList.push(xmlPath);
+			}
+		});
 
-                location.reload(true);
-            } else {
-                alert("error");
-            }
-        },
+		var data = {}
+		data["fileName"] = dialog_fileName;
+		data["beatID"] = dialog_beatID;
+		data["jarFilePath"] = dialog_jarFilePath;
+		data["description"] = dialog_description;
+		data["filePathXMLList"] = dialog_filePathXMLList;
+		data["timeSeries"] = dialog_timeSeries * 1000;
+		console.log(JSON.stringify(data));
+		$.ajax({
+			type : "PUT",
+			url : "/JarManager/JarProjectVO",
+			contentType : "application/json",
+			success : function(msg) {
+				if (msg) {
 
-        data: JSON.stringify(data)
-    });
-}
+					location.reload(true);
+				} else {
+					alert("error");
+				}
+			},
 
-function deleteJar(deleteId) {
+			data : JSON.stringify(data)
+		});
+	}
 
-    $.ajax({
-        type: "DELETE",
-        url: "/JarManager/JarProjectVO/" + deleteId,
-        success: function(msg) {
-            if (msg) {
-                location.reload(true);
-            } else {
-                alert("error");
-            }
-        },
+	function deleteJar(deleteId) {
 
-    });
-}
+		$.ajax({
+			type : "DELETE",
+			url : "/JarManager/JarProjectVO/" + deleteId,
+			success : function(msg) {
+				if (msg) {
+					location.reload(true);
+				} else {
+					alert("error");
+				}
+			},
+
+		});
+	}
 </script>
 
 
