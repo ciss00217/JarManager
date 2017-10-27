@@ -62,7 +62,7 @@ public class JarManagerController {
 
 	}
 
-	@RequestMapping(value = "/JarProjectVO/{id:.+}", method = RequestMethod.GET,produces = "application/json")
+	@RequestMapping(value = "/JarProjectVO/{id:.+}", method = RequestMethod.GET, produces = "application/json")
 	public @ResponseBody JarProjectVO getJarProjectVO(@PathVariable("id") String id) {
 
 		logger.debug("jarManager() is executed!  ");
@@ -89,7 +89,6 @@ public class JarManagerController {
 			logger.debug("Error: " + e.getMessage());
 		}
 
-
 		return null;
 
 	}
@@ -105,6 +104,19 @@ public class JarManagerController {
 		}
 		return isSucess;
 
+	}
+
+	@RequestMapping(value = "/JarProjectVO", method = RequestMethod.PUT)
+	public @ResponseBody boolean deleteJarPeojectVOs(@RequestBody JarProjectVO JarProjectVO) {
+		boolean isSucess = false;
+		try {
+			isSucess = jarManagerService.updateJarProjectVOXml(JarProjectVO);
+		} catch (IOException | JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return isSucess;
 	}
 
 	@RequestMapping(value = "/JarProjectVO/{id:.+}", method = RequestMethod.DELETE)
