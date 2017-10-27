@@ -5,7 +5,8 @@ $(document).ready(function() {
     var $queueOrigin = $('#queueOriginData');
     var $queueDestination = $('#queueDestinationData');
     var $webService = $('#webServiceData');
-
+    var $Q2WData = $('#Q2WData');
+    
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
         $.fn.dataTable.tables({
             visible: true,
@@ -221,15 +222,15 @@ $(document).ready(function() {
     
     $("#btn-save").click(function(event) {
 
-    	var array = [];
-        var vo = {}, val = {};
+        var vo = {}, file = {}, q2w = {}, val = {};
 
+        vo['fileName'] = $Q2WData.find('input[name=fileName]').val();
+        
         //Heart BeatClient
         val['beatID'] = $heartBeatClient.find('input[name=beatID]').val();
         val['fileName'] = $heartBeatClient.find('input[name=fileName]').val();
         val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
-        vo['heartBeatClient'] = val;
-        array.push(vo);
+        q2w['heartBeatClient'] = val;
          val = {};
         
         //Connection Factory
@@ -237,40 +238,32 @@ $(document).ready(function() {
         val['password'] = $connectionFactory.find('input[name=password]').val();
         val['host'] = $connectionFactory.find('input[name=host]').val();
         val['port'] = $connectionFactory.find('input[name=port]').val();
-        vo['connectionFactory'] = val;
-        array.push(vo);
+        q2w['connectionFactory'] = val;
         val = {};
 
         //Queue OriginData
         val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
         val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
         val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
-        vo['queueOriginData'] = val;
-        array.push(vo);
+        q2w['queueOriginData'] = val;
          val = {};
 
         //Queue Destination
         val['queueName'] = $queueDestination.find('input[name=queueName]').val();
         val['exchangeName'] = $queueDestination.find('input[name=exchangeName]').val();
         val['routingKey'] = $queueDestination.find('input[name=routingKey]').val();
-        vo['queueDestinationData'] = val;
-        array.push(vo);
+        q2w['queueDestinationData'] = val;
          val = {};
 
         //Web Service
         val['url'] = $webService.find('input[name=url]').val();
         val['type'] = $webService.find('input[name=type]').val();
         val['format'] = $webService.find('input[name=format]').val();
-        vo['webService'] = val;
-        array.push(vo);
+        q2w['webService'] = val;
         val = {};
+        vo['config'] = q2w;
 
-        data = JSON.stringify(array);
-        
-        test = {};
-        test['config'] = array;
-        console.log(JSON.stringify(test));
-
+        console.log(JSON.stringify(vo));
 		$.ajax({
 	             type: "POST",
 //	             datatype:"json",

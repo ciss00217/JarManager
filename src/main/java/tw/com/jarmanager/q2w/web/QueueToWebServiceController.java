@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import tw.com.jarmanager.q2w.web.mode.Config;
+import tw.com.jarmanager.q2w.web.mode.Q2W;
+import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
 @RequestMapping("/q2w")
@@ -35,48 +37,40 @@ public class QueueToWebServiceController {
 
 	private final Logger logger = LoggerFactory.getLogger(QueueToWebServiceController.class);
 
-//	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-//	public String home() {
-//
-//		return "home";
-//	}
-//
-//	@RequestMapping(value = "/q2w", method = RequestMethod.GET)
-//	public String q2w() {
-//		return "q2w";
-//	}
-//
-//	@RequestMapping(value = "/q2d", method = RequestMethod.GET)
-//	public String q2d() {
-//		return "q2d";
-//	}
+	// @RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
+	// public String home() {
+	//
+	// return "home";
+	// }
+	//
+	// @RequestMapping(value = "/q2w", method = RequestMethod.GET)
+	// public String q2w() {
+	// return "q2w";
+	// }
+	//
+	// @RequestMapping(value = "/q2d", method = RequestMethod.GET)
+	// public String q2d() {
+	// return "q2d";
+	// }
 
-//	@ResponseBody
-//	@RequestMapping(value = "/q2w/api/writeToXml", method = RequestMethod.POST)
-	
+	// @ResponseBody
+	// @RequestMapping(value = "/q2w/api/writeToXml", method =
+	// RequestMethod.POST)
 
-    @ResponseBody
-    @RequestMapping("writeToXml")
-	public void getSearchResultViaAjax(@RequestBody Config configs) throws Exception  {
-    	  JAXBContext context = JAXBContext.newInstance(Config.class);
-          Marshaller m = context.createMarshaller();
+	@ResponseBody
+	@RequestMapping("writeToXml")
+	public void getSearchResultViaAjax(@RequestBody Q2W q2w) throws Exception {
 
-          m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-          StringWriter sw = new StringWriter();
-          m.marshal(configs, sw);
+		String fileName = q2w.getFileName();
 
-//          ApplicationContext C = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-//          Resource resource = new ClassPathResource("q2w-config.xml");
-          
-//          FileReader fr = new FileReader(resource.getFile());
-//			File file = new File("resources\test1.txt");
-//			FileWriter fileWriter = new FileWriter(resource.getFile());
-			
-//			fileWriter.write(sw.toString());
-//			fileWriter.flush();
-//			fileWriter.close();
-  		
-		System.out.println(sw.toString());
+		JAXBContext context = JAXBContext.newInstance(Config.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		StringWriter sw = new StringWriter();
+		m.marshal(q2w.getConfig(), sw);
+
+		XmlUtil.fileToJarXmlPath(fileName, false, sw.toString());
 
 	}
 }

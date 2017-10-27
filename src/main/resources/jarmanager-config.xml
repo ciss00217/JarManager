@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="JarManagerPath" class="java.lang.String">
-		 <constructor-arg value="D:\JarManagerAPI.xml"/>
+	<bean id="jarManagerPath" class="java.lang.String">
+		 <constructor-arg value="D:\jarManager\jarManagerAPI.xml"/>
 	</bean>
 	<bean id="jarXmlPath" class="java.lang.String">
-		 <constructor-arg value="D:\jarXml\"/>
+		 <constructor-arg value="D:\jarManager\jarXml\"/>
 	</bean>
 
 
