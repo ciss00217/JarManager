@@ -22,10 +22,9 @@ public class JarManagerService {
 
 	private final Logger logger = LoggerFactory.getLogger(JarManagerService.class);
 
-	
 	public void clearQueue() throws JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
@@ -35,7 +34,7 @@ public class JarManagerService {
 
 	public List<HeartBeatClientVO> getSoleHeartBeatClientVOList() throws JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
@@ -47,7 +46,7 @@ public class JarManagerService {
 
 	public List<JarProjectVO> getJarProjectVOStatus() throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
@@ -69,7 +68,7 @@ public class JarManagerService {
 
 	public List<JarProjectVO> getXMLJarPeojectVOs() throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
@@ -81,16 +80,19 @@ public class JarManagerService {
 
 	public boolean addJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
+		String jarXmlPath = (String) context.getBean("jarXmlPath");
+
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
+
 
 		return jarManagerAPIService.addJarProjectVOXml(jarProjectVO);
 	}
 
 	public boolean deleteJarProjectVOXml(List<String> ids) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
@@ -99,7 +101,7 @@ public class JarManagerService {
 
 	public boolean updateJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 

@@ -178,8 +178,8 @@
 
 		$("#insertJarOpen").click(function() {
 			$("#send_jar").val("insert");
-			
-			$("input[name='dialog_beatID']").removeAttr("disabled") 
+
+			$("input[name='dialog_beatID']").removeAttr("disabled")
 
 		});
 
@@ -201,10 +201,11 @@
 						});
 		$("#send_jar").click(function() {
 			var isCheck = checkData();
-
 			if (isCheck) {
 				var action = $("#send_jar").val();
 				if (action == "insert") {
+					console.log("test");
+
 					insertJar();
 				} else if (action == "update") {
 
@@ -222,8 +223,9 @@
 						"click",
 						function(e) {
 							$("#send_jar").val("update");
-							$("input[name='dialog_beatID']").attr("disabled","true")
-							
+							$("input[name='dialog_beatID']").attr("disabled",
+									"true")
+
 							var row = $(this).closest("tr");
 							var id = row.children(".listValueBeatID").text();
 
@@ -268,11 +270,14 @@
 	});
 
 	function checkData() {
-		var dialog_fileName = $("input[name='dialog_fileName']").val();
-		var dialog_beatID = $("input[name='dialog_beatID']").val();
-		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
-		var dialog_description = $("input[name='dialog_description']").val();
-		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+		var dialog_fileName = $.trim($("input[name='dialog_fileName']").val());
+		var dialog_beatID = $.trim($("input[name='dialog_beatID']").val());
+		var dialog_jarFilePath = $.trim($("input[name='dialog_jarFilePath']")
+				.val());
+		var dialog_description = $.trim($("input[name='dialog_description']")
+				.val());
+		var dialog_timeSeries = $.trim($("input[name='dialog_timeSeries']")
+				.val());
 
 		if (dialog_fileName == "") {
 			alert("請輸入檔案名稱");
@@ -300,23 +305,27 @@
 			alert("發送間隔請輸入數字");
 			return false;
 		}
-		
-		if(dialog_timeSeries<30){
+
+		if (dialog_timeSeries < 30) {
 			alert("發送間隔必須大於30秒");
 			return false;
 		}
 
 		var action = $("#send_jar").val();
+		console.log(action);
+		console.log(action == "insert");
 		if (action == "insert") {
 
 			getProByID(dialog_beatID, function(jarVO) {
-				if (jarVO != null) {
+
+				if (jarVO != null && jarVO != "") {
 					alert("此編號已被使用");
+					return false;
 				}
 			});
 
 		}
-
+		return true;
 	}
 
 	function initDialog() {
@@ -335,15 +344,18 @@
 	}
 
 	function insertJar() {
-		var dialog_fileName = $("input[name='dialog_fileName']").val();
-		var dialog_beatID = $("input[name='dialog_beatID']").val();
-		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
-		var dialog_description = $("input[name='dialog_description']").val();
-		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+		var dialog_fileName = $.trim($("input[name='dialog_fileName']").val());
+		var dialog_beatID = $.trim($("input[name='dialog_beatID']").val());
+		var dialog_jarFilePath = $.trim($("input[name='dialog_jarFilePath']")
+				.val());
+		var dialog_description = $.trim($("input[name='dialog_description']")
+				.val());
+		var dialog_timeSeries = $.trim($("input[name='dialog_timeSeries']")
+				.val());
 		var dialog_filePathXMLList = new Array();
 
 		$("input[name='dialog_filePathXML']").each(function() {
-			var xmlPath = $(this).val();
+			var xmlPath = $.trim($(this).val());
 			if (xmlPath != "") {
 				dialog_filePathXMLList.push(xmlPath);
 			}
@@ -375,15 +387,18 @@
 	}
 
 	function updateJar() {
-		var dialog_fileName = $("input[name='dialog_fileName']").val();
-		var dialog_beatID = $("input[name='dialog_beatID']").val();
-		var dialog_jarFilePath = $("input[name='dialog_jarFilePath']").val();
-		var dialog_description = $("input[name='dialog_description']").val();
-		var dialog_timeSeries = $("input[name='dialog_timeSeries']").val();
+		var dialog_fileName = $.trim($("input[name='dialog_fileName']").val());
+		var dialog_beatID = $.trim($("input[name='dialog_beatID']").val());
+		var dialog_jarFilePath = $.trim($("input[name='dialog_jarFilePath']")
+				.val());
+		var dialog_description = $.trim($("input[name='dialog_description']")
+				.val());
+		var dialog_timeSeries = $.trim($("input[name='dialog_timeSeries']")
+				.val());
 		var dialog_filePathXMLList = new Array();
 
 		$("input[name='dialog_filePathXML']").each(function() {
-			var xmlPath = $(this).val();
+			var xmlPath = $.trim($(this).val());
 			if (xmlPath != "") {
 				dialog_filePathXMLList.push(xmlPath);
 			}

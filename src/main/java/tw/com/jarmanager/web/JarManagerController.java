@@ -27,6 +27,7 @@ import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
 import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.service.JarManagerService;
+import tw.com.jarmanager.util.JarXMLUtil;
 
 @Controller
 public class JarManagerController {
@@ -67,19 +68,16 @@ public class JarManagerController {
 
 		logger.debug("jarManager() is executed!  ");
 
-		List<HeartBeatClientVO> heartBeatClientVOList = null;
 		List<JarProjectVO> jarProjectVOList = null;
 
 		try {
-			// jarProjectVOList = jarManagerService.getJarProjectVOStatus();
 
 			jarProjectVOList = jarManagerService.getXMLJarPeojectVOs();
 
 			if (jarProjectVOList != null && jarProjectVOList.size() > 0) {
 				for (JarProjectVO jarProjectVO : jarProjectVOList) {
 					if (id.equals(jarProjectVO.getBeatID())) {
-						JarProjectVO jarProjectVO1 = jarProjectVO;
-						logger.debug("jarManager() is executed!  ");
+						jarProjectVO = JarXMLUtil.removePathInJarXmlPath(jarProjectVO);
 						return jarProjectVO;
 					}
 				}
@@ -94,10 +92,17 @@ public class JarManagerController {
 	}
 
 	@RequestMapping(value = "/JarProjectVO", method = RequestMethod.POST)
-	public @ResponseBody boolean insertJarPeojectVOs(@RequestBody JarProjectVO JarProjectVO) {
+	public @ResponseBody boolean insertJarPeojectVOs(@RequestBody JarProjectVO jarProjectVO) {
 		boolean isSucess = false;
 		try {
-			isSucess = jarManagerService.addJarProjectVOXml(JarProjectVO);
+
+			List<String> list = jarProjectVO.getFilePathXMLList();
+			List<String> newFilePath = new ArrayList<String>();
+			ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
+
+			jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+
+			isSucess = jarManagerService.addJarProjectVOXml(jarProjectVO);
 		} catch (IOException | JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,10 +112,12 @@ public class JarManagerController {
 	}
 
 	@RequestMapping(value = "/JarProjectVO", method = RequestMethod.PUT)
-	public @ResponseBody boolean deleteJarPeojectVOs(@RequestBody JarProjectVO JarProjectVO) {
+	public @ResponseBody boolean deleteJarPeojectVOs(@RequestBody JarProjectVO jarProjectVO) {
 		boolean isSucess = false;
 		try {
-			isSucess = jarManagerService.updateJarProjectVOXml(JarProjectVO);
+			jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+
+			isSucess = jarManagerService.updateJarProjectVOXml(jarProjectVO);
 		} catch (IOException | JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -147,6 +154,7 @@ public class JarManagerController {
 			if (jarProjectVOList == null) {
 				isRun = false;
 				jarProjectVOList = jarManagerService.getXMLJarPeojectVOs();
+				jarProjectVOList = JarXMLUtil.removePathInJarXmlPath(jarProjectVOList);
 			}
 
 		} catch (Exception e) {
