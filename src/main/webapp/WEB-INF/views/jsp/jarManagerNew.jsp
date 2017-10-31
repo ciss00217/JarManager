@@ -69,12 +69,16 @@
 
 			<tbody>
 				<c:forEach var="listValue" items="${jarProjectVOList}">
+				
 					<tr>
 						<td class="listValueBeatID">${listValue.beatID}</td>
-						<td>${listValue.fileName}</td>
+						<td>${listValue.fileName}
+						
+						</td>
+						
 						<td><c:choose>
-								<c:when test="${!isRun}">
-									<span class="red">已關閉</span>
+								<c:when test="${listValue.needRun=='false' }"> 
+									<span class="blue">關閉中</span>
 								</c:when>
 								<c:when test="${listValue.notFindCount eq 0}">
 									<span class="blue">執行中</span>
@@ -91,6 +95,7 @@
 								<c:when test="${listValue.notFindCount eq 4}">
 									<span class="red">異常</span>
 								</c:when>
+						
 								<c:otherwise>
 									<span class="red">準備重啟</span>
 								</c:otherwise>
@@ -138,19 +143,19 @@
 			<div class="modal-body">
 				<form data-toggle="validator" role="form">
 					<div>
-						<span>檔案編號：</span> <span><input type="text" id="dialog_beatID" name="dialog_beatID" class="form-control" required /></span>
+						<span>檔案編號：</span> <span><input type="text" id="dialog_beatID" name="dialog_beatID" class="form-control"  /></span>
 					</div>
 					<div>
-						<span>檔案名稱：</span> <span><input type="text" id="dialog_fileName" name="dialog_fileName" class="form-control" required /></span>
+						<span>檔案名稱：</span> <span><input type="text" id="dialog_fileName" name="dialog_fileName" class="form-control"  /></span>
 					</div>
 					<div>
-						<span>檔案路徑：</span> <span><input type="text" id="dialog_jarFilePath" name="dialog_jarFilePath" class="form-control" required /></span>
+						<span>檔案路徑：</span> <span><input type="text" id="dialog_jarFilePath" name="dialog_jarFilePath" class="form-control"  /></span>
 					</div>
 					<div>
-						<span>檔案說明：</span> <span><input type="text" id="dialog_description" name="dialog_description" class="form-control" required /></span>
+						<span>檔案說明：</span> <span><input type="text" id="dialog_description" name="dialog_description" class="form-control"  /></span>
 					</div>
 					<div>
-						<span>間隔發送(單位:秒)：</span> <span><input type="text" id="dialog_timeSeries" name="dialog_timeSeries" class="form-control" required /></span>
+						<span>間隔發送(單位:秒)：</span> <span><input type="text" id="dialog_timeSeries" name="dialog_timeSeries" class="form-control"  /></span>
 					</div>
 					<div>
 
@@ -197,7 +202,7 @@
 
 							$("#xml")
 									.append(
-											'<input type="text"  name="dialog_filePathXML" class="form-control" required/>');
+											'<input type="text"  name="dialog_filePathXML" class="form-control" />');
 						});
 		$("#send_jar").click(function() {
 			var isCheck = checkData();
@@ -375,7 +380,6 @@
 			contentType : "application/json",
 			success : function(msg) {
 				if (msg) {
-
 					location.reload(true);
 				} else {
 					alert("error");

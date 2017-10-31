@@ -145,14 +145,14 @@ public class JarManagerController {
 
 	@RequestMapping(value = "/JarProjectVOs", method = RequestMethod.GET)
 	public ModelAndView JarPeojectVOs() {
-		boolean isRun = true;
+		boolean isManagerApiRun = true;
 		logger.debug("JarPeojectVOs is executed!  ");
 		List<JarProjectVO> jarProjectVOList = null;
 
 		try {
 			jarProjectVOList = jarManagerService.getJarProjectVOStatus();
 			if (jarProjectVOList == null) {
-				isRun = false;
+				isManagerApiRun = false;
 				jarProjectVOList = jarManagerService.getXMLJarPeojectVOs();
 				jarProjectVOList = JarXMLUtil.removePathInJarXmlPath(jarProjectVOList);
 			}
@@ -164,7 +164,7 @@ public class JarManagerController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("jarManagerNew");
 		model.addObject("jarProjectVOList", jarProjectVOList);
-		model.addObject("isRun", isRun);
+		model.addObject("isManagerRun", isManagerApiRun);
 
 		return model;
 
