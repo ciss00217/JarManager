@@ -81,7 +81,7 @@ public class JarManagerService {
 
 	public boolean addJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("JarManagerPath");
+		String xmlpath = (String) context.getBean("jarManagerPath");
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 

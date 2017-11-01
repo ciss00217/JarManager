@@ -1,16 +1,10 @@
 package tw.com.jarmanager.q2w.web.mode;
 
-import javax.xml.bind.annotation.XmlTransient;
-
-public class HeartBeatClient {
+public class HeartBeatClientVO {
 	private String beatID;
 	private String fileName;
-	private long timeSeries;
-
-	@XmlTransient
 	private String jarFilePath;
 
-	@XmlTransient
 	public String getJarFilePath() {
 		return jarFilePath;
 	}
@@ -18,6 +12,8 @@ public class HeartBeatClient {
 	public void setJarFilePath(String jarFilePath) {
 		this.jarFilePath = jarFilePath;
 	}
+
+	private long timeSeries;
 
 	public String getBeatID() {
 		return beatID;
@@ -42,5 +38,4 @@ public class HeartBeatClient {
 	public void setTimeSeries(long timeSeries) {
 		this.timeSeries = timeSeries;
 	}
-
 }

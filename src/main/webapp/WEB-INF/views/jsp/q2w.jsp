@@ -12,28 +12,43 @@
 	href="<c:url value="/resources/core/css/bootstrap-drawer.css" />">
 <link rel="stylesheet"
 	href="<c:url value="/resources/core/css/dataTables.bootstrap.min.css" />">
+<link rel="stylesheet"
+	href="<c:url value="/resources/core/css/bootstrap-dialog.css" />">
+<link rel="stylesheet"
+	href="<c:url value="/resources/core/css/buttons.bootstrap.min.css" />">
+<link rel="stylesheet"
+	href="<c:url value="/resources/core/css/q2w.css" />">
 
 </head>
 <body class="has-drawer">
 	<script src="<c:url value="/resources/core/js/jquery-3.2.1.min.js" />"></script>
 	<script src="<c:url value="/resources/core/js/bootstrap.min.js" />"></script>
-	<script src="<c:url value="/resources/core/js/drawer.js" />"></script>
 	<script
 		src="<c:url value="/resources/core/js/jquery.dataTables.min.js" />"></script>
 	<script
+		src="<c:url value="/resources/core/js/dataTables.buttons.min.js" />"></script>
+	<script
+		src="<c:url value="/resources/core/js/buttons.bootstrap.min.js" />"></script>
+	<script
 		src="<c:url value="/resources/core/js/dataTables.bootstrap.min.js" />"></script>
+	<script src="<c:url value="/resources/core/js/drawer.js" />"></script>
+	<script src="<c:url value="/resources/core/js/buttons.html5.min.js" />"></script>
+
+	<script src="<c:url value="/resources/core/js/q2w.js" />"></script>
+	<script src="<c:url value="/resources/core/js/bootstrap-dialog.js" />"></script>
+
 	<script>
 		var dataTables_zh_tw = '<c:url value="/resources/core/fonts/dataTables_zh-tw.txt" />';
 	</script>
-	<script src="<c:url value="/resources/core/js/q2w.js" />"></script>
 
 	<div class="panel panel-default has-inner-drawer" style="height: 100%">
-		<div id="drawerExample2" class="drawer drawer-inside dw-xs-5 fold"
-			aria-labelledby="drawerExample2">
+
+		<div id="drawer" class="drawer drawer-inside dw-xs-5 fold"
+			aria-labelledby="drawer">
 			<div class="drawer-controls">
-				<a href="#drawerExample2" data-toggle="drawer"
-					href="#drawerExample2" aria-foldedopen="false"
-					aria-controls="drawerExample2" class="btn btn-primary btn-sm">Menu</a>
+				<a href="#drawer" data-toggle="drawer" href="#drawer"
+					aria-foldedopen="false" aria-controls="drawer"
+					class="btn btn-primary btn-sm">Menu</a>
 			</div>
 			<div class="drawer-contents">
 				<div class="drawer-heading">
@@ -59,13 +74,27 @@
 						</ul>
 
 						<div class="tab-content">
+							<div class="input-group">
+								<!-- 								<span class="input-group-addon"><i -->
+								<!-- 									class="glyphicon glyphicon-file"></i></span> <input type="text" -->
+								<!-- 									class="form-control" name="fileName" placeholder="設定檔名稱"> -->
+								<!-- 								<div class="col-sm-6 col-sm-offset-3"> -->
+								<div id="imaginary_container">
+									<div class="input-group stylish-input-group">
+										<span class="input-group-addon"><i
+											class="glyphicon glyphicon-file"></i></span> <input type="text"
+											class="form-control" placeholder="設定檔名稱" name="fileName">
+										<span class="input-group-addon">
+											<button type="button" name="btn-search">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</span>
+									</div>
+								</div>
+								<!-- 								</div> -->
+							</div>
 							<div id="Q2WData" class="tab-pane fade in active" role="tabpanel">
 
-								<div class="input-group">
-									<span class="input-group-addon"><i
-										class="glyphicon glyphicon-file"></i></span> <input type="text"
-										class="form-control" name="fileName" placeholder="設定檔名稱">
-								</div>
 								<div class="well well-lg">
 									<ul class="nav nav-tabs">
 										<li class="active sais-tab"><a data-toggle="tab"
@@ -83,23 +112,26 @@
 									<div class="tab-content">
 										<div id="heartBeatClientData" class="tab-pane fade in active"
 											role="tabpanel">
-											<div class="input-group">
+											<div class="input-group hidden">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-list-alt"></i></span> <input
 													type="text" class="form-control" name="beatID"
-													placeholder="編號" value="Q2W">
+													placeholder="編號">
+											</div>
+											<div class="input-group hidden">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-user"></i></span> <input type="text"
+													class="form-control" name="fileName" placeholder="名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="fileName" placeholder="名稱"
-													value="Q2W">
+													class="glyphicon glyphicon-list-alt"></i></span> <input type="text"
+													class="form-control" name="jarFilePath" placeholder="jar檔位置">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-time"></i></span> <input type="text"
-													class="form-control" name="timeSeries" placeholder="時間區隔"
-													value="60000">
+													class="form-control" name="timeSeries" placeholder="時間區隔">
 											</div>
 										</div>
 										<div id="connectionFactoryData" class="tab-pane fade in"
@@ -107,26 +139,23 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="username" placeholder="帳號"
-													value="admin">
+													class="form-control" name="username" placeholder="帳號">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-lock"></i></span> <input
 													type="password" class="form-control" name="password"
-													placeholder="密碼" value="password">
+													placeholder="密碼">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
-													class="form-control" name="host" placeholder="主機"
-													value="192.168.112.199">
+													class="form-control" name="host" placeholder="主機">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-link"></i></span> <input type="text"
-													class="form-control" name="port" placeholder="埠號"
-													value="5672">
+													class="form-control" name="port" placeholder="埠號">
 											</div>
 										</div>
 										<div id="queueOriginData" class="tab-pane fade in"
@@ -134,20 +163,19 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="queueName" placeholder="名稱"
-													value="exchange">
+													class="form-control" name="queueName" placeholder="名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-random"></i></span> <input type="text"
 													class="form-control" name="exchangeName"
-													placeholder="exchange name" value="ian">
+													placeholder="exchange name">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-link"></i></span> <input
 													type="password" class="form-control" name="routingKey"
-													placeholder="routing key" value="ian">
+													placeholder="routing key">
 											</div>
 										</div>
 										<div id="queueDestinationData" class="tab-pane fade in"
@@ -155,20 +183,19 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="queueName" placeholder="名稱"
-													value="exchange">
+													class="form-control" name="queueName" placeholder="名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-random"></i></span> <input type="text"
 													class="form-control" name="exchangeName"
-													placeholder="exchange name" value="ian2">
+													placeholder="exchange name">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-link"></i></span> <input
 													type="password" class="form-control" name="routingKey"
-													placeholder="routing key" value="ian2">
+													placeholder="routing key">
 											</div>
 										</div>
 										<div id="webServiceData" class="tab-pane fade in"
@@ -176,36 +203,39 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
-													class="form-control" name="url" placeholder="網址"
-													value="http://192.168.112.164:8088/sfdelivery/">
+													class="form-control" name="url" placeholder="網址">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-picture"></i></span> <input type="text"
-													class="form-control" name="type" placeholder="類型"
-													value="get">
+													class="form-control" name="type" placeholder="類型">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
 													type="password" class="form-control" name="format"
-													placeholder="格式" value="xml">
+													placeholder="格式">
 											</div>
 										</div>
-										<button type="button" class="btn btn-primary" id="btn-save">確認送出</button>
 									</div>
 								</div>
 							</div>
 							<div id="xmlConverterData" class="tab-pane fade in"
 								role="tabpanel">
-								<table id="xmlConverterTable" class="table dt-responsive"
-									cellspacing="0" width="100%">
 
+								<!-- 								<div class="input-group"> -->
+								<!-- 									<span class="input-group-addon"><i -->
+								<!-- 										class="glyphicon glyphicon-file"></i></span> <input type="text" -->
+								<!-- 										class="form-control" name="fileName" placeholder="設定檔名稱"> -->
+								<!-- 								</div> -->
+								<table id="xmlConverterTable" class="table dt-responsive">
 								</table>
 							</div>
+							<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
 						</div>
 					</div>
 				</div>
+			<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
 			</div>
 		</div>
 	</div>

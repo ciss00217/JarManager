@@ -4,11 +4,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="jarManagerPath" class="java.lang.String">
-		 <constructor-arg value="D:\jarManager\jarManagerAPI.xml"/>
+		<constructor-arg value="D:\JarManager\jarManagerAPI.xml" />
 	</bean>
 	<bean id="jarXmlPath" class="java.lang.String">
-		 <constructor-arg value="D:\jarManager\jarXml\"/>
+		<constructor-arg value="D:\jarManager\jarXml\" />
 	</bean>
-
-
 </beans>

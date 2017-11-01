@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
@@ -27,8 +28,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
+
+import tw.com.jarmanager.api.vo.JarProjectVO;
+import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
+import tw.com.jarmanager.q2w.web.mode.Class;
 import tw.com.jarmanager.q2w.web.mode.Config;
+import tw.com.jarmanager.q2w.web.mode.FieldName;
+import tw.com.jarmanager.q2w.web.mode.HeartBeatClientVO;
+import tw.com.jarmanager.q2w.web.mode.HeartBeatConnectionFactory;
+import tw.com.jarmanager.q2w.web.mode.HeartBeatDestination;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
+import tw.com.jarmanager.q2w.web.mode.XmlConverter;
+import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
@@ -37,40 +49,82 @@ public class QueueToWebServiceController {
 
 	private final Logger logger = LoggerFactory.getLogger(QueueToWebServiceController.class);
 
-	// @RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
-	// public String home() {
-	//
-	// return "home";
-	// }
-	//
-	// @RequestMapping(value = "/q2w", method = RequestMethod.GET)
-	// public String q2w() {
-	// return "q2w";
-	// }
-	//
-	// @RequestMapping(value = "/q2d", method = RequestMethod.GET)
-	// public String q2d() {
-	// return "q2d";
-	// }
+	private final QueueToWebServiceService service;
 
-	// @ResponseBody
-	// @RequestMapping(value = "/q2w/api/writeToXml", method =
-	// RequestMethod.POST)
+	@Autowired
+	public QueueToWebServiceController(QueueToWebServiceService service) {
+		this.service = service;
+	}
+	
+	@RequestMapping( method = RequestMethod.POST)
+	public @ResponseBody String getSearchResultViaAjax(@RequestBody Q2W q2w) throws Exception {
 
-	@ResponseBody
-	@RequestMapping("writeToXml")
-	public void getSearchResultViaAjax(@RequestBody Q2W q2w) throws Exception {
+		String xml = null;
+		String fileName = q2w.getConfig().getHeartBeatClient().getFileName();
+		String mes = "";
+		try {
+			xml = service.getObjToXml(q2w.getConfig(), Config.class);
+			XmlUtil.fileToJarXmlPath(fileName + "-q2w-config", false, xml);
+			mes += "[success] q2w-config.xml\n";
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			mes += "[failure] q2w-config.xml\n";
+		}
+		try {
+			tw.com.jarmanager.q2w.web.mode.Class clazz = service.getHeartBeatVo(q2w, fileName);
+			xml = service.getObjToXml(clazz, tw.com.jarmanager.q2w.web.mode.Class.class);
+			XmlUtil.fileToJarXmlPath(fileName + "-HeatBeatClinetBeans", false, xml);
+			mes += "[success] HeatBeatClinetBeans.xml\n";
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			mes += "[failure] HeatBeatClinetBeans.xml\n";
+		}
 
-		String fileName = q2w.getFileName();
+		try {
+			service.addJarProjectVOXml(q2w.getConfig(), fileName);
+			mes += "[success] JarManagerAPI.xml\n";
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			mes += "[failure] JarManagerAPI.xml\n";
+		}
+		try {
+			List<FieldName> test = q2w.getXmlConverter();
 
-		JAXBContext context = JAXBContext.newInstance(Config.class);
-		Marshaller m = context.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			for (int i = 0; i < test.size(); i++) {
 
-		StringWriter sw = new StringWriter();
-		m.marshal(q2w.getConfig(), sw);
+				FieldName fieldName = test.get(i);
 
-		XmlUtil.fileToJarXmlPath(fileName, false, sw.toString());
+				System.out.println("-----------------------------------------");
+				System.out.println(fieldName.getSource());
+				System.out.println(fieldName.getDescription());
+				System.out.println(fieldName.getDestination());
+				System.out.println(fieldName.isAttribute());
+			}
+			// List<XmlConverter> test= q2w.getXmlConverter();
+			//
+			// for(int i=0;i<test.size();i++){
+			//
+			// XmlConverter x = test.get(i);
+			// FieldName fieldName = x.getFieldName();
+			// System.out.println("-----------------------------------------");
+			// System.out.println(fieldName.getSource());
+			// System.out.println(fieldName.getDescription());
+			// System.out.println(fieldName.getDestination());
+			// System.out.println(fieldName.isAttribute());
+			// }
 
+			Config config = new Config();
+			config.setXmlConverter(test);
+
+			xml = service.getObjToXml(config, Config.class);
+			logger.debug("xml:" + xml);
+			XmlUtil.fileToJarXmlPath(fileName + "-xmlconverter-config", false, xml);
+			mes += "[success] xmlconverter-config.xml\n";
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			mes += "[failure] xmlconverter-config.xml\n";
+		}
+		return mes;
 	}
 }
