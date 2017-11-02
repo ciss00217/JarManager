@@ -46,12 +46,11 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="/JarManager/index">JarManager</a>
+			<a class="navbar-brand" href="home">JarManager</a>
 		</div>
 		<ul class="nav navbar-nav">
-			<li><a data-toggle="tab" href="#home">Start</a></li>
-			<li><a data-toggle="tab" href="/JarManager/JarProjectVOs">Page 1</a></li>
-			<li><a data-toggle="tab" href="#menu2">設定</a></li>
+			<li><a data-toggle="tab" href="/JarManager/JarProjectVOs">管理</a></li>
+			<!-- <li><a data-toggle="tab" href="#menu2">設定</a></li> -->
 		</ul>
 	</div>
 
@@ -61,7 +60,7 @@
 	<div class="container" id="jar_table">
 		<p>目前所管理的程序:</p>
 		<div>
-			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#dialogModal" id="insertJarOpen">
+			<button type="button" class="btn btn-xs btn-success" data-toggle="modal" data-target="#dialogModal" id="insertJarOpen"  data-backdrop="static" data-keyboard="false">
 				<i class="fa fa-check"></i> 新增
 			</button>
 		</div>
@@ -152,8 +151,8 @@
 		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">新增管理程序</h4>
+				 <button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">管理程序</h4>
 			</div>
 			<div class="modal-body">
 				<form data-toggle="validator" role="form">
@@ -183,8 +182,8 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" id="send_jar">確定</button>
-				<button type="button" class="btn btn-default btn_close" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-default" id="send_jar">確定</button>
+				<button type="button" class="btn btn-default btn_close" data-dismiss="modal">取消</button>
 			</div>
 		</div>
 
@@ -195,13 +194,14 @@
 
 <script type="text/javascript">
 	$(function() {
-
+		
 		$("#insertJarOpen").click(function() {
 			$("#send_jar").val("insert");
 
 			$("input[name='dialog_beatID']").removeAttr("disabled")
 
 		});
+
 
 		$("#dialogModal .btn_close").click(function() {
 			initDialog();
@@ -219,16 +219,19 @@
 									.append(
 											'<input type="text"  name="dialog_filePathXML" class="form-control" />');
 						});
+		
 		$("#send_jar").click(function() {
+
 			var isCheck = checkData();
 			console.log('isCheck'+isCheck);
 			if (isCheck) {
 				var action = $("#send_jar").val();
 				if (action == "insert") {
 					insertJar();
+					$('#dialogModal').modal('hide');
 				} else if (action == "update") {
-
 					updateJar();
+					$('#dialogModal').modal('hide');
 				}
 			}
 		});
@@ -242,8 +245,7 @@
 						"click",
 						function(e) {
 							$("#send_jar").val("update");
-							//$("input[name='dialog_beatID']").attr("disabled",
-								//	"true")
+							$("input[name='dialog_beatID']").attr("disabled","true")
 
 							var row = $(this).closest("tr");
 							var id = row.children(".listValueBeatID").text();
@@ -278,6 +280,7 @@
 																	'<input type="text"  name="dialog_filePathXML" class="form-control" value="' + jarVO.filePathXMLList[i] + '" />');
 												}
 											}
+											$('#dialogModal').modal({backdrop: 'static', keyboard: false})  
 											$('#dialogModal').modal('show');
 										} else {
 											alert("error");
@@ -440,7 +443,6 @@
 			contentType : "application/json",
 			success : function(msg) {
 				if (msg) {
-
 					location.reload(true);
 				} else {
 					alert("error");

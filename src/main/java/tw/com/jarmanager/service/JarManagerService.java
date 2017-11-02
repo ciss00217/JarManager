@@ -22,23 +22,13 @@ public class JarManagerService {
 
 	private final Logger logger = LoggerFactory.getLogger(JarManagerService.class);
 
-	public void clearQueue() throws JMSException {
-		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
-		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
-
-		// jarManagerAPIService.getDeathList();
-
-	}
 
 	public List<HeartBeatClientVO> getSoleHeartBeatClientVOList() throws JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		List<HeartBeatClientVO> heartBeatClientVOList = jarManagerAPIService.getSoleHeartBeatClientVOList();
+		List<HeartBeatClientVO> heartBeatClientVOList = JarManagerAPIService.getSoleHeartBeatClientVOList();
 
 		return heartBeatClientVOList;
 
@@ -47,10 +37,9 @@ public class JarManagerService {
 	public List<JarProjectVO> getJarProjectVOStatus() throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		List<JarProjectVO> jarProjectVOList = jarManagerAPIService.getJarProjectVOStatus("127.0.0.1", 9527);
+		List<JarProjectVO> jarProjectVOList = JarManagerAPIService.getJarProjectVOStatus("127.0.0.1", 9527);
 
 		return jarProjectVOList;
 
@@ -101,10 +90,9 @@ public class JarManagerService {
 	public List<JarProjectVO> getXMLJarPeojectVOs() throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		List<JarProjectVO> jarProjectVOList = jarManagerAPIService.getXMLJarProjectVOList(xmlpath);
+		List<JarProjectVO> jarProjectVOList = JarManagerAPIService.getXMLJarProjectVOList(xmlpath);
 
 		return jarProjectVOList;
 
@@ -115,28 +103,25 @@ public class JarManagerService {
 		String xmlpath = (String) context.getBean("jarManagerPath");
 		String jarXmlPath = (String) context.getBean("jarXmlPath");
 		jarProjectVO.setNeedRun(true);
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		return jarManagerAPIService.addJarProjectVOXml(jarProjectVO);
+		return JarManagerAPIService.addJarProjectVOXml(jarProjectVO);
 	}
 
 	public boolean deleteJarProjectVOXml(List<String> ids) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		return jarManagerAPIService.deleteJarProjectVOXml(ids);
+		return JarManagerAPIService.deleteJarProjectVOXml(ids);
 	}
 
 	public boolean updateJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
-		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
-		jarManagerAPIService.setXmlFilePath(xmlpath);
+		JarManagerAPIService.setXmlFilePath(xmlpath);
 
-		return jarManagerAPIService.updateJarProjectVOXml(jarProjectVO);
+		return JarManagerAPIService.updateJarProjectVOXml(jarProjectVO);
 	}
 
 }
