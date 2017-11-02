@@ -51,19 +51,33 @@ public class JarManagerService {
 		jarManagerAPIService.setXmlFilePath(xmlpath);
 
 		List<JarProjectVO> jarProjectVOList = jarManagerAPIService.getJarProjectVOStatus("127.0.0.1", 9527);
-		String PID_TEXT;
-		RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
-		String name = runtime.getName(); // format: "pid@hostname"
-		try {
-			PID_TEXT = name.substring(0, name.indexOf('@'));
-		} catch (Exception e) {
-			PID_TEXT = "-1";
-		}
-
-		System.out.println("PID_TEXT:" + PID_TEXT);
 
 		return jarProjectVOList;
 
+	}
+	
+	
+	public List<JarProjectVO> getJarProjectVOStatusForUI() throws IOException, JMSException {
+		List<JarProjectVO> jarProjectVOStatuss = getJarProjectVOStatus();
+		List<JarProjectVO> xMLJarPeojectVOs = getXMLJarPeojectVOs();
+		if (jarProjectVOStatuss != null) {
+			for (JarProjectVO xMLJarPeojectVO : xMLJarPeojectVOs) {
+				for (JarProjectVO jarProjectVOStatus : jarProjectVOStatuss) {
+					String xMLJarVOBeatID = xMLJarPeojectVO.getBeatID();
+					String jarVOStatusBeatID = jarProjectVOStatus.getBeatID();
+
+					if (xMLJarVOBeatID.equals(jarVOStatusBeatID)) {
+						xMLJarPeojectVO.setFirstScuessRun(jarProjectVOStatus.getFirstScuessRun());
+						xMLJarPeojectVO.setNotFindCount(jarProjectVOStatus.getNotFindCount());
+						xMLJarPeojectVO.setPid(jarProjectVOStatus.getPid());
+						xMLJarPeojectVO.setNeedRun(jarProjectVOStatus.getNeedRun());
+					}
+				}
+
+			}
+		}
+
+		return xMLJarPeojectVOs;
 	}
 
 	public List<JarProjectVO> getXMLJarPeojectVOs() throws IOException, JMSException {
@@ -82,10 +96,10 @@ public class JarManagerService {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
 		String xmlpath = (String) context.getBean("jarManagerPath");
 		String jarXmlPath = (String) context.getBean("jarXmlPath");
-
+		jarProjectVO.setNeedRun(true);
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
-
+		
 
 		return jarManagerAPIService.addJarProjectVOXml(jarProjectVO);
 	}

@@ -150,12 +150,9 @@ public class JarManagerController {
 		List<JarProjectVO> jarProjectVOList = null;
 
 		try {
-			jarProjectVOList = jarManagerService.getJarProjectVOStatus();
-			if (jarProjectVOList == null) {
-				isManagerApiRun = false;
-				jarProjectVOList = jarManagerService.getXMLJarPeojectVOs();
-				jarProjectVOList = JarXMLUtil.removePathInJarXmlPath(jarProjectVOList);
-			}
+			jarProjectVOList = jarManagerService.getJarProjectVOStatusForUI();
+
+			jarProjectVOList = JarXMLUtil.removePathInJarXmlPath(jarProjectVOList);
 
 		} catch (Exception e) {
 			logger.debug("Error: " + e.getMessage());
@@ -164,7 +161,6 @@ public class JarManagerController {
 		ModelAndView model = new ModelAndView();
 		model.setViewName("jarManagerNew");
 		model.addObject("jarProjectVOList", jarProjectVOList);
-		model.addObject("isManagerRun", isManagerApiRun);
 
 		return model;
 

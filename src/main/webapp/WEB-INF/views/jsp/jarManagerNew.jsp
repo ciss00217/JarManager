@@ -28,6 +28,16 @@
 .form-control {
 	margin: 10px;
 }
+.blue{
+    color: blue;
+}
+.red{
+    color: red;
+}
+.chocolate{
+    color: chocolate;
+}
+
 </style>
 
 
@@ -76,9 +86,14 @@
 						
 						</td>
 						
-						<td><c:choose>
+						<td>
+						${listValue.notFindCount}
+						<c:choose>
 								<c:when test="${listValue.needRun=='false' }"> 
-									<span class="blue">關閉中</span>
+									<span >關閉中</span>
+								</c:when>
+								<c:when test="${listValue.firstScuessRun=='false' }"> 
+									<span class="chocolate">啟動中</span>
 								</c:when>
 								<c:when test="${listValue.notFindCount eq 0}">
 									<span class="blue">執行中</span>
@@ -206,11 +221,10 @@
 						});
 		$("#send_jar").click(function() {
 			var isCheck = checkData();
+			console.log('isCheck'+isCheck);
 			if (isCheck) {
 				var action = $("#send_jar").val();
 				if (action == "insert") {
-					console.log("test");
-
 					insertJar();
 				} else if (action == "update") {
 
@@ -319,18 +333,22 @@
 		var action = $("#send_jar").val();
 		console.log(action);
 		console.log(action == "insert");
+		var isSuccess=true;
 		if (action == "insert") {
 
-			getProByID(dialog_beatID, function(jarVO) {
+		getProByID(dialog_beatID, function(jarVO) {
 
 				if (jarVO != null && jarVO != "") {
 					alert("此編號已被使用");
-					return false;
+					isSuccess=false;
+				}else{
+					isSuccess=true;
 				}
 			});
 
 		}
-		return true;
+		console.log(isSuccess);
+		return isSuccess;
 	}
 
 	function initDialog() {
