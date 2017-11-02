@@ -8,10 +8,8 @@ import javax.jms.JMSException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.gson.Gson;
-
 import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
-import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.JarXMLUtil;
@@ -49,6 +44,7 @@ public class JarManagerController {
 		List<JarProjectVO> jarProjectVOList = null;
 
 		try {
+			
 			jarProjectVOList = jarManagerService.getJarProjectVOStatus();
 		} catch (Exception e) {
 			logger.debug("Error: " + e.getMessage());
@@ -112,10 +108,11 @@ public class JarManagerController {
 	}
 
 	@RequestMapping(value = "/JarProjectVO", method = RequestMethod.PUT)
-	public @ResponseBody boolean deleteJarPeojectVOs(@RequestBody JarProjectVO jarProjectVO) {
+	public @ResponseBody boolean editJarPeojectVOs(@RequestBody JarProjectVO jarProjectVO) {
 		boolean isSucess = false;
 		try {
-			jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+		
+			 jarProjectVO= JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
 
 			isSucess = jarManagerService.updateJarProjectVOXml(jarProjectVO);
 		} catch (IOException | JMSException e) {
@@ -148,7 +145,8 @@ public class JarManagerController {
 		boolean isManagerApiRun = true;
 		logger.debug("JarPeojectVOs is executed!  ");
 		List<JarProjectVO> jarProjectVOList = null;
-
+		
+	
 		try {
 			jarProjectVOList = jarManagerService.getJarProjectVOStatusForUI();
 
@@ -159,6 +157,12 @@ public class JarManagerController {
 		}
 
 		ModelAndView model = new ModelAndView();
+		if(jarManagerService.jarManagerIsRun()){
+			model.addObject("jarManagerIsRun", true);
+		}else{
+			model.addObject("jarManagerIsRun", false);
+		}
+		
 		model.setViewName("jarManagerNew");
 		model.addObject("jarProjectVOList", jarProjectVOList);
 

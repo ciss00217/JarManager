@@ -56,6 +56,24 @@ public class JarManagerService {
 
 	}
 	
+	public boolean jarManagerIsRun() {
+		List<JarProjectVO> jarProjectVOList = null;
+		try {
+			jarProjectVOList = getJarProjectVOStatus();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (jarProjectVOList == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
 	
 	public List<JarProjectVO> getJarProjectVOStatusForUI() throws IOException, JMSException {
 		List<JarProjectVO> jarProjectVOStatuss = getJarProjectVOStatus();
@@ -67,7 +85,7 @@ public class JarManagerService {
 					String jarVOStatusBeatID = jarProjectVOStatus.getBeatID();
 
 					if (xMLJarVOBeatID.equals(jarVOStatusBeatID)) {
-						xMLJarPeojectVO.setFirstScuessRun(jarProjectVOStatus.getFirstScuessRun());
+						xMLJarPeojectVO.setFirstSuccessRun(jarProjectVOStatus.getFirstSuccessRun());
 						xMLJarPeojectVO.setNotFindCount(jarProjectVOStatus.getNotFindCount());
 						xMLJarPeojectVO.setPid(jarProjectVOStatus.getPid());
 						xMLJarPeojectVO.setNeedRun(jarProjectVOStatus.getNeedRun());

@@ -89,10 +89,10 @@
 						<td>
 						${listValue.notFindCount}
 						<c:choose>
-								<c:when test="${listValue.needRun=='false' }"> 
+								<c:when test="${(listValue.needRun=='false') || (jarManagerIsRun=='false')}"> 
 									<span >關閉中</span>
 								</c:when>
-								<c:when test="${listValue.firstScuessRun=='false' }"> 
+								<c:when test="${listValue.firstSuccessRun=='false' }"> 
 									<span class="chocolate">啟動中</span>
 								</c:when>
 								<c:when test="${listValue.notFindCount eq 0}">
@@ -242,12 +242,12 @@
 						"click",
 						function(e) {
 							$("#send_jar").val("update");
-							$("input[name='dialog_beatID']").attr("disabled",
-									"true")
+							//$("input[name='dialog_beatID']").attr("disabled",
+								//	"true")
 
 							var row = $(this).closest("tr");
 							var id = row.children(".listValueBeatID").text();
-
+							editBefId=id;
 							getProByID(
 									id,
 									function(jarVO) {
