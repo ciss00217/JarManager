@@ -232,6 +232,7 @@
 								</table>
 							</div>
 							<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
+							<button type="button" class="btn btn-primary hidden" name="btn-update">修改設定檔</button>
 						</div>
 					</div>
 				</div>

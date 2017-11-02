@@ -116,8 +116,8 @@ $(document).ready(function() {
                                     });
                                 }
 
-
-                                $("button[name=btn-save]").text('修改設定檔')
+                                $("button[name=btn-update]").removeClass("hidden");
+//                                $("button[name=btn-save]").text('修改設定檔')
                                 
                                 $button.enable();
                                 $button.stopSpin();
@@ -519,6 +519,142 @@ $(document).ready(function() {
         }]
     });
 
+    $("button[name=btn-update]").click(function(event) {
+        //    	var data = $xmlConverterTable.rows().data();
+
+        BootstrapDialog.show({
+            title: '確認是否修改',
+            message: function(dialog) {
+
+//                var $div = buildInput('名稱', '設定檔名稱', 'fileName');
+//                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
+//
+//                var $content =
+//                    $('<div/>', {
+//                        'id': 'btnSaveDialog'
+//                    }).append(
+//                        $div
+//                    );
+//
+//                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    var fileName = $heartBeatClient.find('input[name=fileName]').val();
+                    var $button = this;
+                    $button.disable();
+                    $button.spin();
+                    dialog.setClosable(false);
+                    dialog.setMessage('進行中');
+
+                    var vo = {},
+                        q2w = {},
+                        val = {};
+
+                    //                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
+
+                    //Heart BeatClient
+                    //val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
+                    //val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
+                    val['beatID'] = fileName;
+                    val['fileName'] = fileName;
+                    val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
+                    val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
+                    q2w['heartBeatClient'] = val;
+                    $heartBeatClient.find('input[name=beatID]').val('');
+                    $heartBeatClient.find('input[name=fileName]').val('');
+                    val = {};
+
+                    //Connection Factory
+                    val['username'] = $connectionFactory.find('input[name=username]').val();
+                    val['password'] = $connectionFactory.find('input[name=password]').val();
+                    val['host'] = $connectionFactory.find('input[name=host]').val();
+                    val['port'] = $connectionFactory.find('input[name=port]').val();
+                    q2w['connectionFactory'] = val;
+                    val = {};
+
+                    //Queue OriginData
+                    val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
+                    q2w['queueOrigin'] = val;
+                    val = {};
+
+                    //Queue Destination
+                    val['queueName'] = $queueDestination.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueDestination.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueDestination.find('input[name=routingKey]').val();
+                    q2w['queueDestination'] = val;
+                    val = {};
+
+                    //Web Service
+                    val['url'] = $webService.find('input[name=url]').val();
+                    val['type'] = $webService.find('input[name=type]').val();
+                    val['format'] = $webService.find('input[name=format]').val();
+                    q2w['webService'] = val;
+                    val = {};
+                    vo['config'] = q2w;
+
+                    //XML Converter
+                    var cells = $xmlConverterTable.cells().nodes();
+                    var $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
+
+                    var xmlConverter = [];
+
+                    $checkboxs.each(function(index, checkbox) {
+
+                        var row = jQuery(checkbox).closest('tr');
+                        var data = $("#xmlConverterTable").dataTable().fnGetData(row);
+                        //            	        var field = {};
+                        var fieldVal = {};
+                        fieldVal['source'] = data.source;
+                        fieldVal['destination'] = data.destination;
+                        fieldVal['description'] = data.description;
+                        fieldVal['isAttribute'] = data.isAttribute;
+                        //                        field['fieldName'] = fieldVal;
+
+                        xmlConverter.push(fieldVal);
+                    });
+                    vo['xmlConverter'] = xmlConverter;
+
+
+                    console.log('update');
+                    console.log(JSON.stringify(vo));
+                    //                    return false;
+                    $.ajax({
+                        type: "PUT",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2w",
+                        data: JSON.stringify(vo),
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+                            
+                            $button.click(function(event) {
+                                dialog.close();
+                            });
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+    
     $("button[name=btn-save]").click(function(event) {
         //    	var data = $xmlConverterTable.rows().data();
 
@@ -632,6 +768,10 @@ $(document).ready(function() {
                             $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage(data);
+                            
+                            $button.click(function(event) {
+                                dialog.close();
+                            });
                         },
                         error: function(e) {
                             $button.enable();

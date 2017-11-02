@@ -31,7 +31,8 @@ public class XmlUtil {
 	}
 
 	/*
-	 * 目的:寫入XML至JarManagerConfig文件中規定的路徑下 fileName: 要建立的檔案名稱 
+	 * 目的:寫入XML至JarManagerConfig文件中規定的路徑下 
+	 * fileName: 要建立的檔案名稱 
 	 * type: 檔案寫入方式
 	 * true為附加上去，false則是覆寫 content: XML內文
 	 */

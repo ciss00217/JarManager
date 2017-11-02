@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
@@ -28,6 +30,7 @@ import tw.com.jarmanager.q2w.web.mode.HeartBeatConnectionFactory;
 import tw.com.jarmanager.q2w.web.mode.HeartBeatDestination;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
 import tw.com.jarmanager.service.JarManagerService;
+import tw.com.jarmanager.util.JarXMLUtil;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Service
@@ -114,6 +117,45 @@ public class QueueToWebServiceService {
 		filePathXMLList.add(fileName + "-xmlconverter-config");
 		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
+
+		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+
 		return new JarManagerService().addJarProjectVOXml(jarProjectVO);
+	}
+
+	public String getJarFilePathFromJarApiXml(String id) throws IOException, JMSException {
+
+		JarManagerService service = new JarManagerService();
+		String jarFilePath =null;
+
+		List<JarProjectVO> list = service.getXMLJarPeojectVOs();
+
+		if (list != null && list.size() > 0) {
+			for (JarProjectVO jarProjectVO : list) {
+				if (id.equals(jarProjectVO.getBeatID())) {
+					jarProjectVO = JarXMLUtil.removePathInJarXmlPath(jarProjectVO);
+					jarFilePath = jarProjectVO.getJarFilePath();
+				}
+			}
+		}
+		return jarFilePath;
+
+	}
+	
+	public boolean updateJarProjectVOXml(Config config, String fileName) throws IOException, JMSException {
+		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
+		JarProjectVO jarProjectVO = new JarProjectVO();
+		jarProjectVO.setBeatID(heartBeatClient.getBeatID());
+		jarProjectVO.setFileName(heartBeatClient.getFileName());
+		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
+		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
+		List<String> filePathXMLList = new ArrayList<>();
+		filePathXMLList.add(fileName + "-q2w-config");
+		filePathXMLList.add(fileName + "-xmlconverter-config");
+		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		jarProjectVO.setFilePathXMLList(filePathXMLList);
+
+		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+		return new JarManagerService().updateJarProjectVOXml(jarProjectVO);
 	}
 }
