@@ -2,8 +2,8 @@ package tw.com.jarmanager.q2w.web.mode;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
-public class Class {
+@XmlRootElement(name="class")
+public class Clazz {
 	private HeartBeatConnectionFactory heartBeatConnectionFactory;
 	private HeartBeatDestination heartBeatDestination;
 	private HeartBeatClientVO heartBeatClientVO;

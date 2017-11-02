@@ -1,46 +1,25 @@
 package tw.com.jarmanager.q2w.web;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import com.google.gson.Gson;
 
-import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
-import tw.com.jarmanager.q2w.web.mode.Class;
+import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.FieldName;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatClientVO;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatConnectionFactory;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatDestination;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
 import tw.com.jarmanager.q2w.web.mode.XmlConverter;
-import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
@@ -55,9 +34,42 @@ public class QueueToWebServiceController {
 	public QueueToWebServiceController(QueueToWebServiceService service) {
 		this.service = service;
 	}
-	
-	@RequestMapping( method = RequestMethod.POST)
-	public @ResponseBody String getSearchResultViaAjax(@RequestBody Q2W q2w) throws Exception {
+
+	@RequestMapping(value = "/search/{fileName}",method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
+		System.out.println(fileName);
+		
+		String q2wConfigFileName = fileName+ "-q2w-config";
+		String q2wXmlconverterConfigFileName =fileName + "-xmlconverter-config";
+		String q2wHeatBeatClinetBeansConfigFileName =fileName + "-HeatBeatClinetBeans";
+		
+		Q2W root = new Q2W();
+		
+		if(XmlUtil.fileExistsJarXmlPath(q2wConfigFileName)){
+			Config q2w = (Config) service.getJarXmleToObj(q2wConfigFileName, Config.class);
+			logger.debug(new Gson().toJson(q2w));
+			root.setConfig(q2w);
+		}
+		if(XmlUtil.fileExistsJarXmlPath(q2wXmlconverterConfigFileName)){
+			Config q2w = (Config) service.getJarXmleToObj(q2wXmlconverterConfigFileName, Config.class);
+			List<FieldName> xmlconverter = q2w.getXmlConverter();
+//			List<FieldName> xmlConverter = (List<FieldName> ) service.getJarXmleToObj(q2wXmlconverterConfigFileName, FieldName.class);
+//			root.SE
+			logger.debug(new Gson().toJson(xmlconverter));
+			root.setXmlConverter(xmlconverter);
+		}
+//		if(XmlUtil.fileExistsJarXmlPath(q2wHeatBeatClinetBeansConfigFileName)){
+//			Clazz clazz = (Clazz) service.getJarXmleToObj(q2wHeatBeatClinetBeansConfigFileName, Clazz.class);
+//			logger.debug(new Gson().toJson(clazz));
+//			root.setClazz(clazz);
+//		}
+		
+		return new Gson().toJson(root);
+
+	}
+
+	@RequestMapping(method = RequestMethod.POST)
+	public @ResponseBody String dataToFile(@RequestBody Q2W q2w) throws Exception {
 
 		String xml = null;
 		String fileName = q2w.getConfig().getHeartBeatClient().getFileName();
@@ -71,8 +83,8 @@ public class QueueToWebServiceController {
 			mes += "[failure] q2w-config.xml\n";
 		}
 		try {
-			tw.com.jarmanager.q2w.web.mode.Class clazz = service.getHeartBeatVo(q2w, fileName);
-			xml = service.getObjToXml(clazz, tw.com.jarmanager.q2w.web.mode.Class.class);
+			Clazz clazz = service.getHeartBeatVo(q2w, fileName);
+			xml = service.getObjToXml(clazz, Clazz.class);
 			XmlUtil.fileToJarXmlPath(fileName + "-HeatBeatClinetBeans", false, xml);
 			mes += "[success] HeatBeatClinetBeans.xml\n";
 		} catch (Exception e) {
@@ -88,11 +100,11 @@ public class QueueToWebServiceController {
 			mes += "[failure] JarManagerAPI.xml\n";
 		}
 		try {
-			List<FieldName> test = q2w.getXmlConverter();
+			List<FieldName> xmlConverter = q2w.getXmlConverter();
 
-			for (int i = 0; i < test.size(); i++) {
+			for (int i = 0; i < xmlConverter.size(); i++) {
 
-				FieldName fieldName = test.get(i);
+				FieldName fieldName = xmlConverter.get(i);
 
 				System.out.println("-----------------------------------------");
 				System.out.println(fieldName.getSource());
@@ -114,7 +126,7 @@ public class QueueToWebServiceController {
 			// }
 
 			Config config = new Config();
-			config.setXmlConverter(test);
+			config.setXmlConverter(xmlConverter);
 
 			xml = service.getObjToXml(config, Config.class);
 			logger.debug("xml:" + xml);

@@ -23,20 +23,101 @@ $(document).ready(function() {
         }).columns.adjust();
     });
     $('#imaginary_container button[name=btn-search]').click(function(event) {
-    	
-    	var fileName = $('#imaginary_container input[name=fileName]').val();
-    	
+
+        var fileName = $('#imaginary_container input[name=fileName]').val();
+        $heartBeatClient.find('input[name=fileName]').val(fileName);
         $.ajax({
             type: "GET",
-            datatype:"json",
+            datatype: "json",
             contentType: "application/json; charset=utf-8",
-            url: "./q2w",
-            data: JSON.stringify(vo),
+            url: "./q2w/search/" + fileName,
             success: function(data) {
-                $button.enable();
-                $button.stopSpin();
-                dialog.setClosable(true);
-                dialog.setMessage(data);
+                console.log(data);
+                console.log(data == null);
+                console.log(jQuery.isEmptyObject(data));
+
+                BootstrapDialog.show({
+                    title: '查詢結果',
+                    message: function(dialog) {
+
+                        var $content;
+                        $content = jQuery.isEmptyObject(data) ? $('<div/>').append($("<p />", {
+                                text: "查無資料"
+                            }))
+
+                            :
+                            $('<div/>').append(
+                                $('<p/>', {
+                                    'text': '已查詢到設定檔，是否匯入資料'
+                                })
+                            );
+                        return $content;
+                    },
+                    buttons:
+
+                        jQuery.isEmptyObject(data) ? [{
+                            label: '取消',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }] : [{
+                            label: '確認',
+                            action: function(dialog) {
+                                var $button = this;
+                                $button.disable();
+                                $button.spin();
+                                dialog.setClosable(false);
+                                dialog.setMessage('進行中');
+
+                                var heartBeatClient = data.config.heartBeatClient;
+                                var connectionFactory = data.config.connectionFactory;
+                                var queueOrigin = data.config.queueOrigin;
+                                var queueDestination = data.config.queueDestination;
+                                var webService = data.config.webService;
+                                var xmlConverter = data.xmlConverter;
+
+                                $heartBeatClient.find('input[name=beatID]').val(heartBeatClient.beatID);
+                                $heartBeatClient.find('input[name=fileName]').val(heartBeatClient.fileName);
+                                $heartBeatClient.find('input[name=timeSeries]').val(heartBeatClient.timeSeries);
+                                $heartBeatClient.find('input[name=jarFilePath]').val(heartBeatClient.jarFilePath);
+
+                                $connectionFactory.find('input[name=username]').val(connectionFactory.username);
+                                $connectionFactory.find('input[name=password]').val(connectionFactory.password);
+                                $connectionFactory.find('input[name=host]').val(connectionFactory.host);
+                                $connectionFactory.find('input[name=port]').val(connectionFactory.port);
+
+                                $queueOrigin.find('input[name=queueName]').val(queueOrigin.queueName);
+                                $queueOrigin.find('input[name=exchangeName]').val(queueOrigin.exchangeName);
+                                $queueOrigin.find('input[name=routingKey]').val(queueOrigin.routingKey);
+
+                                $queueDestination.find('input[name=queueName]').val(queueDestination.queueName);
+                                $queueDestination.find('input[name=exchangeName]').val(queueDestination.exchangeName);
+                                $queueDestination.find('input[name=routingKey]').val(queueDestination.routingKey);
+
+                                $webService.find('input[name=url]').val(webService.url);
+                                $webService.find('input[name=type]').val(webService.type);
+                                $webService.find('input[name=format]').val(webService.format);
+
+                                $.each(data.xmlConverter, function(index, item) {
+                                    $xmlConverterTable.rows.add([item]).draw();
+                                });
+
+                                $('#xmlConverterData input[type="checkbox"]').checked = true;
+
+                                $("button[name=btn-save]").text('修改設定檔')
+                            }
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('匯入作業完成');
+                        }, {
+                            label: '取消',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }]
+
+                });
             },
             error: function(e) {
                 $button.enable();
@@ -47,49 +128,50 @@ $(document).ready(function() {
         });
     });
     $("button[name=btn-import-data]").click(function(event) {
-    	
-    	$heartBeatClient.find('input[name=beatID]').val('test');
-    	$heartBeatClient.find('input[name=fileName]').val('test');
-    	$heartBeatClient.find('input[name=timeSeries]').val('60000');
-    	$heartBeatClient.find('input[name=jarFilePath]').val('D:\jarFilePath\Q2W.jar');
-    	
-    	$connectionFactory.find('input[name=username]').val('admin');
-    	$connectionFactory.find('input[name=password]').val('password');
-    	$connectionFactory.find('input[name=host]').val('192.168.112.199');
-    	$connectionFactory.find('input[name=port]').val('5672');
-    	
-    	$queueOrigin.find('input[name=queueName]').val('exchange');
-    	$queueOrigin.find('input[name=exchangeName]').val('ian');
-    	$queueOrigin.find('input[name=routingKey]').val('ian');
 
-    	$queueDestination.find('input[name=queueName]').val('exchange');
-    	$queueDestination.find('input[name=exchangeName]').val('ian2');
-    	$queueDestination.find('input[name=routingKey]').val('ian2');
+        $heartBeatClient.find('input[name=beatID]').val('test');
+        $heartBeatClient.find('input[name=fileName]').val('test');
+        $heartBeatClient.find('input[name=timeSeries]').val('60000');
+        $heartBeatClient.find('input[name=jarFilePath]').val('D:\jarFilePath\Q2W.jar');
 
-    	$webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/"');
-    	$webService.find('input[name=type]').val('get');
-    	$webService.find('input[name=format]').val('xml');
-    	
+        $connectionFactory.find('input[name=username]').val('admin');
+        $connectionFactory.find('input[name=password]').val('password');
+        $connectionFactory.find('input[name=host]').val('192.168.112.199');
+        $connectionFactory.find('input[name=port]').val('5672');
+
+        $queueOrigin.find('input[name=queueName]').val('exchange');
+        $queueOrigin.find('input[name=exchangeName]').val('ian');
+        $queueOrigin.find('input[name=routingKey]').val('ian');
+
+        $queueDestination.find('input[name=queueName]').val('exchange');
+        $queueDestination.find('input[name=exchangeName]').val('ian2');
+        $queueDestination.find('input[name=routingKey]').val('ian2');
+
+        $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
+        $webService.find('input[name=type]').val('get');
+        $webService.find('input[name=format]').val('xml');
+
         $xmlConverterTable.rows.add([{
             "source": 'ProductId',
             "destination": 'c_product_id',
             "isAttribute": 'false',
             "description": '自訂商品名稱'
-        },{
+        }, {
             "source": 'ProductName',
             "destination": 'product_name',
             "isAttribute": 'false',
             "description": '無'
-        },{
+        }, {
             "source": 'CostPrice',
             "destination": 'cost',
             "isAttribute": 'false',
             "description": '無'
         }]).draw();
-        
-        $('input[name=checkbox-group-select]', $xmlConverterTable.table().node() )[0].checked = true;
-        $('input[name=checkbox-group-select]', $xmlConverterTable.table().node() )[2].checked = true;
+
+        $('input[name=checkbox-group-select]', $xmlConverterTable.table().node())[0].checked = true;
+        $('input[name=checkbox-group-select]', $xmlConverterTable.table().node())[2].checked = true;
     });
+
     function buildInput($span_text, $input_placeholder, $input_name) {
 
         var $div =
@@ -108,34 +190,34 @@ $(document).ready(function() {
         return $div;
     }
 
-    function updateDataTableSelectAllCtrl(table){
-    	   var $table             = table.table().node();
-    	   var $chkbox_all        = $('tbody input[type="checkbox"]', $table);
-    	   var $chkbox_checked    = $('tbody input[type="checkbox"]:checked', $table);
-    	   var chkbox_select_all  = $('thead input[name="select_all"]', $table).get(0);
+    function updateDataTableSelectAllCtrl(table) {
+        var $table = table.table().node();
+        var $chkbox_all = $('tbody input[type="checkbox"]', $table);
+        var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
+        var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
 
-    	   // If none of the checkboxes are checked
-    	   if($chkbox_checked.length === 0){
-    	      chkbox_select_all.checked = false;
-    	      if('indeterminate' in chkbox_select_all){
-    	         chkbox_select_all.indeterminate = false;
-    	      }
+        // If none of the checkboxes are checked
+        if ($chkbox_checked.length === 0) {
+            chkbox_select_all.checked = false;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
 
-    	   // If all of the checkboxes are checked
-    	   } else if ($chkbox_checked.length === $chkbox_all.length){
-    	      chkbox_select_all.checked = true;
-    	      if('indeterminate' in chkbox_select_all){
-    	         chkbox_select_all.indeterminate = false;
-    	      }
+            // If all of the checkboxes are checked
+        } else if ($chkbox_checked.length === $chkbox_all.length) {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = false;
+            }
 
-    	   // If some of the checkboxes are checked
-    	   } else {
-    	      chkbox_select_all.checked = true;
-    	      if('indeterminate' in chkbox_select_all){
-    	         chkbox_select_all.indeterminate = true;
-    	      }
-    	   }
-    	}
+            // If some of the checkboxes are checked
+        } else {
+            chkbox_select_all.checked = true;
+            if ('indeterminate' in chkbox_select_all) {
+                chkbox_select_all.indeterminate = true;
+            }
+        }
+    }
 
     $("#xmlConverterData button[name=btn-create]").click(function(event) {
         BootstrapDialog.show({
@@ -170,7 +252,7 @@ $(document).ready(function() {
                         "isAttribute": $isAttribute.val(),
                         "description": $description.val()
                     }).draw();
-                    
+
                     dialog.close();
                 }
             }, {
@@ -187,7 +269,7 @@ $(document).ready(function() {
         scrollY: "50th",
         lengthChange: false,
         scrollCollapse: true,
-        pageLength : 5,
+        pageLength: 5,
         destroy: true,
         language: {
             "url": dataTables_zh_tw,
@@ -196,9 +278,9 @@ $(document).ready(function() {
         initComplete: function(settings, json) {
             $('div .dt-buttons').css({
                 'float': 'right'
-//                'margin-left': '10px'
+                //                'margin-left': '10px'
             });
-//            $('div .dt-buttons a').css('margin-left', '10px');
+            //            $('div .dt-buttons a').css('margin-left', '10px');
         },
         //		ajax : {
         //			url : "stockMod.do",
@@ -313,48 +395,48 @@ $(document).ready(function() {
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
 
-         	   var $table             = $("#xmlConverterTable");
-         	   var $chkbox_all        = $('input[type="checkbox"]', $table);
-         	   var $chkbox_checked    = $('input[type="checkbox"]:checked', $table);
+                var $table = $("#xmlConverterTable");
+                var $chkbox_all = $('input[type="checkbox"]', $table);
+                var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
 
-         	   if($chkbox_checked.length === 0){
-                 console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
-//         		  $chkbox_all.checked = true;
-         		 $chkbox_all.each(function() {
-                $(this).prop("checked", true);
-                $(this).addClass("toggleon");
-            });
-         	   // If all of the checkboxes are checked
-         	   } else if ($chkbox_checked.length === $chkbox_all.length){
-//          		  $chkbox_all.checked = false;
-          		$chkbox_all.each(function() {
-                $(this).prop("checked", false);
-                $(this).removeClass("toggleon");
-            })
-         	   // If some of the checkboxes are checked
-         	   } else {
-           		 $chkbox_all.each(function() {
-                     $(this).prop("checked", true);
-                     $(this).addClass("toggleon");
-                 });
-         	   }
-//                selectCount++;
-//                console.log('selectCount: ' + selectCount);
-//                var $dtMaster = $('#stockmod-master-table');
-//                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]');
-//
-//                console.log('selectCount % 2 : ' + selectCount % 2);
-//
-//
-//                selectCount % 2 != 1 ?
-//                    $checkboxs.each(function() {
-//                        $(this).prop("checked", false);
-//                        $(this).removeClass("toggleon");
-//                    }) :
-//                    $checkboxs.each(function() {
-//                        $(this).prop("checked", true);
-//                        $(this).addClass("toggleon");
-//                    });
+                if ($chkbox_checked.length === 0) {
+                    console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
+                    //         		  $chkbox_all.checked = true;
+                    $chkbox_all.each(function() {
+                        $(this).prop("checked", true);
+                        $(this).addClass("toggleon");
+                    });
+                    // If all of the checkboxes are checked
+                } else if ($chkbox_checked.length === $chkbox_all.length) {
+                    //          		  $chkbox_all.checked = false;
+                    $chkbox_all.each(function() {
+                        $(this).prop("checked", false);
+                        $(this).removeClass("toggleon");
+                    })
+                    // If some of the checkboxes are checked
+                } else {
+                    $chkbox_all.each(function() {
+                        $(this).prop("checked", true);
+                        $(this).addClass("toggleon");
+                    });
+                }
+                //                selectCount++;
+                //                console.log('selectCount: ' + selectCount);
+                //                var $dtMaster = $('#stockmod-master-table');
+                //                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]');
+                //
+                //                console.log('selectCount % 2 : ' + selectCount % 2);
+                //
+                //
+                //                selectCount % 2 != 1 ?
+                //                    $checkboxs.each(function() {
+                //                        $(this).prop("checked", false);
+                //                        $(this).removeClass("toggleon");
+                //                    }) :
+                //                    $checkboxs.each(function() {
+                //                        $(this).prop("checked", true);
+                //                        $(this).addClass("toggleon");
+                //                    });
             }
         }, {
             text: '刪除',
@@ -430,7 +512,7 @@ $(document).ready(function() {
                                 "isAttribute": $isAttribute.val(),
                                 "description": $description.val()
                             }).draw();
-                            
+
                             dialog.close();
                         }
                     }, {
@@ -439,22 +521,26 @@ $(document).ready(function() {
                             dialog.close();
                         }
                     }]
-                });           	
+                });
             }
         }]
     });
 
     $("button[name=btn-save]").click(function(event) {
-//    	var data = $xmlConverterTable.rows().data();
+        //    	var data = $xmlConverterTable.rows().data();
 
         BootstrapDialog.show({
             title: '確認是否送出',
             message: function(dialog) {
+
+                var $div = buildInput('名稱', '設定檔名稱', 'fileName');
+                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
+
                 var $content =
                     $('<div/>', {
                         'id': 'btnSaveDialog'
                     }).append(
-                        buildInput('名稱', '設定檔名稱', 'fileName')
+                        $div
                     );
 
                 return $content;
@@ -470,14 +556,16 @@ $(document).ready(function() {
                     dialog.setMessage('進行中');
 
                     var vo = {},
-                    	q2w = {},
+                        q2w = {},
                         val = {};
-                    
-//                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
+
+                    //                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
 
                     //Heart BeatClient
-                    val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
-                    val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
+                    //val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
+                    //val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
+                    val['beatID'] = fileName;
+                    val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
                     val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
                     q2w['heartBeatClient'] = val;
@@ -518,31 +606,31 @@ $(document).ready(function() {
                     //XML Converter
                     var cells = $xmlConverterTable.cells().nodes();
                     var $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
-                    
+
                     var xmlConverter = [];
-                    
+
                     $checkboxs.each(function(index, checkbox) {
 
-            	        var row = jQuery(checkbox).closest('tr');
-            	        var data = $("#xmlConverterTable").dataTable().fnGetData(row);   
-//            	        var field = {};
-            	        var fieldVal = {};
-            	        fieldVal['source'] = data.source;
-            	        fieldVal['destination'] = data.destination;
-            	        fieldVal['description'] = data.description;
-            	        fieldVal['isAttribute'] = data.isAttribute;
-//                        field['fieldName'] = fieldVal;
-                        
+                        var row = jQuery(checkbox).closest('tr');
+                        var data = $("#xmlConverterTable").dataTable().fnGetData(row);
+                        //            	        var field = {};
+                        var fieldVal = {};
+                        fieldVal['source'] = data.source;
+                        fieldVal['destination'] = data.destination;
+                        fieldVal['description'] = data.description;
+                        fieldVal['isAttribute'] = data.isAttribute;
+                        //                        field['fieldName'] = fieldVal;
+
                         xmlConverter.push(fieldVal);
                     });
-                	vo['xmlConverter']= xmlConverter;
-                	
-                	
+                    vo['xmlConverter'] = xmlConverter;
+
+
                     console.log(JSON.stringify(vo));
-//                    return false;
+                    //                    return false;
                     $.ajax({
                         type: "POST",
-                        datatype:"json",
+                        datatype: "json",
                         contentType: "application/json; charset=utf-8",
                         url: "./q2w",
                         data: JSON.stringify(vo),

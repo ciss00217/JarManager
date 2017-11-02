@@ -28,7 +28,7 @@ public class Config {
 	@XmlElement(name = "webService")
 	private WebService webService;
 	
-	@XmlElement(name = "fieldName")
+	@XmlElement(name = "fieldName",type=FieldName.class)
 	private List<FieldName> xmlConverter;
 
 	@XmlTransient

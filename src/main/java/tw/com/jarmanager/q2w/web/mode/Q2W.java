@@ -4,13 +4,27 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlTransient;
 
 public class Q2W {
 
-//	private String fileName;
+	// private String fileName;
 	private Config config;
-	private List<FieldName> xmlConverter;
 	
+	@XmlElement(name = "fieldName", type = FieldName.class)
+	private List<FieldName> xmlConverter;
+
+	private Clazz clazz;
+	
+	public Clazz getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(Clazz clazz) {
+		this.clazz = clazz;
+	}
+
+	@XmlTransient
 	public List<FieldName> getXmlConverter() {
 		return xmlConverter;
 	}
@@ -19,13 +33,13 @@ public class Q2W {
 		this.xmlConverter = xmlConverter;
 	}
 
-//	public String getFileName() {
-//		return fileName;
-//	}
-//
-//	public void setFileName(String fileName) {
-//		this.fileName = fileName;
-//	}
+	// public String getFileName() {
+	// return fileName;
+	// }
+	//
+	// public void setFileName(String fileName) {
+	// this.fileName = fileName;
+	// }
 
 	public Config getConfig() {
 		return config;
