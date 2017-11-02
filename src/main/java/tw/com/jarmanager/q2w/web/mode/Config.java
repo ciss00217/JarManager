@@ -1,20 +1,46 @@
 package tw.com.jarmanager.q2w.web.mode;
 
+import java.util.List;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
+@XmlType(propOrder = { "heartBeatClient", "connectionFactory", "queueDestination", "queueOrigin", "webService",
+		"xmlConverter" })
 public class Config {
 
+	@XmlElement(name = "HeartBeatClient")
 	private HeartBeatClient heartBeatClient;
-	
-	private ConnectionFactory connectionFactory;
-	
-	private QueueDestination queueDestination;
-	
-	private QueueOrigin queueOrigin;
-	
-	private WebService webService;
 
+	@XmlElement(name = "connectionFactory")
+	private ConnectionFactory connectionFactory;
+
+	@XmlElement(name = "queueDestination")
+	private QueueDestination queueDestination;
+
+	@XmlElement(name = "queueOrigin")
+	private QueueOrigin queueOrigin;
+
+	@XmlElement(name = "webService")
+	private WebService webService;
+	
+	@XmlElement(name = "fieldName",type=FieldName.class)
+	private List<FieldName> xmlConverter;
+
+	@XmlTransient
+	public List<FieldName> getXmlConverter() {
+		return xmlConverter;
+	}
+
+	public void setXmlConverter(List<FieldName> xmlConverter) {
+		this.xmlConverter = xmlConverter;
+	}
+
+	@XmlTransient
 	public HeartBeatClient getHeartBeatClient() {
 		return heartBeatClient;
 	}
@@ -23,6 +49,7 @@ public class Config {
 		this.heartBeatClient = heartBeatClient;
 	}
 
+	@XmlTransient
 	public ConnectionFactory getConnectionFactory() {
 		return connectionFactory;
 	}
@@ -31,6 +58,7 @@ public class Config {
 		this.connectionFactory = connectionFactory;
 	}
 
+	@XmlTransient
 	public QueueDestination getQueueDestination() {
 		return queueDestination;
 	}
@@ -39,6 +67,7 @@ public class Config {
 		this.queueDestination = queueDestination;
 	}
 
+	@XmlTransient
 	public QueueOrigin getQueueOrigin() {
 		return queueOrigin;
 	}
@@ -47,6 +76,7 @@ public class Config {
 		this.queueOrigin = queueOrigin;
 	}
 
+	@XmlTransient
 	public WebService getWebService() {
 		return webService;
 	}

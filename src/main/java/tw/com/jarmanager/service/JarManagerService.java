@@ -117,7 +117,6 @@ public class JarManagerService {
 		jarProjectVO.setNeedRun(true);
 		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
 		jarManagerAPIService.setXmlFilePath(xmlpath);
-		
 
 		return jarManagerAPIService.addJarProjectVOXml(jarProjectVO);
 	}
