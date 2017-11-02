@@ -105,11 +105,12 @@ $(document).ready(function() {
                                 $('#xmlConverterData input[type="checkbox"]').checked = true;
 
                                 $("button[name=btn-save]").text('修改設定檔')
+                                
+                                $button.enable();
+                                $button.stopSpin();
+                                dialog.setClosable(true);
+                                dialog.setMessage('匯入作業完成');
                             }
-                            $button.enable();
-                            $button.stopSpin();
-                            dialog.setClosable(true);
-                            dialog.setMessage('匯入作業完成');
                         }, {
                             label: '取消',
                             action: function(dialog) {

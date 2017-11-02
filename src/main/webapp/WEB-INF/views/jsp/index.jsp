@@ -6,7 +6,6 @@
 <head>
 	<title>JarManager</title>
 
-	<spring:url value="/resources/core/css/hello.css" var="coreCss" />
 	<spring:url value="/resources/core/css/bootstrap.min.css" var="bootstrapCss" />
 	<spring:url value="/resources/core/css/jarmassage.css" var="jarmassageCss" />
 	
@@ -94,7 +93,6 @@
 	</footer>
 </div>
 
-<spring:url value="/resources/core/js/hello.js" var="coreJs" />
 <spring:url value="/resources/core/js/bootstrap.min.js" var="bootstrapJs" />
 <spring:url value="/resources/core/js/jquery-3.2.1.slim.min.js" var="jquery" />
 
