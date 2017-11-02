@@ -25,7 +25,7 @@ $(document).ready(function() {
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
         var fileName = $('#imaginary_container input[name=fileName]').val();
-        $heartBeatClient.find('input[name=fileName]').val(fileName);
+        
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -62,7 +62,9 @@ $(document).ready(function() {
                             }
                         }] : [{
                             label: '確認',
+                            id: 'search-dialog-confirm-btn',
                             action: function(dialog) {
+                                $heartBeatClient.find('input[name=fileName]').val(fileName);
                                 var $button = this;
                                 $button.disable();
                                 $button.spin();
@@ -98,11 +100,22 @@ $(document).ready(function() {
                                 $webService.find('input[name=type]').val(webService.type);
                                 $webService.find('input[name=format]').val(webService.format);
 
+                                $xmlConverterTable.clear().draw();
                                 $.each(data.xmlConverter, function(index, item) {
                                     $xmlConverterTable.rows.add([item]).draw();
                                 });
+                                var $table = $("#xmlConverterTable");
+                                var $chkbox_all = $('input[type="checkbox"]', $table);
+                                var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
 
-                                $('#xmlConverterData input[type="checkbox"]').checked = true;
+                                if ($chkbox_checked.length === 0) {
+                                    console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
+                                    $chkbox_all.each(function() {
+                                        $(this).prop("checked", true);
+                                        $(this).addClass("toggleon");
+                                    });
+                                }
+
 
                                 $("button[name=btn-save]").text('修改設定檔')
                                 
@@ -110,9 +123,15 @@ $(document).ready(function() {
                                 $button.stopSpin();
                                 dialog.setClosable(true);
                                 dialog.setMessage('匯入作業完成');
+                                
+                                $('#search-dialog-confirm-btn').click(function(event) {
+                                    dialog.close();
+                                });
+                                $('#search-dialog-cancel-btn').remove();
                             }
                         }, {
                             label: '取消',
+                            id: 'search-dialog-cancel-btn',
                             action: function(dialog) {
                                 dialog.close();
                             }
@@ -151,7 +170,9 @@ $(document).ready(function() {
         $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
-
+        
+        $xmlConverterTable.clear().draw();
+        
         $xmlConverterTable.rows.add([{
             "source": 'ProductId',
             "destination": 'c_product_id',
@@ -189,35 +210,6 @@ $(document).ready(function() {
             }));
 
         return $div;
-    }
-
-    function updateDataTableSelectAllCtrl(table) {
-        var $table = table.table().node();
-        var $chkbox_all = $('tbody input[type="checkbox"]', $table);
-        var $chkbox_checked = $('tbody input[type="checkbox"]:checked', $table);
-        var chkbox_select_all = $('thead input[name="select_all"]', $table).get(0);
-
-        // If none of the checkboxes are checked
-        if ($chkbox_checked.length === 0) {
-            chkbox_select_all.checked = false;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = false;
-            }
-
-            // If all of the checkboxes are checked
-        } else if ($chkbox_checked.length === $chkbox_all.length) {
-            chkbox_select_all.checked = true;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = false;
-            }
-
-            // If some of the checkboxes are checked
-        } else {
-            chkbox_select_all.checked = true;
-            if ('indeterminate' in chkbox_select_all) {
-                chkbox_select_all.indeterminate = true;
-            }
-        }
     }
 
     $("#xmlConverterData button[name=btn-create]").click(function(event) {
