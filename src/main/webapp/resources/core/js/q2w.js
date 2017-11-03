@@ -23,6 +23,185 @@ $(document).ready(function() {
         }).columns.adjust();
     });
 
+    function fileNameDataValidator() {
+        var isValid = false;
+
+        function checkVal(obj) {
+            var mes = '';
+            $.each(obj, function(index, input) {
+                    if ($(input).val() == '') {
+                        $mes = $('<div/>').append(
+                            $('<p/>', {
+                                'text': '● ' + input.placeholder + ' 尚未填寫'
+                            }));
+                        mes += $mes.html();
+                    }
+            });
+            return mes;
+        }
+
+        var $heartBeatClient_fileName_input = $heartBeatClient.find('input[name=fileName]');
+
+        function existGetMes(obj, title) {
+            var vaild_mes = '';
+            var $obj = '';
+
+            vaild_mes = checkVal(obj);
+
+            if (vaild_mes != '') {
+                var $obj =
+                    $('<div/>', {
+                        'class': 'alert alert-danger'
+                    }).append(
+                        $('<strong/>', {
+                            'text': title,
+                            "css": {
+                                'font-size': '22px'
+                            }
+                        }),
+                        vaild_mes
+                    );
+            }
+            return $obj;
+        }
+
+        var $content =
+            $('<div/>', {
+                'css': {
+                    'height': '250px',
+                    'overflow': 'auto'
+                }
+            });
+
+        var title_array = {};
+        title_array['$heartBeatClient_fileName_input'] = '註冊檔';
+
+        var element_array = {};
+        element_array['$heartBeatClient_fileName_input'] = $heartBeatClient_fileName_input;
+
+        $.each(title_array, function(element_key, title) {
+
+            if (existGetMes(element_array[element_key], title) != '') {
+                console.log('進入');
+                var $obj = existGetMes(element_array[element_key], title);
+                $content.append($obj);
+            }
+        });
+        
+        console.log('$content.html():'+$content.html() != '');
+        
+        $content.html() != '' ?
+            BootstrapDialog.show({
+                title: '警告訊息',
+                message: function(dialog) {
+                    return $content;
+                },
+                buttons: [{
+                    label: '確認',
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }]
+            }) : isValid = true;
+            
+        return isValid;
+    }
+    
+    function dataValidator() {
+        var isValid = false;
+
+        function checkVal(obj) {
+            var mes = '';
+            $.each(obj, function(index, input) {
+                if (!$(input).closest('div').hasClass("hidden")) {
+                    if ($(input).val() == '') {
+                        $mes = $('<div/>').append(
+                            $('<p/>', {
+                                'text': '● ' + input.placeholder + ' 尚未填寫'
+                            }));
+                        mes += $mes.html();
+                    }
+                }
+            });
+            return mes;
+        }
+
+        var $heartBeatClient_inputs = $('input', $heartBeatClient);
+        var $connectionFactory_inputs = $('input', $connectionFactory);
+        var $queueOrigin_inputs = $('input', $queueOrigin);
+        var $queueDestination_inputs = $('input', $queueDestination);
+        var $webService_inputs = $('input', $webService);
+
+        function existGetMes(obj, title) {
+            var vaild_mes = '';
+            var $obj = '';
+
+            vaild_mes = checkVal(obj);
+
+            if (vaild_mes != '') {
+                var $obj =
+                    $('<div/>', {
+                        'class': 'alert alert-danger'
+                    }).append(
+                        $('<strong/>', {
+                            'text': title,
+                            "css": {
+                                'font-size': '18px'
+                            }
+                        }),
+                        vaild_mes
+                    );
+            }
+            return $obj;
+        }
+
+        var $content =
+            $('<div/>', {
+                'css': {
+                    'height': '250px',
+                    'overflow': 'auto'
+                }
+            });
+
+        var title_array = {};
+        title_array['$heartBeatClient_inputs'] = '心跳協議';
+        title_array['$connectionFactory_inputs'] = '資料庫連線';
+        title_array['$queueOrigin_inputs'] = '來源佇列';
+        title_array['$queueDestination_inputs'] = '目的佇列';
+        title_array['$webService_inputs'] = 'Web Service';
+
+        var element_array = {};
+        element_array['$heartBeatClient_inputs'] = $heartBeatClient_inputs;
+        element_array['$connectionFactory_inputs'] = $connectionFactory_inputs;
+        element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
+        element_array['$queueDestination_inputs'] = $queueDestination_inputs;
+        element_array['$webService_inputs'] = $webService_inputs;
+
+        $.each(title_array, function(element_key, title) {
+
+            if (existGetMes(element_array[element_key], title) != '') {
+                var $obj = existGetMes(element_array[element_key], title);
+                $content.append($obj);
+            }
+        });
+        
+        $content.html() != '' ?
+            BootstrapDialog.show({
+                title: '警告訊息',
+                message: function(dialog) {
+                    return $content;
+                },
+                buttons: [{
+                    label: '確認',
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }]
+            }) : isValid = true;
+            
+        return isValid;
+    }
+    
     $('#imaginary_container button[name=btn-delete]').click(function(event) {
 
         BootstrapDialog.show({
@@ -284,7 +463,7 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
-
+                    
                     var $dialog = $('#xmlConverterDataDialog');
                     var $source = $('#xmlConverterDataDialog').find('input[name=source]');
                     var $destination = $('#xmlConverterDataDialog').find('input[name=destination]');
@@ -583,6 +762,11 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
+                	
+                    if( !fileNameDataValidator() ) return false;
+                    
+                    if( !dataValidator() ) return false;
+                    
                     var fileName = $heartBeatClient.find('input[name=fileName]').val();
                     var $button = this;
                     $button.disable();
@@ -694,13 +878,15 @@ $(document).ready(function() {
     });
 
     $("button[name=btn-save]").click(function(event) {
+
+        var $div;
+        
         BootstrapDialog.show({
             title: '確認是否送出',
             message: function(dialog) {
-
-                var $div = buildInput('名稱', '設定檔名稱', 'fileName');
-                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
-
+            	$div = buildInput('名稱', '設定檔名稱', 'fileName');
+                $('input[name=fileName]', $div).val( $heartBeatClient.find('input[name=fileName]').val() );
+                
                 var $content =
                     $('<div/>', {
                         'id': 'btnSaveDialog'
@@ -713,6 +899,12 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
+                    $heartBeatClient.find('input[name=fileName]').val( $('input[name=fileName]', $div).val() );
+                	
+                    if( !fileNameDataValidator() ) return false;
+                    
+                    if( !dataValidator() ) return false;
+                    
                     var fileName = $('#btnSaveDialog input[name=fileName]').val();
                     var $button = this;
                     $button.disable();
@@ -773,13 +965,12 @@ $(document).ready(function() {
 
                         var row = jQuery(checkbox).closest('tr');
                         var data = $("#xmlConverterTable").dataTable().fnGetData(row);
-                        //            	        var field = {};
+
                         var fieldVal = {};
                         fieldVal['source'] = data.source;
                         fieldVal['destination'] = data.destination;
                         fieldVal['description'] = data.description;
                         fieldVal['isAttribute'] = data.isAttribute;
-                        //                        field['fieldName'] = fieldVal;
 
                         xmlConverter.push(fieldVal);
                     });
@@ -787,7 +978,6 @@ $(document).ready(function() {
 
                     console.log('insert');
                     console.log(JSON.stringify(vo));
-                    //                    return false;
                     $.ajax({
                         type: "POST",
                         datatype: "json",

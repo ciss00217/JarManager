@@ -72,13 +72,8 @@
 							<li class="azed-tab"><a data-toggle="tab" role="tab"
 								data-target="#xmlConverterData">XmlConverter</a></li>
 						</ul>
-
 						<div class="tab-content">
 							<div class="input-group">
-								<!-- 								<span class="input-group-addon"><i -->
-								<!-- 									class="glyphicon glyphicon-file"></i></span> <input type="text" -->
-								<!-- 									class="form-control" name="fileName" placeholder="設定檔名稱"> -->
-								<!-- 								<div class="col-sm-6 col-sm-offset-3"> -->
 								<div id="imaginary_container">
 									<div class="input-group stylish-input-group">
 										<span class="input-group-addon"><i
@@ -88,8 +83,7 @@
 											<button type="button" name="btn-search">
 												<span class="glyphicon glyphicon-search"></span>
 											</button>
-										</span>
-										<span class="input-group-addon">
+										</span> <span class="input-group-addon">
 											<button type="button" name="btn-delete">
 												<span class="glyphicon glyphicon-trash"></span>
 											</button>
@@ -116,27 +110,30 @@
 									<div class="tab-content">
 										<div id="heartBeatClientData" class="tab-pane fade in active"
 											role="tabpanel">
-											<div class="input-group hidden">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-list-alt"></i></span> <input
-													type="text" class="form-control" name="beatID"
-													placeholder="編號">
-											</div>
-											<div class="input-group hidden">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="fileName" placeholder="名稱">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-list-alt"></i></span> <input type="text"
-													class="form-control" name="jarFilePath" placeholder="jar檔位置">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-time"></i></span> <input type="text"
-													class="form-control" name="timeSeries" placeholder="時間區隔">
-											</div>
+											<form>
+												<div class="input-group hidden">
+													<span class="input-group-addon"><i
+														class="glyphicon glyphicon-list-alt"></i></span> <input
+														type="text" class="form-control" name="beatID"
+														placeholder="編號">
+												</div>
+												<div class="input-group hidden">
+													<span class="input-group-addon"><i
+														class="glyphicon glyphicon-user"></i></span> <input type="text"
+														class="form-control" name="fileName" placeholder="名稱">
+												</div>
+												<div class="input-group">
+													<span class="input-group-addon"><i
+														class="glyphicon glyphicon-list-alt"></i></span> <input
+														type="text" class="form-control" name="jarFilePath"
+														placeholder="jar檔位置">
+												</div>
+												<div class="input-group">
+													<span class="input-group-addon"><i
+														class="glyphicon glyphicon-time"></i></span> <input type="text"
+														class="form-control" name="timeSeries" placeholder="時間區隔">
+												</div>
+											</form>
 										</div>
 										<div id="connectionFactoryData" class="tab-pane fade in"
 											role="tabpanel">
@@ -226,21 +223,17 @@
 							</div>
 							<div id="xmlConverterData" class="tab-pane fade in"
 								role="tabpanel">
-
-								<!-- 								<div class="input-group"> -->
-								<!-- 									<span class="input-group-addon"><i -->
-								<!-- 										class="glyphicon glyphicon-file"></i></span> <input type="text" -->
-								<!-- 										class="form-control" name="fileName" placeholder="設定檔名稱"> -->
-								<!-- 								</div> -->
-								<table id="xmlConverterTable" class="table dt-responsive display">
+								<table id="xmlConverterTable"
+									class="table dt-responsive display">
 								</table>
 							</div>
 							<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
-							<button type="button" class="btn btn-primary hidden" name="btn-update">修改設定檔</button>
+							<button type="button" class="btn btn-primary hidden"
+								name="btn-update">修改設定檔</button>
 						</div>
 					</div>
 				</div>
-			<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
+				<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
 			</div>
 		</div>
 	</div>
