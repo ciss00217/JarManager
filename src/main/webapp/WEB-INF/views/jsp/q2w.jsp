@@ -89,9 +89,13 @@
 												<span class="glyphicon glyphicon-search"></span>
 											</button>
 										</span>
+										<span class="input-group-addon">
+											<button type="button" name="btn-delete">
+												<span class="glyphicon glyphicon-trash"></span>
+											</button>
+										</span>
 									</div>
 								</div>
-								<!-- 								</div> -->
 							</div>
 							<div id="Q2WData" class="tab-pane fade in active" role="tabpanel">
 
@@ -228,7 +232,7 @@
 								<!-- 										class="glyphicon glyphicon-file"></i></span> <input type="text" -->
 								<!-- 										class="form-control" name="fileName" placeholder="設定檔名稱"> -->
 								<!-- 								</div> -->
-								<table id="xmlConverterTable" class="table dt-responsive">
+								<table id="xmlConverterTable" class="table dt-responsive display">
 								</table>
 							</div>
 							<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>

@@ -22,10 +22,65 @@ $(document).ready(function() {
             api: true
         }).columns.adjust();
     });
+
+    $('#imaginary_container button[name=btn-delete]').click(function(event) {
+
+        BootstrapDialog.show({
+            title: '刪除',
+            message: function(dialog) {
+
+                var $content =
+                    $('<div/>', {
+                        'id': 'configDeleteDialog'
+                    }).append(
+                        buildInput('名稱', '要刪除的設定檔名稱', 'fileName')
+                    );
+
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    var $button = this;
+                    var fileName = $('#configDeleteDialog input[name=fileName]').val();
+
+                    $.ajax({
+                        type: "DELETE",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2w/delete/" + fileName,
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
         var fileName = $('#imaginary_container input[name=fileName]').val();
-        
+
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -62,7 +117,6 @@ $(document).ready(function() {
                             }
                         }] : [{
                             label: '確認',
-                            id: 'search-dialog-confirm-btn',
                             action: function(dialog) {
                                 $heartBeatClient.find('input[name=fileName]').val(fileName);
                                 var $button = this;
@@ -117,21 +171,19 @@ $(document).ready(function() {
                                 }
 
                                 $("button[name=btn-update]").removeClass("hidden");
-//                                $("button[name=btn-save]").text('修改設定檔')
-                                
+
                                 $button.enable();
                                 $button.stopSpin();
                                 dialog.setClosable(true);
                                 dialog.setMessage('匯入作業完成');
-                                
-                                $('#search-dialog-confirm-btn').click(function(event) {
+
+                                $button.closest('div').remove();
+                                setTimeout(function() {
                                     dialog.close();
-                                });
-                                $('#search-dialog-cancel-btn').remove();
+                                }, 2000);
                             }
                         }, {
                             label: '取消',
-                            id: 'search-dialog-cancel-btn',
                             action: function(dialog) {
                                 dialog.close();
                             }
@@ -170,9 +222,9 @@ $(document).ready(function() {
         $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
-        
+
         $xmlConverterTable.clear().draw();
-        
+
         $xmlConverterTable.rows.add([{
             "source": 'ProductId',
             "destination": 'c_product_id',
@@ -271,16 +323,10 @@ $(document).ready(function() {
         initComplete: function(settings, json) {
             $('div .dt-buttons').css({
                 'float': 'right'
-                //                'margin-left': '10px'
+            }, {
+                'margin-bottom': '10px'
             });
-            //            $('div .dt-buttons a').css('margin-left', '10px');
         },
-        //		ajax : {
-        //			url : "stockMod.do",
-        //			dataSrc : "",
-        //			type : "POST",
-        //			data : parameter
-        //		},
         columns: [{
                 "title": "勾選",
                 "data": null,
@@ -338,47 +384,17 @@ $(document).ready(function() {
             searchable: false,
             orderable: false,
             render: function(data, type, row) {
+                $button = $('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-primary',
+                    'text': '修改',
+                    'name': 'dt-btn-update'
+                });
 
-                //            	var options =
-                //                    $('<div/>', {
-                //                        'class': 'btn-group'
-                //                    });
-                //            	
-                //            	
-                //            	var $button = $('<button/>', {
-                //                    'type': 'button',
-                //                    'class': 'btn btn-primary dropdown-toggle',
-                //                    'data-toggle': 'dropdown',
-                //                    'name': 'btn-function',
-                //                    'text': '功能'
-                //                }).append($('<span/>', {
-                //                    'class': 'caret',
-                //                    'role': 'menu'
-                //                }));
-                //            	
-                //
-                //            	var $ul = $('<ul/>', {
-                //                    'class': 'dropdown-menu',
-                //                    'role': 'menu'
-                //                }).append($('<li/>').append($('<a/>', {
-                //                    'href': '#',
-                //                    'text': '刪除'
-                //                })),$('<li/>').append($('<a/>', {
-                //                    'href': '#',
-                //                    'text': '新增'
-                //                })));
-                //            	
-                //            	options.append($button,$ul);
-                //                
-                //                return options.html();
                 var options =
                     $('<div/>', {
                         'class': 'btn-group'
-                    }).append($('<button/>', {
-                        'type': 'button',
-                        'class': 'btn btn-primary',
-                        'text': '功能'
-                    }));
+                    }).append($button);
 
                 return options.html();
             }
@@ -394,7 +410,7 @@ $(document).ready(function() {
 
                 if ($chkbox_checked.length === 0) {
                     console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
-                    //         		  $chkbox_all.checked = true;
+
                     $chkbox_all.each(function() {
                         $(this).prop("checked", true);
                         $(this).addClass("toggleon");
@@ -413,61 +429,48 @@ $(document).ready(function() {
                         $(this).addClass("toggleon");
                     });
                 }
-                //                selectCount++;
-                //                console.log('selectCount: ' + selectCount);
-                //                var $dtMaster = $('#stockmod-master-table');
-                //                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]');
-                //
-                //                console.log('selectCount % 2 : ' + selectCount % 2);
-                //
-                //
-                //                selectCount % 2 != 1 ?
-                //                    $checkboxs.each(function() {
-                //                        $(this).prop("checked", false);
-                //                        $(this).removeClass("toggleon");
-                //                    }) :
-                //                    $checkboxs.each(function() {
-                //                        $(this).prop("checked", true);
-                //                        $(this).addClass("toggleon");
-                //                    });
             }
         }, {
             text: '刪除',
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
-                var $dtMaster = $('#stockmod-master-table');
-                var delArr = '';
 
-                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]:checked');
+                var $checkedboxs = $('#xmlConverterTable input[name=checkbox-group-select]:checked');
 
-                console.log($checkboxs);
-
-                if ($checkboxs.length == 0) {
-                    alert('請至少選擇一筆資料');
+                if ($checkedboxs.length == 0) {
+                    BootstrapDialog.show({
+                        title: '提示訊息',
+                        message: '請至少選擇一筆資料',
+                        buttons: [{
+                            label: '確認',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }]
+                    });
                     return false;
                 }
-
-                var dialogId = "dialog-data-process";
-                var formId = "dialog-form-data-process";
-                var btnTxt_1 = "批次刪除";
-                var btnTxt_2 = "取消";
-                var oWidth = 'auto';
-                var url = 'stockMod.do';
-
-                $checkboxs.each(function() {
-                    delArr += this.id + ',';
+                BootstrapDialog.show({
+                    title: '提示訊息',
+                    message: '是否確認刪除資料，總共' + $checkedboxs.length + '筆',
+                    buttons: [{
+                        label: '確認',
+                        action: function(dialog) {
+                            $checkedboxs.each(function() {
+                                $xmlConverterTable
+                                    .row($(this).parents('tr'))
+                                    .remove()
+                                    .draw();
+                            });
+                            dialog.close();
+                        }
+                    }, {
+                        label: '取消',
+                        action: function(dialog) {
+                            dialog.close();
+                        }
+                    }]
                 });
-
-                delArr = delArr.slice(0, -1);
-
-                console.log("delArr:" + delArr);
-
-                initDeleteDialog();
-                drawDialog
-                    (dialogId, url, oWidth, formId, btnTxt_1, btnTxt_2)
-                    .data("stockmodId", delArr)
-                    .dialog("option", "title", "刪除" + $checkboxs.length + "筆資料")
-                    .dialog("open");
             }
         }, {
             text: '新增',
@@ -519,25 +522,64 @@ $(document).ready(function() {
         }]
     });
 
+    $("#xmlConverterTable").on("click", 'button[name=dt-btn-update]', function() {
+        $button.closest('div').remove();
+        var row = this.closest("tr");
+        var data = $xmlConverterTable.row(row).data();
+
+        console.log(data);
+
+        var $source = buildInput('來源', '來源欄位', 'source');
+        var $destination = buildInput('目標', '目標欄位', 'destination');
+        var $isAttribute = buildInput('屬性', '是否為屬性', 'isAttribute');
+        var $description = buildInput('描述', '描述', 'description');
+
+        $('input', $source).val(data.source);
+        $('input', $destination).val(data.destination);
+        $('input', $isAttribute).val(data.isAttribute);
+        $('input', $description).val(data.description);
+
+        var $content =
+            $('<div/>').append(
+                $source,
+                $destination,
+                $isAttribute,
+                $description
+            );
+
+        BootstrapDialog.show({
+            title: '修改',
+            message: function(dialog) {
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+
+                    data.source = $('input', $source).val();
+                    data.destination = $('input', $destination).val();
+                    data.isAttribute = $('input', $isAttribute).val();
+                    data.description = $('input', $description).val();
+
+                    $xmlConverterTable.row(row)
+                        .data(data)
+                        .draw()
+                    dialog.close();
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+
+    });
+
     $("button[name=btn-update]").click(function(event) {
-        //    	var data = $xmlConverterTable.rows().data();
 
         BootstrapDialog.show({
             title: '確認是否修改',
-            message: function(dialog) {
-
-//                var $div = buildInput('名稱', '設定檔名稱', 'fileName');
-//                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
-//
-//                var $content =
-//                    $('<div/>', {
-//                        'id': 'btnSaveDialog'
-//                    }).append(
-//                        $div
-//                    );
-//
-//                return $content;
-            },
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
@@ -552,11 +594,6 @@ $(document).ready(function() {
                         q2w = {},
                         val = {};
 
-                    //                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
-
-                    //Heart BeatClient
-                    //val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
-                    //val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
                     val['beatID'] = fileName;
                     val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
@@ -633,10 +670,11 @@ $(document).ready(function() {
                             $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage(data);
-                            
-                            $button.click(function(event) {
+
+                            $button.closest('div').remove();
+                            setTimeout(function() {
                                 dialog.close();
-                            });
+                            }, 2000);
                         },
                         error: function(e) {
                             $button.enable();
@@ -654,10 +692,8 @@ $(document).ready(function() {
             }]
         });
     });
-    
-    $("button[name=btn-save]").click(function(event) {
-        //    	var data = $xmlConverterTable.rows().data();
 
+    $("button[name=btn-save]").click(function(event) {
         BootstrapDialog.show({
             title: '確認是否送出',
             message: function(dialog) {
@@ -688,11 +724,6 @@ $(document).ready(function() {
                         q2w = {},
                         val = {};
 
-                    //                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
-
-                    //Heart BeatClient
-                    //val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
-                    //val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
                     val['beatID'] = fileName;
                     val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
@@ -754,7 +785,7 @@ $(document).ready(function() {
                     });
                     vo['xmlConverter'] = xmlConverter;
 
-
+                    console.log('insert');
                     console.log(JSON.stringify(vo));
                     //                    return false;
                     $.ajax({
@@ -768,10 +799,10 @@ $(document).ready(function() {
                             $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage(data);
-                            
-                            $button.click(function(event) {
+                            $button.closest('div').remove();
+                            setTimeout(function() {
                                 dialog.close();
-                            });
+                            }, 2000);
                         },
                         error: function(e) {
                             $button.enable();

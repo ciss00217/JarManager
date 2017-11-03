@@ -36,6 +36,7 @@ public class QueueToWebServiceController {
 		this.service = service;
 	}
 
+	
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		System.out.println(fileName);
@@ -120,7 +121,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-xmlconverter-config";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();
@@ -129,7 +130,7 @@ public class QueueToWebServiceController {
 				config.setXmlConverter(xmlConverter);
 
 				xml = service.getObjToXml(config, Config.class);
-				XmlUtil.fileToJarXmlPath(fileName + "-xmlconverter-config", false, xml);
+				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] xmlconverter-config.xml\n";
 			} else {
 				mes += "[已存在] xmlconverter-config.xml\n";
@@ -139,6 +140,12 @@ public class QueueToWebServiceController {
 			mes += "[失敗] xmlconverter-config.xml\n";
 		}
 		return mes;
+	}
+
+	@RequestMapping(value = "/delete/{fileName}",method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
+	public @ResponseBody String delete(@PathVariable("fileName") String fileName) throws Exception {
+
+		return service.removeAllConfig(fileName);
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/plain; charset=utf-8")
