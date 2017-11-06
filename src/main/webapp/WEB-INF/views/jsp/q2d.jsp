@@ -103,8 +103,6 @@
 											data-target="#queueOriginData">來源佇列</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueDestinationData">目的佇列</a></li>
-										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#webServiceData">Web Service</a></li>
 									</ul>
 
 									<div class="tab-content">
@@ -197,25 +195,6 @@
 													class="glyphicon glyphicon-link"></i></span> <input
 													type="password" class="form-control" name="routingKey"
 													placeholder="routing key">
-											</div>
-										</div>
-										<div id="webServiceData" class="tab-pane fade in"
-											role="tabpanel">
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
-													class="form-control" name="url" placeholder="網址">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-picture"></i></span> <input type="text"
-													class="form-control" name="type" placeholder="類型">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="password" class="form-control" name="format"
-													placeholder="格式">
 											</div>
 										</div>
 									</div>

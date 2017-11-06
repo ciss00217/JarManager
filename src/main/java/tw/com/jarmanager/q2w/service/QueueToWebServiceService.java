@@ -179,6 +179,7 @@ public class QueueToWebServiceService {
 		heartBeatConnectionFactory.setPassword(connectionFactory.getPassword());
 		heartBeatConnectionFactory.setPort(connectionFactory.getPort());
 		heartBeatConnectionFactory.setUsername(connectionFactory.getUsername());
+		heartBeatConnectionFactory.setVirtualHost("/");
 
 		heartBeatClientVO.setBeatID(heartBeatClient.getBeatID());
 		heartBeatClientVO.setTimeSeries(heartBeatClient.getTimeSeries());

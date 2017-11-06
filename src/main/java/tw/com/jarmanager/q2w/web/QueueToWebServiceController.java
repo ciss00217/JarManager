@@ -173,6 +173,7 @@ public class QueueToWebServiceController {
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
+				clazz.getHeartBeatConnectionFactory().setVirtualHost("/");
 				xml = service.getObjToXml(clazz, Clazz.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
