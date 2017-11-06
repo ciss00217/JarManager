@@ -1,19 +1,11 @@
-package tw.com.jarmanager.q2w.web.mode;
+package tw.com.jarmanager.q2d.web.mode;
 
-public class ConnectionFactory {
+public class HeartBeatConnectionFactory {
 	private String username;
 	private String password;
-	private int port;
-	private String host;
 	private String virtualHost;
-
-	public String getVirtualHost() {
-		return virtualHost;
-	}
-
-	public void setVirtualHost(String virtualHost) {
-		this.virtualHost = virtualHost;
-	}
+	private String host;
+	private long port;
 
 	public String getUsername() {
 		return username;
@@ -31,12 +23,12 @@ public class ConnectionFactory {
 		this.password = password;
 	}
 
-	public int getPort() {
-		return port;
+	public String getVirtualHost() {
+		return virtualHost;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
+	public void setVirtualHost(String virtualHost) {
+		this.virtualHost = virtualHost;
 	}
 
 	public String getHost() {
@@ -46,4 +38,13 @@ public class ConnectionFactory {
 	public void setHost(String host) {
 		this.host = host;
 	}
+
+	public long getPort() {
+		return port;
+	}
+
+	public void setPort(long port) {
+		this.port = port;
+	}
+
 }

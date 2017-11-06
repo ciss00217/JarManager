@@ -39,8 +39,6 @@ public class QueueToWebServiceController {
 	
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
-		System.out.println(fileName);
-
 		String q2wConfigFileName = fileName + "-q2w-config";
 		String q2wXmlconverterConfigFileName = fileName + "-xmlconverter-config";
 //		String q2wHeatBeatClinetBeansConfigFileName = fileName + "-HeatBeatClinetBeans";

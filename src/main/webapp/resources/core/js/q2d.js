@@ -320,8 +320,7 @@ $(document).ready(function() {
                                 $connectionFactory.find('input[name=password]').val(connectionFactory.password);
                                 $connectionFactory.find('input[name=host]').val(connectionFactory.host);
                                 $connectionFactory.find('input[name=port]').val(connectionFactory.port);
-                                $connectionFactory.find('input[name=virtualHost]').val(connectionFactory.virtualHost);
-                                
+
                                 $queueOrigin.find('input[name=queueName]').val(queueOrigin.queueName);
                                 $queueOrigin.find('input[name=exchangeName]').val(queueOrigin.exchangeName);
                                 $queueOrigin.find('input[name=routingKey]').val(queueOrigin.routingKey);
@@ -390,14 +389,13 @@ $(document).ready(function() {
         $connectionFactory.find('input[name=password]').val('password');
         $connectionFactory.find('input[name=host]').val('192.168.112.199');
         $connectionFactory.find('input[name=port]').val('5672');
-        $connectionFactory.find('input[name=virtualHost]').val('/');
 
-        $queueOrigin.find('input[name=queueName]').val('ian');
-        $queueOrigin.find('input[name=exchangeName]').val('exchange');
+        $queueOrigin.find('input[name=queueName]').val('exchange');
+        $queueOrigin.find('input[name=exchangeName]').val('ian');
         $queueOrigin.find('input[name=routingKey]').val('ian');
 
-        $queueDestination.find('input[name=queueName]').val('ian2');
-        $queueDestination.find('input[name=exchangeName]').val('exchange');
+        $queueDestination.find('input[name=queueName]').val('exchange');
+        $queueDestination.find('input[name=exchangeName]').val('ian2');
         $queueDestination.find('input[name=routingKey]').val('ian2');
 
         $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
@@ -932,7 +930,6 @@ $(document).ready(function() {
                     val['password'] = $connectionFactory.find('input[name=password]').val();
                     val['host'] = $connectionFactory.find('input[name=host]').val();
                     val['port'] = $connectionFactory.find('input[name=port]').val();
-                    val['virtualHost'] = $connectionFactory.find('input[name=virtualHost]').val();
                     q2w['connectionFactory'] = val;
                     val = {};
 
