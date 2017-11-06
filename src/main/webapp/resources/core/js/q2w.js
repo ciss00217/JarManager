@@ -22,10 +22,244 @@ $(document).ready(function() {
             api: true
         }).columns.adjust();
     });
+
+    function fileNameDataValidator() {
+        var isValid = false;
+
+        function checkVal(obj) {
+            var mes = '';
+            $.each(obj, function(index, input) {
+                    if ($(input).val() == '') {
+                        $mes = $('<div/>').append(
+                            $('<p/>', {
+                                'text': '● ' + input.placeholder + ' 尚未填寫'
+                            }));
+                        mes += $mes.html();
+                    }
+            });
+            return mes;
+        }
+
+        var $heartBeatClient_fileName_input = $heartBeatClient.find('input[name=fileName]');
+
+        function existGetMes(obj, title) {
+            var vaild_mes = '';
+            var $obj = '';
+
+            vaild_mes = checkVal(obj);
+
+            if (vaild_mes != '') {
+                var $obj =
+                    $('<div/>', {
+                        'class': 'alert alert-danger'
+                    }).append(
+                        $('<strong/>', {
+                            'text': title,
+                            "css": {
+                                'font-size': '22px'
+                            }
+                        }),
+                        vaild_mes
+                    );
+            }
+            return $obj;
+        }
+
+        var $content =
+            $('<div/>', {
+                'css': {
+                    'height': '250px',
+                    'overflow': 'auto'
+                }
+            });
+
+        var title_array = {};
+        title_array['$heartBeatClient_fileName_input'] = '註冊檔';
+
+        var element_array = {};
+        element_array['$heartBeatClient_fileName_input'] = $heartBeatClient_fileName_input;
+
+        $.each(title_array, function(element_key, title) {
+
+            if (existGetMes(element_array[element_key], title) != '') {
+                console.log('進入');
+                var $obj = existGetMes(element_array[element_key], title);
+                $content.append($obj);
+            }
+        });
+        
+        console.log('$content.html():'+$content.html() != '');
+        
+        $content.html() != '' ?
+            BootstrapDialog.show({
+                title: '警告訊息',
+                message: function(dialog) {
+                    return $content;
+                },
+                buttons: [{
+                    label: '確認',
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }]
+            }) : isValid = true;
+            
+        return isValid;
+    }
+    
+    function dataValidator() {
+        var isValid = false;
+
+        function checkVal(obj) {
+            var mes = '';
+            $.each(obj, function(index, input) {
+                if (!$(input).closest('div').hasClass("hidden")) {
+                    if ($(input).val() == '') {
+                        $mes = $('<div/>').append(
+                            $('<p/>', {
+                                'text': '● ' + input.placeholder + ' 尚未填寫'
+                            }));
+                        mes += $mes.html();
+                    }
+                }
+            });
+            return mes;
+        }
+
+        var $heartBeatClient_inputs = $('input', $heartBeatClient);
+        var $connectionFactory_inputs = $('input', $connectionFactory);
+        var $queueOrigin_inputs = $('input', $queueOrigin);
+        var $queueDestination_inputs = $('input', $queueDestination);
+        var $webService_inputs = $('input', $webService);
+
+        function existGetMes(obj, title) {
+            var vaild_mes = '';
+            var $obj = '';
+
+            vaild_mes = checkVal(obj);
+
+            if (vaild_mes != '') {
+                var $obj =
+                    $('<div/>', {
+                        'class': 'alert alert-danger'
+                    }).append(
+                        $('<strong/>', {
+                            'text': title,
+                            "css": {
+                                'font-size': '18px'
+                            }
+                        }),
+                        vaild_mes
+                    );
+            }
+            return $obj;
+        }
+
+        var $content =
+            $('<div/>', {
+                'css': {
+                    'height': '250px',
+                    'overflow': 'auto'
+                }
+            });
+
+        var title_array = {};
+        title_array['$heartBeatClient_inputs'] = '心跳協議';
+        title_array['$connectionFactory_inputs'] = '資料庫連線';
+        title_array['$queueOrigin_inputs'] = '來源佇列';
+        title_array['$queueDestination_inputs'] = '目的佇列';
+        title_array['$webService_inputs'] = 'Web Service';
+
+        var element_array = {};
+        element_array['$heartBeatClient_inputs'] = $heartBeatClient_inputs;
+        element_array['$connectionFactory_inputs'] = $connectionFactory_inputs;
+        element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
+        element_array['$queueDestination_inputs'] = $queueDestination_inputs;
+        element_array['$webService_inputs'] = $webService_inputs;
+
+        $.each(title_array, function(element_key, title) {
+
+            if (existGetMes(element_array[element_key], title) != '') {
+                var $obj = existGetMes(element_array[element_key], title);
+                $content.append($obj);
+            }
+        });
+        
+        $content.html() != '' ?
+            BootstrapDialog.show({
+                title: '警告訊息',
+                message: function(dialog) {
+                    return $content;
+                },
+                buttons: [{
+                    label: '確認',
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }]
+            }) : isValid = true;
+            
+        return isValid;
+    }
+    
+    $('#imaginary_container button[name=btn-delete]').click(function(event) {
+
+        BootstrapDialog.show({
+            title: '刪除',
+            message: function(dialog) {
+
+                var $content =
+                    $('<div/>', {
+                        'id': 'configDeleteDialog'
+                    }).append(
+                        buildInput('名稱', '要刪除的設定檔名稱', 'fileName')
+                    );
+
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    var $button = this;
+                    var fileName = $('#configDeleteDialog input[name=fileName]').val();
+
+                    $.ajax({
+                        type: "DELETE",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2w/delete/" + fileName,
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
         var fileName = $('#imaginary_container input[name=fileName]').val();
-        
+
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -62,7 +296,6 @@ $(document).ready(function() {
                             }
                         }] : [{
                             label: '確認',
-                            id: 'search-dialog-confirm-btn',
                             action: function(dialog) {
                                 $heartBeatClient.find('input[name=fileName]').val(fileName);
                                 var $button = this;
@@ -116,22 +349,20 @@ $(document).ready(function() {
                                     });
                                 }
 
+                                $("button[name=btn-update]").removeClass("hidden");
 
-                                $("button[name=btn-save]").text('修改設定檔')
-                                
                                 $button.enable();
                                 $button.stopSpin();
                                 dialog.setClosable(true);
                                 dialog.setMessage('匯入作業完成');
-                                
-                                $('#search-dialog-confirm-btn').click(function(event) {
+
+                                $button.closest('div').remove();
+                                setTimeout(function() {
                                     dialog.close();
-                                });
-                                $('#search-dialog-cancel-btn').remove();
+                                }, 2000);
                             }
                         }, {
                             label: '取消',
-                            id: 'search-dialog-cancel-btn',
                             action: function(dialog) {
                                 dialog.close();
                             }
@@ -170,9 +401,9 @@ $(document).ready(function() {
         $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
-        
+
         $xmlConverterTable.clear().draw();
-        
+
         $xmlConverterTable.rows.add([{
             "source": 'ProductId',
             "destination": 'c_product_id',
@@ -232,7 +463,7 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
-
+                    
                     var $dialog = $('#xmlConverterDataDialog');
                     var $source = $('#xmlConverterDataDialog').find('input[name=source]');
                     var $destination = $('#xmlConverterDataDialog').find('input[name=destination]');
@@ -271,16 +502,10 @@ $(document).ready(function() {
         initComplete: function(settings, json) {
             $('div .dt-buttons').css({
                 'float': 'right'
-                //                'margin-left': '10px'
+            }, {
+                'margin-bottom': '10px'
             });
-            //            $('div .dt-buttons a').css('margin-left', '10px');
         },
-        //		ajax : {
-        //			url : "stockMod.do",
-        //			dataSrc : "",
-        //			type : "POST",
-        //			data : parameter
-        //		},
         columns: [{
                 "title": "勾選",
                 "data": null,
@@ -338,47 +563,17 @@ $(document).ready(function() {
             searchable: false,
             orderable: false,
             render: function(data, type, row) {
+                $button = $('<button/>', {
+                    'type': 'button',
+                    'class': 'btn btn-primary',
+                    'text': '修改',
+                    'name': 'dt-btn-update'
+                });
 
-                //            	var options =
-                //                    $('<div/>', {
-                //                        'class': 'btn-group'
-                //                    });
-                //            	
-                //            	
-                //            	var $button = $('<button/>', {
-                //                    'type': 'button',
-                //                    'class': 'btn btn-primary dropdown-toggle',
-                //                    'data-toggle': 'dropdown',
-                //                    'name': 'btn-function',
-                //                    'text': '功能'
-                //                }).append($('<span/>', {
-                //                    'class': 'caret',
-                //                    'role': 'menu'
-                //                }));
-                //            	
-                //
-                //            	var $ul = $('<ul/>', {
-                //                    'class': 'dropdown-menu',
-                //                    'role': 'menu'
-                //                }).append($('<li/>').append($('<a/>', {
-                //                    'href': '#',
-                //                    'text': '刪除'
-                //                })),$('<li/>').append($('<a/>', {
-                //                    'href': '#',
-                //                    'text': '新增'
-                //                })));
-                //            	
-                //            	options.append($button,$ul);
-                //                
-                //                return options.html();
                 var options =
                     $('<div/>', {
                         'class': 'btn-group'
-                    }).append($('<button/>', {
-                        'type': 'button',
-                        'class': 'btn btn-primary',
-                        'text': '功能'
-                    }));
+                    }).append($button);
 
                 return options.html();
             }
@@ -394,7 +589,7 @@ $(document).ready(function() {
 
                 if ($chkbox_checked.length === 0) {
                     console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
-                    //         		  $chkbox_all.checked = true;
+
                     $chkbox_all.each(function() {
                         $(this).prop("checked", true);
                         $(this).addClass("toggleon");
@@ -413,61 +608,48 @@ $(document).ready(function() {
                         $(this).addClass("toggleon");
                     });
                 }
-                //                selectCount++;
-                //                console.log('selectCount: ' + selectCount);
-                //                var $dtMaster = $('#stockmod-master-table');
-                //                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]');
-                //
-                //                console.log('selectCount % 2 : ' + selectCount % 2);
-                //
-                //
-                //                selectCount % 2 != 1 ?
-                //                    $checkboxs.each(function() {
-                //                        $(this).prop("checked", false);
-                //                        $(this).removeClass("toggleon");
-                //                    }) :
-                //                    $checkboxs.each(function() {
-                //                        $(this).prop("checked", true);
-                //                        $(this).addClass("toggleon");
-                //                    });
             }
         }, {
             text: '刪除',
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
-                var $dtMaster = $('#stockmod-master-table');
-                var delArr = '';
 
-                var $checkboxs = $dtMaster.find('input[name=checkbox-group-select]:checked');
+                var $checkedboxs = $('#xmlConverterTable input[name=checkbox-group-select]:checked');
 
-                console.log($checkboxs);
-
-                if ($checkboxs.length == 0) {
-                    alert('請至少選擇一筆資料');
+                if ($checkedboxs.length == 0) {
+                    BootstrapDialog.show({
+                        title: '提示訊息',
+                        message: '請至少選擇一筆資料',
+                        buttons: [{
+                            label: '確認',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }]
+                    });
                     return false;
                 }
-
-                var dialogId = "dialog-data-process";
-                var formId = "dialog-form-data-process";
-                var btnTxt_1 = "批次刪除";
-                var btnTxt_2 = "取消";
-                var oWidth = 'auto';
-                var url = 'stockMod.do';
-
-                $checkboxs.each(function() {
-                    delArr += this.id + ',';
+                BootstrapDialog.show({
+                    title: '提示訊息',
+                    message: '是否確認刪除資料，總共' + $checkedboxs.length + '筆',
+                    buttons: [{
+                        label: '確認',
+                        action: function(dialog) {
+                            $checkedboxs.each(function() {
+                                $xmlConverterTable
+                                    .row($(this).parents('tr'))
+                                    .remove()
+                                    .draw();
+                            });
+                            dialog.close();
+                        }
+                    }, {
+                        label: '取消',
+                        action: function(dialog) {
+                            dialog.close();
+                        }
+                    }]
                 });
-
-                delArr = delArr.slice(0, -1);
-
-                console.log("delArr:" + delArr);
-
-                initDeleteDialog();
-                drawDialog
-                    (dialogId, url, oWidth, formId, btnTxt_1, btnTxt_2)
-                    .data("stockmodId", delArr)
-                    .dialog("option", "title", "刪除" + $checkboxs.length + "筆資料")
-                    .dialog("open");
             }
         }, {
             text: '新增',
@@ -519,29 +701,73 @@ $(document).ready(function() {
         }]
     });
 
-    $("button[name=btn-save]").click(function(event) {
-        //    	var data = $xmlConverterTable.rows().data();
+    $("#xmlConverterTable").on("click", 'button[name=dt-btn-update]', function() {
+        $button.closest('div').remove();
+        var row = this.closest("tr");
+        var data = $xmlConverterTable.row(row).data();
+
+        console.log(data);
+
+        var $source = buildInput('來源', '來源欄位', 'source');
+        var $destination = buildInput('目標', '目標欄位', 'destination');
+        var $isAttribute = buildInput('屬性', '是否為屬性', 'isAttribute');
+        var $description = buildInput('描述', '描述', 'description');
+
+        $('input', $source).val(data.source);
+        $('input', $destination).val(data.destination);
+        $('input', $isAttribute).val(data.isAttribute);
+        $('input', $description).val(data.description);
+
+        var $content =
+            $('<div/>').append(
+                $source,
+                $destination,
+                $isAttribute,
+                $description
+            );
 
         BootstrapDialog.show({
-            title: '確認是否送出',
+            title: '修改',
             message: function(dialog) {
-
-                var $div = buildInput('名稱', '設定檔名稱', 'fileName');
-                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
-
-                var $content =
-                    $('<div/>', {
-                        'id': 'btnSaveDialog'
-                    }).append(
-                        $div
-                    );
-
                 return $content;
             },
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
-                    var fileName = $('#btnSaveDialog input[name=fileName]').val();
+
+                    data.source = $('input', $source).val();
+                    data.destination = $('input', $destination).val();
+                    data.isAttribute = $('input', $isAttribute).val();
+                    data.description = $('input', $description).val();
+
+                    $xmlConverterTable.row(row)
+                        .data(data)
+                        .draw()
+                    dialog.close();
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+
+    });
+
+    $("button[name=btn-update]").click(function(event) {
+
+        BootstrapDialog.show({
+            title: '確認是否修改',
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                	
+                    if( !fileNameDataValidator() ) return false;
+                    
+                    if( !dataValidator() ) return false;
+                    
+                    var fileName = $heartBeatClient.find('input[name=fileName]').val();
                     var $button = this;
                     $button.disable();
                     $button.spin();
@@ -552,11 +778,6 @@ $(document).ready(function() {
                         q2w = {},
                         val = {};
 
-                    //                    vo['fileName'] = $Q2W.find('input[name=fileName]').val();
-
-                    //Heart BeatClient
-                    //val['beatID'] = $heartBeatClient.find('input[name=beatID]').val(fileName).val();
-                    //val['fileName'] = $heartBeatClient.find('input[name=fileName]').val(fileName).val();
                     val['beatID'] = fileName;
                     val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
@@ -619,8 +840,144 @@ $(document).ready(function() {
                     vo['xmlConverter'] = xmlConverter;
 
 
+                    console.log('update');
                     console.log(JSON.stringify(vo));
                     //                    return false;
+                    $.ajax({
+                        type: "PUT",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2w",
+                        data: JSON.stringify(vo),
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+
+    $("button[name=btn-save]").click(function(event) {
+
+        var $div;
+        
+        BootstrapDialog.show({
+            title: '確認是否送出',
+            message: function(dialog) {
+            	$div = buildInput('名稱', '設定檔名稱', 'fileName');
+                $('input[name=fileName]', $div).val( $heartBeatClient.find('input[name=fileName]').val() );
+                
+                var $content =
+                    $('<div/>', {
+                        'id': 'btnSaveDialog'
+                    }).append(
+                        $div
+                    );
+
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    $heartBeatClient.find('input[name=fileName]').val( $('input[name=fileName]', $div).val() );
+                	
+                    if( !fileNameDataValidator() ) return false;
+                    
+                    if( !dataValidator() ) return false;
+                    
+                    var fileName = $('#btnSaveDialog input[name=fileName]').val();
+                    var $button = this;
+                    $button.disable();
+                    $button.spin();
+                    dialog.setClosable(false);
+                    dialog.setMessage('進行中');
+
+                    var vo = {},
+                        q2w = {},
+                        val = {};
+
+                    val['beatID'] = fileName;
+                    val['fileName'] = fileName;
+                    val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
+                    val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
+                    q2w['heartBeatClient'] = val;
+                    $heartBeatClient.find('input[name=beatID]').val('');
+                    $heartBeatClient.find('input[name=fileName]').val('');
+                    val = {};
+
+                    //Connection Factory
+                    val['username'] = $connectionFactory.find('input[name=username]').val();
+                    val['password'] = $connectionFactory.find('input[name=password]').val();
+                    val['host'] = $connectionFactory.find('input[name=host]').val();
+                    val['port'] = $connectionFactory.find('input[name=port]').val();
+                    q2w['connectionFactory'] = val;
+                    val = {};
+
+                    //Queue OriginData
+                    val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
+                    q2w['queueOrigin'] = val;
+                    val = {};
+
+                    //Queue Destination
+                    val['queueName'] = $queueDestination.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueDestination.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueDestination.find('input[name=routingKey]').val();
+                    q2w['queueDestination'] = val;
+                    val = {};
+
+                    //Web Service
+                    val['url'] = $webService.find('input[name=url]').val();
+                    val['type'] = $webService.find('input[name=type]').val();
+                    val['format'] = $webService.find('input[name=format]').val();
+                    q2w['webService'] = val;
+                    val = {};
+                    vo['config'] = q2w;
+
+                    //XML Converter
+                    var cells = $xmlConverterTable.cells().nodes();
+                    var $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
+
+                    var xmlConverter = [];
+
+                    $checkboxs.each(function(index, checkbox) {
+
+                        var row = jQuery(checkbox).closest('tr');
+                        var data = $("#xmlConverterTable").dataTable().fnGetData(row);
+
+                        var fieldVal = {};
+                        fieldVal['source'] = data.source;
+                        fieldVal['destination'] = data.destination;
+                        fieldVal['description'] = data.description;
+                        fieldVal['isAttribute'] = data.isAttribute;
+
+                        xmlConverter.push(fieldVal);
+                    });
+                    vo['xmlConverter'] = xmlConverter;
+
+                    console.log('insert');
+                    console.log(JSON.stringify(vo));
                     $.ajax({
                         type: "POST",
                         datatype: "json",
@@ -632,6 +989,10 @@ $(document).ready(function() {
                             $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage(data);
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
                         },
                         error: function(e) {
                             $button.enable();
