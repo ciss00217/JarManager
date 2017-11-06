@@ -98,7 +98,7 @@
 										<li class="active sais-tab"><a data-toggle="tab"
 											role="tab" data-target="#heartBeatClientData">心跳協議</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#connectionFactoryData">資料庫連線</a></li>
+											data-target="#connectionFactoryData">佇列連線</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueOriginData">來源佇列</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
