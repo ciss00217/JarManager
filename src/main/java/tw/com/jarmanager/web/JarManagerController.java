@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
+import tw.com.jarmanager.api.vo.HeartBeatConnectionFactoryVO;
+import tw.com.jarmanager.api.vo.HeartBeatDestinationVO;
+import tw.com.jarmanager.api.vo.JarManagerAPIXMLVO;
 import tw.com.jarmanager.api.vo.JarProjectVO;
+import tw.com.jarmanager.api.vo.ManagerVO;
 import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.JarXMLUtil;
 
@@ -167,6 +171,57 @@ public class JarManagerController {
 		model.addObject("jarProjectVOList", jarProjectVOList);
 
 		return model;
+
+	}
+	
+	
+	@RequestMapping(value = "/JarManagerSetUp", method = RequestMethod.GET)
+	public ModelAndView JarManagerSetUp() {
+		JarManagerAPIXMLVO  jarManagerAPIXMLVO = jarManagerService.getJarManagerAPIXMLVO();
+		HeartBeatConnectionFactoryVO  heartBeatConnectionFactoryVO =jarManagerAPIXMLVO.getHeartBeatConnectionFactoryVO();
+		HeartBeatDestinationVO heartBeatDestinationVO=jarManagerAPIXMLVO.getHeartBeatDestinationVO();
+		ManagerVO  managerVO =jarManagerAPIXMLVO.getManagerVO();
+
+		ModelAndView model = new ModelAndView();
+		model.setViewName("jarManagerSetUp");
+		model.addObject("heartBeatConnectionFactoryVO", heartBeatConnectionFactoryVO);
+		model.addObject("heartBeatDestinationVO", heartBeatDestinationVO);
+		model.addObject("managerVO", managerVO);
+
+		return model;
+
+	}
+	
+	@RequestMapping(value = "/JarManagerSetUp", method = RequestMethod.PUT)
+	public @ResponseBody boolean putJarManagerSetUp(@RequestBody JarManagerAPIXMLVO jarManagerAPIXMLVO) {
+		/*
+		 * JarManagerAPIXMLVO jarManagerAPIXMLVO =
+		 * jarManagerService.getJarManagerAPIXMLVO();
+		 * HeartBeatConnectionFactoryVO heartBeatConnectionFactoryVO
+		 * =jarManagerAPIXMLVO.getHeartBeatConnectionFactoryVO();
+		 * HeartBeatDestinationVO
+		 * heartBeatDestinationVO=jarManagerAPIXMLVO.getHeartBeatDestinationVO()
+		 * ; ManagerVO managerVO =jarManagerAPIXMLVO.getManagerVO();
+		 * 
+		 * ModelAndView model = new ModelAndView();
+		 * model.setViewName("jarManagerSetUp");
+		 * model.addObject("heartBeatConnectionFactoryVO",
+		 * heartBeatConnectionFactoryVO);
+		 * model.addObject("heartBeatDestinationVO", heartBeatDestinationVO);
+		 * model.addObject("managerVO", managerVO);
+		 */
+
+		if (jarManagerService.jarManagerIsRun()) {
+			return false;
+		} else {
+			try {
+				return jarManagerService.JarManagerSetUpXml(jarManagerAPIXMLVO);
+			} catch (IOException | JMSException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			}
+		}
 
 	}
 }

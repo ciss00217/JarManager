@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
 import tw.com.jarmanager.api.service.JarManagerAPIService;
+import tw.com.jarmanager.api.vo.JarManagerAPIXMLVO;
 import tw.com.jarmanager.api.vo.JarProjectVO;
 
 @Service
@@ -97,6 +98,17 @@ public class JarManagerService {
 		return jarProjectVOList;
 
 	}
+	
+	
+	public JarManagerAPIXMLVO getJarManagerAPIXMLVO() {
+		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
+		String xmlpath = (String) context.getBean("jarManagerPath");
+		JarManagerAPIService.setXmlFilePath(xmlpath);
+
+		JarManagerAPIXMLVO jarManagerAPIXMLVO = JarManagerAPIService.getJarManagerAPIXMLVO();
+
+		return jarManagerAPIXMLVO;
+	}
 
 	public boolean addJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
@@ -122,6 +134,17 @@ public class JarManagerService {
 		JarManagerAPIService.setXmlFilePath(xmlpath);
 
 		return JarManagerAPIService.updateJarProjectVOXml(jarProjectVO);
+	}
+	
+	public boolean JarManagerSetUpXml(JarManagerAPIXMLVO jarManagerAPIXMLVO) throws IOException, JMSException {
+		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
+		String xmlpath = (String) context.getBean("jarManagerPath");
+		JarManagerAPIService.setXmlFilePath(xmlpath);
+
+		jarManagerAPIXMLVO.getHeartBeatDestinationVO()
+				.setAmqpQueueName(jarManagerAPIXMLVO.getHeartBeatDestinationVO().getDestinationName());
+		jarManagerAPIXMLVO.getHeartBeatDestinationVO().setAmqp(true);
+		return JarManagerAPIService.jarManagerSetUp(jarManagerAPIXMLVO);
 	}
 
 }

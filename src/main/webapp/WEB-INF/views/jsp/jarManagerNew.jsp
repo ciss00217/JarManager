@@ -49,8 +49,8 @@
 			<a class="navbar-brand" href="home">JarManager</a>
 		</div>
 		<ul class="nav navbar-nav">
-			<li><a data-toggle="tab" href="/JarManager/JarProjectVOs">管理</a></li>
-			<!-- <li><a data-toggle="tab" href="#menu2">設定</a></li> -->
+			<li><a  href="/JarManager/JarProjectVOs">管理</a></li>
+			<li><a  href="/JarManager/JarManagerSetUp">設定</a></li>
 		</ul>
 	</div>
 
@@ -195,6 +195,8 @@
 <script type="text/javascript">
 	$(function() {
 		
+		
+		
 		$("#insertJarOpen").click(function() {
 			$("#send_jar").val("insert");
 
@@ -203,6 +205,8 @@
 		});
 
 
+		console.log($("#insertJarOpen"));
+		
 		$("#dialogModal .btn_close").click(function() {
 			initDialog();
 		});
