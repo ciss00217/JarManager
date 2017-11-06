@@ -56,9 +56,9 @@
 				</div>
 				<ul class="drawer-nav">
 					<li role="presentation" class="active"><a href="home">Home</a></li>
-					<li role="presentation"><a href="q2w.jsp">Q2W</a></li>
-					<li role="presentation"><a href="q2d.jsp">Q2D</a></li>
-					<li role="presentation"><a href="XmlConverter.jsp">XmlConverter</a></li>
+					<li role="presentation"><a href="q2w">Q2W</a></li>
+					<li role="presentation"><a href="q2d">Q2D</a></li>
+					<li role="presentation"><a href="JarProjectVOs">JarManager</a></li>
 				</ul>
 			</div>
 		</div>
