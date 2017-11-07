@@ -155,6 +155,11 @@
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
+													class="form-control" name="virtualHost" placeholder="虛擬主機">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-link"></i></span> <input type="text"
 													class="form-control" name="port" placeholder="埠號">
 											</div>

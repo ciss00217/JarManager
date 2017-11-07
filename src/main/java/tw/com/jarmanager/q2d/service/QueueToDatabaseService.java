@@ -1,4 +1,4 @@
-package tw.com.jarmanager.q2w.service;
+package tw.com.jarmanager.q2d.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,9 +36,9 @@ import tw.com.jarmanager.util.JarXMLUtil;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Service
-public class QueueToWebServiceService {
+public class QueueToDatabaseService {
 
-	private final static Logger logger = LoggerFactory.getLogger(QueueToWebServiceService.class);
+	private final static Logger logger = LoggerFactory.getLogger(QueueToDatabaseService.class);
 
 	public String removeAllConfig(String fileName) throws JAXBException {
 
@@ -179,7 +179,7 @@ public class QueueToWebServiceService {
 		heartBeatConnectionFactory.setPassword(connectionFactory.getPassword());
 		heartBeatConnectionFactory.setPort(connectionFactory.getPort());
 		heartBeatConnectionFactory.setUsername(connectionFactory.getUsername());
-		heartBeatConnectionFactory.setVirtualHost(connectionFactory.getVirtualHost());
+		heartBeatConnectionFactory.setVirtualHost("/");
 
 		heartBeatClientVO.setBeatID(heartBeatClient.getBeatID());
 		heartBeatClientVO.setTimeSeries(heartBeatClient.getTimeSeries());
