@@ -384,7 +384,7 @@ $(document).ready(function() {
         $heartBeatClient.find('input[name=beatID]').val('test');
         $heartBeatClient.find('input[name=fileName]').val('test');
         $heartBeatClient.find('input[name=timeSeries]').val('60000');
-        $heartBeatClient.find('input[name=jarFilePath]').val('D:\jarFilePath\Q2W.jar');
+        $heartBeatClient.find('input[name=jarFilePath]').val('D:\\jarFilePath\\Q2W.jar');
 
         $connectionFactory.find('input[name=username]').val('admin');
         $connectionFactory.find('input[name=password]').val('password');
@@ -445,51 +445,6 @@ $(document).ready(function() {
         return $div;
     }
 
-    $("#xmlConverterData button[name=btn-create]").click(function(event) {
-        BootstrapDialog.show({
-            title: '新增',
-            message: function(dialog) {
-
-                var $content =
-                    $('<div/>', {
-                        'id': 'xmlConverterDataDialog'
-                    }).append(
-                        buildInput('來源', '來源欄位', 'source'),
-                        buildInput('目標', '目標欄位', 'destination'),
-                        buildInput('屬性', '是否為屬性', 'isAttribute'),
-                        buildInput('描述', '描述', 'description')
-                    );
-
-                return $content;
-            },
-            buttons: [{
-                label: '確認',
-                action: function(dialog) {
-                    
-                    var $dialog = $('#xmlConverterDataDialog');
-                    var $source = $('#xmlConverterDataDialog').find('input[name=source]');
-                    var $destination = $('#xmlConverterDataDialog').find('input[name=destination]');
-                    var $isAttribute = $('#xmlConverterDataDialog').find('input[name=isAttribute]');
-                    var $description = $('#xmlConverterDataDialog').find('input[name=description]');
-
-                    $xmlConverterTable.row.add({
-                        "source": $source.val(),
-                        "destination": $destination.val(),
-                        "isAttribute": $isAttribute.val(),
-                        "description": $description.val()
-                    }).draw();
-
-                    dialog.close();
-                }
-            }, {
-                label: '取消',
-                action: function(dialog) {
-                    dialog.close();
-                }
-            }]
-        });
-    });
-
     $xmlConverterTable = $("#xmlConverterTable").DataTable({
         dom: "Blr<t>ip",
         scrollY: "50th",
@@ -541,7 +496,6 @@ $(document).ready(function() {
             searchable: false,
             orderable: false,
             render: function(data, type, row) {
-                var stockmod_id = row.stockmod_id;
 
                 var input = document.createElement("INPUT");
                 input.type = 'checkbox';
@@ -560,7 +514,6 @@ $(document).ready(function() {
                 return options.html();
             }
         }, {
-            //功能
             targets: -1,
             searchable: false,
             orderable: false,
@@ -657,31 +610,31 @@ $(document).ready(function() {
             text: '新增',
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
+            	
+            	var $dialog;
+            	
                 BootstrapDialog.show({
                     title: '新增',
                     message: function(dialog) {
 
-                        var $content =
-                            $('<div/>', {
-                                'id': 'xmlConverterDataDialog'
-                            }).append(
+                    	$dialog =
+                            $('<div/>').append(
                                 buildInput('來源', '來源欄位', 'source'),
                                 buildInput('目標', '目標欄位', 'destination'),
                                 buildInput('屬性', '是否為屬性', 'isAttribute'),
                                 buildInput('描述', '描述', 'description')
                             );
 
-                        return $content;
+                        return $dialog;
                     },
                     buttons: [{
                         label: '確認',
                         action: function(dialog) {
 
-                            var $dialog = $('#xmlConverterDataDialog');
-                            var $source = $('#xmlConverterDataDialog').find('input[name=source]');
-                            var $destination = $('#xmlConverterDataDialog').find('input[name=destination]');
-                            var $isAttribute = $('#xmlConverterDataDialog').find('input[name=isAttribute]');
-                            var $description = $('#xmlConverterDataDialog').find('input[name=description]');
+                            var $source = $dialog.find('input[name=source]');
+                            var $destination = $dialog.find('input[name=destination]');
+                            var $isAttribute = $dialog.find('input[name=isAttribute]');
+                            var $description = $dialog.find('input[name=description]');
 
                             $xmlConverterTable.row.add({
                                 "source": $source.val(),

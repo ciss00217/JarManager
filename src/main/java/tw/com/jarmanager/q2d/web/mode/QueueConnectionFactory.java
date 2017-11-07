@@ -2,6 +2,7 @@ package tw.com.jarmanager.q2d.web.mode;
 
 public class QueueConnectionFactory {
 	private String host;
+	private String virtualHost;
 	private String password;
 	private String port;
 	private String username;
@@ -12,6 +13,14 @@ public class QueueConnectionFactory {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	public String getVirtualHost() {
+		return virtualHost;
+	}
+
+	public void setVirtualHost(String virtualHost) {
+		this.virtualHost = virtualHost;
 	}
 
 	public String getPassword() {

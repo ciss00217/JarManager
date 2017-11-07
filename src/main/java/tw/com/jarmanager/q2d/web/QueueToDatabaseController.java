@@ -16,12 +16,8 @@ import com.google.gson.Gson;
 
 import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.q2d.service.QueueToDatabaseService;
-import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
-import tw.com.jarmanager.q2w.web.mode.Config;
-import tw.com.jarmanager.q2w.web.mode.FieldName;
-import tw.com.jarmanager.q2w.web.mode.Q2W;
-import tw.com.jarmanager.q2w.web.mode.XmlConverter;
+import tw.com.jarmanager.q2d.web.mode.Config;
+import tw.com.jarmanager.q2d.web.mode.Q2D;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
@@ -38,68 +34,34 @@ public class QueueToDatabaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
-	public @ResponseBody String dataToFile(@RequestBody Q2W q2w) throws Exception {
+	public @ResponseBody String dataToFile(@RequestBody Q2D q2d) throws Exception {
 
-		String xml = null;
-		String fileName = q2w.getConfig().getHeartBeatClient().getFileName();
-		String mes = "";
+		String xml = null, fileName = null, mes = "";
+		
 		try {
-			String name = fileName + "-q2w-config";
+			fileName = q2d.getConfig().getHeartBeatClient().getFileName();
+		} catch (NullPointerException e) {
+			logger.error("Can not get the file name");
+			return mes;
+		}
+		
+		try {
+			String name = fileName + "-q2d-config";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				xml = service.getObjToXml(q2w.getConfig(), Config.class);
+				xml = service.getObjToXml(q2d.getConfig(), Config.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
-				mes += "[成功] q2w-config.xml\n";
+				mes += "[成功] q2d-config.xml\n";
 			} else {
-				mes += "[已存在] q2w-config.xml\n";
+				mes += "[已存在] q2d-config.xml\n";
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			mes += "[失敗] q2w-config.xml\n";
-		}
-		try {
-			String name = fileName + "-HeatBeatClinetBeans";
-
-			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
-				xml = service.getObjToXml(clazz, Clazz.class);
-				XmlUtil.fileToJarXmlPath(name, false, xml);
-				mes += "[成功] HeatBeatClinetBeans.xml\n";
-			} else {
-				mes += "[已存在] HeatBeatClinetBeans.xml\n";
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			mes += "[失敗] HeatBeatClinetBeans.xml\n";
-		}
-
-		try {
-			mes += service.addJarProjectVOXml(q2w.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
-					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage());
-			mes += "[失敗] JarManagerAPI.xml\n";
+			mes += "[失敗] q2d-config.xml\n";
 		}
-		try {
-			String name = fileName + "-xmlconverter-config";
-
-			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				List<FieldName> xmlConverter = q2w.getXmlConverter();
-
-				Config config = new Config();
-				config.setXmlConverter(xmlConverter);
-
-				xml = service.getObjToXml(config, Config.class);
-				XmlUtil.fileToJarXmlPath(name, false, xml);
-				mes += "[成功] xmlconverter-config.xml\n";
-			} else {
-				mes += "[已存在] xmlconverter-config.xml\n";
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			mes += "[失敗] xmlconverter-config.xml\n";
-		}
+		// String mes = "";
+		// System.out.println(arg0);
 		return mes;
 	}
 
