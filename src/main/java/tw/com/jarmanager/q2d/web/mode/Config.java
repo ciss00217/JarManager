@@ -1,5 +1,6 @@
 package tw.com.jarmanager.q2d.web.mode;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -7,10 +8,13 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import tw.com.jarmanager.q2w.web.mode.FieldName;
 
 @XmlRootElement
-public class Config {
+public class Config implements Serializable{
 	@XmlElement(name = "queueConnectionFactory")
 	private QueueConnectionFactory queueConnectionFactory;
 	@XmlElement(name = "databaseConnectionFactory")
@@ -20,17 +24,19 @@ public class Config {
 	@XmlElement(name = "HeartBeatClient")
 	private HeartBeatClient heartBeatClient;
 	
-	//@XmlElement(name = "Insert")
-	//private Insert insert;
-	@XmlElementWrapper(name = "Insert")
-	 @XmlElement(name = "Table")
-	private List<Table> insert;
+	@XmlElement(name = "Insert")
+    @SerializedName("insert")
+    @Expose
+	private Insert insert;
+//	@XmlElementWrapper(name = "Insert")
+//	 @XmlElement(name = "Table")
+//	private List<Table> insert;
 //	@XmlElement(name = "Delete",type=Delete.class)
 //	private List<Object> delete;
-	private List<Object> delete;
+	private Delete delete;
 //	@XmlElement(name = "Update",type=Update.class)
 //	private List<Object> update;
-	private List<Object> update;
+	private Update update;
 
 	@XmlTransient
 	public QueueConnectionFactory getQueueConnectionFactory() {
@@ -69,29 +75,29 @@ public class Config {
 	}
 
 	@XmlTransient
-	public List<Table> getInsert() {
+	public Insert getInsert() {
 		return insert;
 	}
 
-	public void setInsert(List<Table> insert) {
+	public void setInsert(Insert insert) {
 		this.insert = insert;
 	}
 
 	@XmlTransient
-	public List<Object> getDelete() {
+	public Delete getDelete() {
 		return delete;
 	}
 
-	public void setDelete(List<Object> delete) {
+	public void setDelete(Delete delete) {
 		this.delete = delete;
 	}
 
 	@XmlTransient
-	public List<Object> getUpdate() {
+	public Update getUpdate() {
 		return update;
 	}
 
-	public void setUpdate(List<Object> update) {
+	public void setUpdate(Update update) {
 		this.update = update;
 	}
 

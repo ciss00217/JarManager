@@ -12,11 +12,11 @@ public class Delete {
 	private List<Table> table;
 
 	@XmlTransient
-	public List<Table> getTables() {
+	public List<Table> getTable() {
 		return table;
 	}
 
-	public void setTables(List<Table> table) {
+	public void setTable(List<Table> table) {
 		this.table = table;
 	}
 }

@@ -174,7 +174,7 @@ $(document).ready(function() {
                     val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
                     val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
-                    q2d['heartBeatClient'] = val;
+                    //q2d['heartBeatClient'] = val;
                     val = {};
 
                     //Database ConnectionFactory
@@ -182,7 +182,7 @@ $(document).ready(function() {
                     val['dbPassword'] = $databaseConnectionFactory.find('input[name=dbPassword]').val();
                     val['dbURL'] = $databaseConnectionFactory.find('input[name=dbURL]').val();
                     val['jdbcDriver'] = $databaseConnectionFactory.find('input[name=jdbcDriver]').val();
-                    q2d['databaseConnectionFactory'] = val;
+//                    q2d['databaseConnectionFactory'] = val;
                     val = {};
 
                     //Queue ConnectionFactory
@@ -191,17 +191,18 @@ $(document).ready(function() {
                     val['host'] = $queueConnectionFactory.find('input[name=host]').val();
                     val['virtualHost'] = $queueConnectionFactory.find('input[name=virtualHost]').val();
                     val['port'] = $queueConnectionFactory.find('input[name=port]').val();
-                    q2d['queueConnectionFactory'] = val;
+//                    q2d['queueConnectionFactory'] = val;
                     val = {};
 
                     //Queue OriginData
                     val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
                     val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
                     val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
-                    q2d['queueOrigin'] = val;
+//                    q2d['queueOrigin'] = val;
                     val = {};
 
-var test = {};
+                    var Table = {};
+                    
                     //Insert Table
                     cells = $insertTable.cells().nodes();
                     $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
@@ -221,9 +222,7 @@ var test = {};
 
                         var tmp = [];
                         var table = {};
-                        var name = {};
-                        name['name'] = tableName;
-                        tmp.push(name);
+                        table['name'] = tableName;
 
                         $checkboxs.each(function(index, checkbox) {
 
@@ -242,20 +241,20 @@ var test = {};
                                     fieldVal['destination'] = data.destination;
                                     fieldVal['type'] = data.type;
 
-                                    tableDetail['field'] = fieldVal;
-                                    tmp.push(tableDetail);
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
                                 }
                             }
 
                         });
-                        table['table'] = tmp;
                         tables.push(table);
                     });
-                    
-                    q2d['insert'] = tables;
+                    Table['table'] = tables;
+                    q2d['insert'] = Table;
                     
                     tables = [];
                     tableNames = [];
+                    Table = {};
                     
                     //Update Relation Table
                     
@@ -282,14 +281,12 @@ var test = {};
 
                         var tmp = [];
                         var table = {};
-                        var name = {};
-                        name['name'] = tableName;
-                        tmp.push(name);
-
-                        console.log('tableName: '+tableName);
                         var con = {};
-                        con['condition'] = condition[tableName];
-                        tmp.push(con);
+                        Table = {};
+                        
+                        table['name'] = tableName;
+
+                        table['condition'] = condition[tableName];
                         
                         $checkboxs.each(function(index, checkbox) {
 
@@ -307,22 +304,22 @@ var test = {};
                                     fieldVal['source'] = data.source;
                                     fieldVal['destination'] = data.destination;
                                     fieldVal['type'] = data.type;
-
-                                    tableDetail['field'] = fieldVal;
-                                   
-                                    tmp.push(tableDetail);
+                                    
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
                                 }
                             }
 
                         });
-                        table['table'] = tmp;
                         tables.push(table);
                     });
 
-                    q2d['update'] = tables;
+                    Table['table'] = tables;
+                    q2d['update'] = Table;
                     
                     tables = [];
                     tableNames = [];
+                    Table = {};
 
                     //Delete Table
                     cells = $deleteTable.cells().nodes();
@@ -343,9 +340,7 @@ var test = {};
 
                         var tmp = [];
                         var table = {};
-                        var name = {};
-                        name['name'] = tableName;
-                        tmp.push(name);
+                        table['name'] = tableName;
 
                         $checkboxs.each(function(index, checkbox) {
 
@@ -364,20 +359,21 @@ var test = {};
                                     fieldVal['destination'] = data.destination;
                                     fieldVal['type'] = data.type;
 
-                                    tableDetail['field'] = fieldVal;
-                                    tmp.push(tableDetail);
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
                                 }
                             }
 
                         });
-                        table['table'] = tmp;
                         tables.push(table);
                     });
-                    
-                    q2d['delete'] = tables;
+
+                    Table['table'] = tables;
+                    q2d['delete'] = Table;
                     
                     tables = [];
                     tableNames = [];
+                    Table = {};
                     
                     vo['config'] = q2d;
 
@@ -393,7 +389,8 @@ var test = {};
                             $button.enable();
                             $button.stopSpin();
                             dialog.setClosable(true);
-                            dialog.setMessage(data);
+                            dialog.setMessage(""+JSON.stringify(data));
+//                            dialog.setMessage(data);
                             $button.closest('div').remove();
                             setTimeout(function() {
                                 dialog.close();
