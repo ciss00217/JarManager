@@ -1,20 +1,11 @@
 package tw.com.jarmanager.q2d.web.mode;
 
-import java.io.Serializable;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import tw.com.jarmanager.q2w.web.mode.FieldName;
-
 @XmlRootElement
-public class Config implements Serializable{
+public class Config {
 	@XmlElement(name = "queueConnectionFactory")
 	private QueueConnectionFactory queueConnectionFactory;
 	@XmlElement(name = "databaseConnectionFactory")
@@ -23,19 +14,11 @@ public class Config implements Serializable{
 	private QueueOrigin queueOrigin;
 	@XmlElement(name = "HeartBeatClient")
 	private HeartBeatClient heartBeatClient;
-	
 	@XmlElement(name = "Insert")
-    @SerializedName("insert")
-    @Expose
 	private Insert insert;
-//	@XmlElementWrapper(name = "Insert")
-//	 @XmlElement(name = "Table")
-//	private List<Table> insert;
-//	@XmlElement(name = "Delete",type=Delete.class)
-//	private List<Object> delete;
+	@XmlElement(name = "Delete")
 	private Delete delete;
-//	@XmlElement(name = "Update",type=Update.class)
-//	private List<Object> update;
+	@XmlElement(name = "Update")
 	private Update update;
 
 	@XmlTransient

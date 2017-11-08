@@ -174,7 +174,7 @@ $(document).ready(function() {
                     val['fileName'] = fileName;
                     val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
                     val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
-                    //q2d['heartBeatClient'] = val;
+                    q2d['heartBeatClient'] = val;
                     val = {};
 
                     //Database ConnectionFactory
@@ -182,7 +182,7 @@ $(document).ready(function() {
                     val['dbPassword'] = $databaseConnectionFactory.find('input[name=dbPassword]').val();
                     val['dbURL'] = $databaseConnectionFactory.find('input[name=dbURL]').val();
                     val['jdbcDriver'] = $databaseConnectionFactory.find('input[name=jdbcDriver]').val();
-//                    q2d['databaseConnectionFactory'] = val;
+                    q2d['databaseConnectionFactory'] = val;
                     val = {};
 
                     //Queue ConnectionFactory
@@ -191,14 +191,14 @@ $(document).ready(function() {
                     val['host'] = $queueConnectionFactory.find('input[name=host]').val();
                     val['virtualHost'] = $queueConnectionFactory.find('input[name=virtualHost]').val();
                     val['port'] = $queueConnectionFactory.find('input[name=port]').val();
-//                    q2d['queueConnectionFactory'] = val;
+                    q2d['queueConnectionFactory'] = val;
                     val = {};
 
                     //Queue OriginData
                     val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
                     val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
                     val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
-//                    q2d['queueOrigin'] = val;
+                    q2d['queueOrigin'] = val;
                     val = {};
 
                     var Table = {};
@@ -377,8 +377,6 @@ $(document).ready(function() {
                     
                     vo['config'] = q2d;
 
-                    console.log(JSON.stringify(vo));
-//                    return false;
                     $.ajax({
                         type: "POST",
                         datatype: "json",
@@ -389,8 +387,7 @@ $(document).ready(function() {
                             $button.enable();
                             $button.stopSpin();
                             dialog.setClosable(true);
-                            dialog.setMessage(""+JSON.stringify(data));
-//                            dialog.setMessage(data);
+                            dialog.setMessage(data);
                             $button.closest('div').remove();
                             setTimeout(function() {
                                 dialog.close();
@@ -413,6 +410,180 @@ $(document).ready(function() {
         });
     });
 
+    $('#imaginary_container button[name=btn-delete]').click(function(event) {
+
+    	var $content;
+    	
+        BootstrapDialog.show({
+            title: '刪除',
+            message: function(dialog) {
+
+                $content =
+                    $('<div/>').append(
+                        buildInput('名稱', '要刪除的設定檔名稱', 'fileName')
+                    );
+
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    var $button = this;
+                    var fileName = $('input[name=fileName]', $content ).val();
+
+                    $.ajax({
+                        type: "DELETE",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2d/delete/" + fileName,
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+    
+    $('#imaginary_container button[name=btn-search]').click(function(event) {
+
+        var fileName = $('#imaginary_container input[name=fileName]').val();
+
+        $.ajax({
+            type: "GET",
+            datatype: "json",
+            contentType: "application/json; charset=utf-8",
+            url: "./q2d/search/" + fileName,
+            success: function(data) {
+
+                BootstrapDialog.show({
+                    title: '查詢結果',
+                    message: function(dialog) {
+
+                        var $content;
+                        $content = jQuery.isEmptyObject(data) ? $('<div/>').append($("<p />", {
+                                text: "查無資料"
+                            }))
+
+                            :
+                            $('<div/>').append(
+                                $('<p/>', {
+                                    'text': '已查詢到設定檔，是否匯入資料'
+                                })
+                            );
+                        return $content;
+                    },
+                    buttons:
+
+                        $.isEmptyObject(data) ? [{
+                            label: '取消',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }] : [{
+                            label: '確認',
+                            action: function(dialog) {
+                                var $button = this;
+                                $button.disable();
+                                $button.spin();
+                                dialog.setClosable(false);
+                                dialog.setMessage('進行中');
+
+                                var heartBeatClient = data.config.heartBeatClient;
+                                var connectionFactory = data.config.connectionFactory;
+                                var queueOrigin = data.config.queueOrigin;
+                                var queueDestination = data.config.queueDestination;
+                                var webService = data.config.webService;
+                                var xmlConverter = data.xmlConverter;
+
+                                $heartBeatClient.find('input[name=beatID]').val(heartBeatClient.beatID);
+                                $heartBeatClient.find('input[name=fileName]').val(heartBeatClient.fileName);
+                                $heartBeatClient.find('input[name=timeSeries]').val(heartBeatClient.timeSeries);
+                                $heartBeatClient.find('input[name=jarFilePath]').val(heartBeatClient.jarFilePath);
+
+                                $connectionFactory.find('input[name=username]').val(connectionFactory.username);
+                                $connectionFactory.find('input[name=password]').val(connectionFactory.password);
+                                $connectionFactory.find('input[name=host]').val(connectionFactory.host);
+                                $connectionFactory.find('input[name=port]').val(connectionFactory.port);
+                                $connectionFactory.find('input[name=virtualHost]').val(connectionFactory.virtualHost);
+                                
+                                $queueOrigin.find('input[name=queueName]').val(queueOrigin.queueName);
+                                $queueOrigin.find('input[name=exchangeName]').val(queueOrigin.exchangeName);
+                                $queueOrigin.find('input[name=routingKey]').val(queueOrigin.routingKey);
+
+                                $queueDestination.find('input[name=queueName]').val(queueDestination.queueName);
+                                $queueDestination.find('input[name=exchangeName]').val(queueDestination.exchangeName);
+                                $queueDestination.find('input[name=routingKey]').val(queueDestination.routingKey);
+
+                                $webService.find('input[name=url]').val(webService.url);
+                                $webService.find('input[name=type]').val(webService.type);
+                                $webService.find('input[name=format]').val(webService.format);
+
+                                $xmlConverterTable.clear().draw();
+                                $.each(data.xmlConverter, function(index, item) {
+                                    $xmlConverterTable.rows.add([item]).draw();
+                                });
+                                var $table = $("#xmlConverterTable");
+                                var $chkbox_all = $('input[type="checkbox"]', $table);
+                                var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
+
+                                if ($chkbox_checked.length === 0) {
+                                    console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
+                                    $chkbox_all.each(function() {
+                                        $(this).prop("checked", true);
+                                        $(this).addClass("toggleon");
+                                    });
+                                }
+
+                                $("button[name=btn-update]").removeClass("hidden");
+
+                                $button.enable();
+                                $button.stopSpin();
+                                dialog.setClosable(true);
+                                dialog.setMessage('匯入作業完成');
+
+                                $button.closest('div').remove();
+                                setTimeout(function() {
+                                    dialog.close();
+                                }, 2000);
+                            }
+                        }, {
+                            label: '取消',
+                            action: function(dialog) {
+                                dialog.close();
+                            }
+                        }]
+
+                });
+            },
+            error: function(e) {
+                $button.enable();
+                $button.stopSpin();
+                dialog.setClosable(true);
+                dialog.setMessage('失敗');
+            }
+        });
+    });
+    
     $insertTable = $("#insertTable").DataTable({
         dom: "Blr<t>ip",
         scrollY: "50th",

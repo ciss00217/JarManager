@@ -3,16 +3,17 @@ package tw.com.jarmanager.q2d.web.mode;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "source", "destination", "type" })
-public class Field {
+@XmlRootElement(name = "Condition")
+public class Condition {
 	@XmlElement(name = "Source")
 	private String source;
 	@XmlElement(name = "Destination")
 	private String destination;
 	@XmlElement(name = "Type")
 	private String type;
+	@XmlElement(name = "Relation")
+	private String relation;
 
 	@XmlTransient
 	public String getSource() {
@@ -40,4 +41,14 @@ public class Field {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	@XmlTransient
+	public String getRelation() {
+		return relation;
+	}
+
+	public void setRelation(String relation) {
+		this.relation = relation;
+	}
+
 }

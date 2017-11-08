@@ -266,9 +266,6 @@ $(document).ready(function() {
             contentType: "application/json; charset=utf-8",
             url: "./q2w/search/" + fileName,
             success: function(data) {
-                console.log(data);
-                console.log(data == null);
-                console.log(jQuery.isEmptyObject(data));
 
                 BootstrapDialog.show({
                     title: '查詢結果',
@@ -289,7 +286,7 @@ $(document).ready(function() {
                     },
                     buttons:
 
-                        jQuery.isEmptyObject(data) ? [{
+                        $.isEmptyObject(data) ? [{
                             label: '取消',
                             action: function(dialog) {
                                 dialog.close();
