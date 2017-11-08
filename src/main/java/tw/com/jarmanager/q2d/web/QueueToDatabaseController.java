@@ -37,12 +37,14 @@ public class QueueToDatabaseController {
 	public @ResponseBody String dataToFile(@RequestBody Q2D q2d) throws Exception {
 
 		String xml = null, fileName = null, mes = "";
-		
+		System.out.println();
+		System.out.println(new Gson().toJson(q2d));
+		System.out.println();
 		try {
 			fileName = q2d.getConfig().getHeartBeatClient().getFileName();
 		} catch (NullPointerException e) {
 			logger.error("Can not get the file name");
-			return mes;
+			return "Can not get the file name";
 		}
 		
 		try {

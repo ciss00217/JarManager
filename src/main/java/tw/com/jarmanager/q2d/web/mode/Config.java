@@ -1,8 +1,13 @@
 package tw.com.jarmanager.q2d.web.mode;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+import tw.com.jarmanager.q2w.web.mode.FieldName;
 
 @XmlRootElement
 public class Config {
@@ -14,12 +19,18 @@ public class Config {
 	private QueueOrigin queueOrigin;
 	@XmlElement(name = "HeartBeatClient")
 	private HeartBeatClient heartBeatClient;
-	@XmlElement(name = "Insert")
-	private Insert insert;
-	@XmlElement(name = "Delete")
-	private Delete delete;
-	@XmlElement(name = "Update")
-	private Update update;
+	
+	//@XmlElement(name = "Insert")
+	//private Insert insert;
+	@XmlElementWrapper(name = "Insert")
+	 @XmlElement(name = "Table")
+	private List<Table> insert;
+//	@XmlElement(name = "Delete",type=Delete.class)
+//	private List<Object> delete;
+	private List<Object> delete;
+//	@XmlElement(name = "Update",type=Update.class)
+//	private List<Object> update;
+	private List<Object> update;
 
 	@XmlTransient
 	public QueueConnectionFactory getQueueConnectionFactory() {
@@ -58,29 +69,29 @@ public class Config {
 	}
 
 	@XmlTransient
-	public Insert getInsert() {
+	public List<Table> getInsert() {
 		return insert;
 	}
 
-	public void setInsert(Insert insert) {
+	public void setInsert(List<Table> insert) {
 		this.insert = insert;
 	}
 
 	@XmlTransient
-	public Delete getDelete() {
+	public List<Object> getDelete() {
 		return delete;
 	}
 
-	public void setDelete(Delete delete) {
+	public void setDelete(List<Object> delete) {
 		this.delete = delete;
 	}
 
 	@XmlTransient
-	public Update getUpdate() {
+	public List<Object> getUpdate() {
 		return update;
 	}
 
-	public void setUpdate(Update update) {
+	public void setUpdate(List<Object> update) {
 		this.update = update;
 	}
 

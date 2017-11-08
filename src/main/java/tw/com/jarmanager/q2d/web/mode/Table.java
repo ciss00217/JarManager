@@ -7,14 +7,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "Table")
+//@XmlRootElement
 public class Table {
 
 	@XmlAttribute(name = "name")
 	private String name;
 
 	@XmlElement(name = "Field", type = Field.class)
-	private List<Field> fields;
+	private List<Field> field;
+
+	@XmlElement(name = "Relation")
+	private String relation;
 
 	@XmlTransient
 	public String getName() {
@@ -27,10 +30,19 @@ public class Table {
 
 	@XmlTransient
 	public List<Field> getFields() {
-		return fields;
+		return field;
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setFields(List<Field> field) {
+		this.field = field;
+	}
+
+	@XmlTransient
+	public String getRelation() {
+		return relation;
+	}
+
+	public void setRelation(String relation) {
+		this.relation = relation;
 	}
 }

@@ -178,8 +178,28 @@
 													</div>
 													<div id="databaseUpdateData" class="tab-pane fade in"
 														role="tabpanel">
-														<table id="updateTable" class="table dt-responsive ">
-														</table>
+														<div class="well well-lg">
+															<ul class="nav nav-tabs">
+																<li class="active sais-tab"><a data-toggle="tab"
+																	role="tab" data-target="#databaseUpdateRelationData">規則</a></li>
+																<li class="azed-tab"><a data-toggle="tab"
+																	role="tab" data-target="#databaseUpdateDetailData">內容</a></li>
+															</ul>
+
+															<div class="tab-content">
+																<div id="databaseUpdateRelationData"
+																	class="tab-pane fade in active" role="tabpanel">
+																	<table id="updateRelationTable"
+																		class="table dt-responsive ">
+																	</table>
+																</div>
+																<div id="databaseUpdateDetailData"
+																	class="tab-pane fade in" role="tabpanel">
+																	<table id="updateTable" class="table dt-responsive ">
+																	</table>
+																</div>
+															</div>
+														</div>
 													</div>
 													<div id="databaseDeleteData" class="tab-pane fade in"
 														role="tabpanel">
@@ -240,16 +260,15 @@
 										</div>
 									</div>
 								</div>
-								<button type="button" class="btn btn-primary"
-									name="btn-import-data">開發資料</button>
+								<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
+								<button type="button" class="btn btn-primary hidden"
+									name="btn-update">修改設定檔</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
-			<button type="button" class="btn btn-primary hidden"
-				name="btn-update">修改設定檔</button>
+			<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
 		</div>
 	</div>
 
