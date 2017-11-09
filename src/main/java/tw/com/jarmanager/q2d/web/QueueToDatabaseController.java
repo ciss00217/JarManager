@@ -36,13 +36,13 @@ public class QueueToDatabaseController {
 	public QueueToDatabaseController(QueueToDatabaseService service) {
 		this.service = service;
 	}
-	
-	@RequestMapping(value = "/delete/{fileName}",method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
+
+	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String delete(@PathVariable("fileName") String fileName) throws Exception {
 
 		return service.removeAllConfig(fileName);
-	}	
-	
+	}
+
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2dConfigFileName = fileName + "-q2d-config";
@@ -59,6 +59,7 @@ public class QueueToDatabaseController {
 		return new Gson().toJson(root);
 
 	}
+
 	@RequestMapping(method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String dataToFile(@RequestBody String json) throws Exception {
 
@@ -67,9 +68,10 @@ public class QueueToDatabaseController {
 		Q2D q2d = null;
 		try {
 			gson = new Gson();
-			Type type = new TypeToken<Q2D>() {}.getType();
+			Type type = new TypeToken<Q2D>() {
+			}.getType();
 			q2d = gson.fromJson(json, type);
-			
+
 		} catch (Exception e) {
 			logger.error("Please check the correctness of the data");
 			return "Please check the correctness of the data";
@@ -122,4 +124,68 @@ public class QueueToDatabaseController {
 		return mes;
 	}
 
+	@RequestMapping(method = RequestMethod.PUT, produces = "text/plain; charset=utf-8")
+	public @ResponseBody String updateToFile(@RequestBody String json) throws Exception {
+
+		String xml = null, fileName = null, mes = "";
+		Gson gson = null;
+		Q2D q2d = null;
+		try {
+			gson = new Gson();
+			Type type = new TypeToken<Q2D>() {
+			}.getType();
+			q2d = gson.fromJson(json, type);
+
+		} catch (Exception e) {
+			logger.error("Please check the correctness of the data");
+			return "Please check the correctness of the data";
+		}
+		try {
+			fileName = q2d.getConfig().getHeartBeatClient().getFileName();
+		} catch (NullPointerException e) {
+			logger.error("Can not get the file name");
+			return "Can not get the file name";
+		}
+
+		try {
+			String name = fileName + "-q2d-config";
+
+			if (XmlUtil.fileExistsJarXmlPath(name)) {
+				xml = service.getObjToXml(q2d.getConfig(), Config.class);
+				XmlUtil.fileToJarXmlPath(name, false, xml);
+				mes += "[成功] q2d-config.xml\n";
+			} else {
+				mes += "[不存在] q2d-config.xml\n";
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			mes += "[失敗] q2d-config.xml\n";
+		}
+		try {
+			String name = fileName + "-HeatBeatClinetBeans";
+
+			if (XmlUtil.fileExistsJarXmlPath(name)) {
+				Clazz clazz = service.getHeartBeatVo(q2d, fileName);
+				clazz.getHeartBeatConnectionFactory().setVirtualHost("/");
+				xml = service.getObjToXml(clazz, Clazz.class);
+				XmlUtil.fileToJarXmlPath(name, false, xml);
+				mes += "[成功] HeatBeatClinetBeans.xml\n";
+			} else {
+				mes += "[不存在] HeatBeatClinetBeans.xml\n";
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			mes += "[失敗] HeatBeatClinetBeans.xml\n";
+		}
+
+		try {
+			mes += service.updateJarProjectVOXml(q2d.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+					: "[已存在] JarManagerAPI.xml\n";
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			mes += "[失敗] JarManagerAPI.xml\n";
+		}
+		return mes;
+	}
 }

@@ -229,7 +229,6 @@ public class QueueToDatabaseService {
 		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
 		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 

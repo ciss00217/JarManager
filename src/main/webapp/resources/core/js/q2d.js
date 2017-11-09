@@ -24,25 +24,25 @@ $(document).ready(function() {
 
     $("button[name=btn-import-data]").click(function(event) {
 
-        $heartBeatClient.find('input[name=beatID]').val('test');
-        $heartBeatClient.find('input[name=fileName]').val('test');
-        $heartBeatClient.find('input[name=timeSeries]').val('60000');
-        $heartBeatClient.find('input[name=jarFilePath]').val('D:\\jarFilePath\\Q2D.jar');
+        $('input[name=beatID]', $heartBeatClient).val('test');
+        $('input[name=fileName]', $heartBeatClient).val('test');
+        $('input[name=timeSeries]', $heartBeatClient).val('60000');
+        $('input[name=jarFilePath]', $heartBeatClient).val('D:\\jarFilePath\\Q2D.jar');
 
-        $databaseConnectionFactory.find('input[name=dbUserName]').val('root');
-        $databaseConnectionFactory.find('input[name=dbPassword]').val('root');
-        $databaseConnectionFactory.find('input[name=dbURL]').val('jdbc:mysql://localhost/ian?useSSL=false');
-        $databaseConnectionFactory.find('input[name=jdbcDriver]').val('com.mysql.jdbc.Driver');
+        $('input[name=dbUserName]', $databaseConnectionFactory).val('root');
+        $('input[name=dbPassword]', $databaseConnectionFactory).val('root');
+        $('input[name=dbURL]', $databaseConnectionFactory).val('jdbc:mysql://localhost/ian?useSSL=false');
+        $('input[name=jdbcDriver]', $databaseConnectionFactory).val('com.mysql.jdbc.Driver');
 
-        $queueConnectionFactory.find('input[name=username]').val('admin');
-        $queueConnectionFactory.find('input[name=password]').val('password');
-        $queueConnectionFactory.find('input[name=host]').val('192.168.112.199');
-        $queueConnectionFactory.find('input[name=port]').val('5672');
-        $queueConnectionFactory.find('input[name=virtualHost]').val('/');
+        $('input[name=username]', $queueConnectionFactory).val('admin');
+        $('input[name=password]', $queueConnectionFactory).val('password');
+        $('input[name=host]', $queueConnectionFactory).val('192.168.112.199');
+        $('input[name=port]', $queueConnectionFactory).val('5672');
+        $('input[name=virtualHost]', $queueConnectionFactory).val('/');
 
-        $queueOrigin.find('input[name=queueName]').val('ian');
-        $queueOrigin.find('input[name=exchangeName]').val('exchange');
-        $queueOrigin.find('input[name=routingKey]').val('ian');
+        $('input[name=queueName]', $queueOrigin).val('ian');
+        $('input[name=exchangeName]', $queueOrigin).val('exchange');
+        $('input[name=routingKey]', $queueOrigin).val('ian');
 
         $insertTable.clear().draw();
 
@@ -138,9 +138,7 @@ $(document).ready(function() {
                 $div = buildInput('名稱', '設定檔名稱', 'fileName');
 
                 var $content =
-                    $('<div/>', {
-                        'id': 'btnSaveDialog'
-                    }).append(
+                    $('<div/>').append(
                         $div
                     );
 
@@ -150,7 +148,7 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
 
-                    if (!filedDataValidator($div, '設定檔')) return false;
+                    if (!fieldDataValidator($div, '設定檔', 'fileName')) return false;
 
                     var fileName = $('input[name=fileName]', $div).val();
                     var $button = this;
@@ -409,7 +407,277 @@ $(document).ready(function() {
             }]
         });
     });
+    
+    $("button[name=btn-update]").click(function(event) {
 
+        BootstrapDialog.show({
+            title: '確認是否修改',
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+
+                    if (!fieldDataValidator( $heartBeatClient , '設定檔', 'fileName')) return false;
+                    
+//                    if( !dataValidator() ) return false;
+
+                    var fileName = $('input[name=fileName]', $heartBeatClient).val();
+                    var $button = this;
+                    $button.disable();
+                    $button.spin();
+                    dialog.setClosable(false);
+                    dialog.setMessage('進行中');
+
+                    //Common Parameters
+                    var vo = {},
+                        q2d = {},
+                        val = {},
+                        tableNames = [],
+                        tables = [],
+                        cells,
+                        $checkboxs,
+                        condition = {};
+
+                    //HeartBeat Client
+                    val['beatID'] = fileName;
+                    val['fileName'] = fileName;
+                    val['timeSeries'] = $heartBeatClient.find('input[name=timeSeries]').val();
+                    val['jarFilePath'] = $heartBeatClient.find('input[name=jarFilePath]').val();
+                    q2d['heartBeatClient'] = val;
+                    val = {};
+
+                    //Database ConnectionFactory
+                    val['dbUserName'] = $databaseConnectionFactory.find('input[name=dbUserName]').val();
+                    val['dbPassword'] = $databaseConnectionFactory.find('input[name=dbPassword]').val();
+                    val['dbURL'] = $databaseConnectionFactory.find('input[name=dbURL]').val();
+                    val['jdbcDriver'] = $databaseConnectionFactory.find('input[name=jdbcDriver]').val();
+                    q2d['databaseConnectionFactory'] = val;
+                    val = {};
+
+                    //Queue ConnectionFactory
+                    val['username'] = $queueConnectionFactory.find('input[name=username]').val();
+                    val['password'] = $queueConnectionFactory.find('input[name=password]').val();
+                    val['host'] = $queueConnectionFactory.find('input[name=host]').val();
+                    val['virtualHost'] = $queueConnectionFactory.find('input[name=virtualHost]').val();
+                    val['port'] = $queueConnectionFactory.find('input[name=port]').val();
+                    q2d['queueConnectionFactory'] = val;
+                    val = {};
+
+                    //Queue OriginData
+                    val['queueName'] = $queueOrigin.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
+                    q2d['queueOrigin'] = val;
+                    val = {};
+
+                    var Table = {};
+                    
+                    //Insert Table
+                    cells = $insertTable.cells().nodes();
+                    $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
+
+                    $checkboxs.each(function(index, checkbox) {
+
+                        var row = $(checkbox).closest('tr');
+                        var data = $("#insertTable").dataTable().fnGetData(row);
+                        var tableName = data.name;
+
+                        if ($.inArray(tableName, tableNames) == -1) {
+                            tableNames.push(tableName);
+                        }
+                    });
+
+                    $.each(tableNames, function(index, tableName) {
+
+                        var tmp = [];
+                        var table = {};
+                        table['name'] = tableName;
+
+                        $checkboxs.each(function(index, checkbox) {
+
+                            var row = $(checkbox).closest('tr');
+                            var data = $("#insertTable").dataTable().fnGetData(row);
+
+                            if ($.inArray(data.name, tableNames) != -1) {
+
+                                var field = {};
+                                var fieldVal = {};
+                                var tableDetail = {};
+
+                                if (tableName == data.name) {
+
+                                    fieldVal['source'] = data.source;
+                                    fieldVal['destination'] = data.destination;
+                                    fieldVal['type'] = data.type;
+
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
+                                }
+                            }
+
+                        });
+                        tables.push(table);
+                    });
+                    Table['table'] = tables;
+                    q2d['insert'] = Table;
+                    
+                    tables = [];
+                    tableNames = [];
+                    Table = {};
+                    
+                    //Update Relation Table
+                    
+        			$.each( $updateRelationTable.rows().data() , function(index, data) {
+        				condition[data.name] = data;
+                    });
+                    
+                    //Update Table
+                    cells = $updateTable.cells().nodes();
+                    $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
+
+                    $checkboxs.each(function(index, checkbox) {
+
+                        var row = $(checkbox).closest('tr');
+                        var data = $("#updateTable").dataTable().fnGetData(row);
+                        var tableName = data.name;
+
+                        if ($.inArray(tableName, tableNames) == -1) {
+                            tableNames.push(tableName);
+                        }
+                    });
+
+                    $.each(tableNames, function(index, tableName) {
+
+                        var tmp = [];
+                        var table = {};
+                        var con = {};
+                        Table = {};
+                        
+                        table['name'] = tableName;
+
+                        table['condition'] = condition[tableName];
+                        
+                        $checkboxs.each(function(index, checkbox) {
+
+                            var row = $(checkbox).closest('tr');
+                            var data = $("#updateTable").dataTable().fnGetData(row);
+
+                            if ($.inArray(data.name, tableNames) != -1) {
+
+                                var field = {};
+                                var fieldVal = {};
+                                var tableDetail = {};
+                                
+                                if (tableName == data.name) {
+
+                                    fieldVal['source'] = data.source;
+                                    fieldVal['destination'] = data.destination;
+                                    fieldVal['type'] = data.type;
+                                    
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
+                                }
+                            }
+
+                        });
+                        tables.push(table);
+                    });
+
+                    Table['table'] = tables;
+                    q2d['update'] = Table;
+                    
+                    tables = [];
+                    tableNames = [];
+                    Table = {};
+
+                    //Delete Table
+                    cells = $deleteTable.cells().nodes();
+                    $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
+
+                    $checkboxs.each(function(index, checkbox) {
+
+                        var row = $(checkbox).closest('tr');
+                        var data = $("#deleteTable").dataTable().fnGetData(row);
+                        var tableName = data.name;
+
+                        if ($.inArray(tableName, tableNames) == -1) {
+                            tableNames.push(tableName);
+                        }
+                    });
+
+                    $.each(tableNames, function(index, tableName) {
+
+                        var tmp = [];
+                        var table = {};
+                        table['name'] = tableName;
+
+                        $checkboxs.each(function(index, checkbox) {
+
+                            var row = $(checkbox).closest('tr');
+                            var data = $("#deleteTable").dataTable().fnGetData(row);
+
+                            if ($.inArray(data.name, tableNames) != -1) {
+
+                                var field = {};
+                                var fieldVal = {};
+                                var tableDetail = {};
+
+                                if (tableName == data.name) {
+
+                                    fieldVal['source'] = data.source;
+                                    fieldVal['destination'] = data.destination;
+                                    fieldVal['type'] = data.type;
+
+                                    tmp.push(fieldVal);
+                                    table['field'] = tmp;
+                                }
+                            }
+
+                        });
+                        tables.push(table);
+                    });
+
+                    Table['table'] = tables;
+                    q2d['delete'] = Table;
+                    
+                    tables = [];
+                    tableNames = [];
+                    Table = {};
+                    
+                    vo['config'] = q2d;
+
+                    $.ajax({
+                        type: "PUT",
+                        datatype: "json",
+                        contentType: "application/json; charset=utf-8",
+                        url: "./q2d",
+                        data: JSON.stringify(vo),
+                        success: function(data) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage(data);
+                            $button.closest('div').remove();
+                            setTimeout(function() {
+                                dialog.close();
+                            }, 2000);
+                        },
+                        error: function(e) {
+                            $button.enable();
+                            $button.stopSpin();
+                            dialog.setClosable(true);
+                            dialog.setMessage('失敗');
+                        }
+                    });
+                }
+            }, {
+                label: '取消',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        });
+    });
+    
     $('#imaginary_container button[name=btn-delete]').click(function(event) {
 
     	var $content;
@@ -466,8 +734,11 @@ $(document).ready(function() {
     
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
-        var fileName = $('#imaginary_container input[name=fileName]').val();
+    	var $div = $('#imaginary_container');
+        var fileName = $('input[name=fileName]', $div).val();
 
+        if (!fieldDataValidator($div, '搜尋', 'fileName')) return false;
+        
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -480,7 +751,7 @@ $(document).ready(function() {
                     message: function(dialog) {
 
                         var $content;
-                        $content = jQuery.isEmptyObject(data) ? $('<div/>').append($("<p />", {
+                        $content = $.isEmptyObject(data) ? $('<div/>').append($("<p />", {
                                 text: "查無資料"
                             }))
 
@@ -502,6 +773,7 @@ $(document).ready(function() {
                         }] : [{
                             label: '確認',
                             action: function(dialog) {
+
                                 var $button = this;
                                 $button.disable();
                                 $button.spin();
@@ -509,50 +781,71 @@ $(document).ready(function() {
                                 dialog.setMessage('進行中');
 
                                 var heartBeatClient = data.config.heartBeatClient;
-                                var connectionFactory = data.config.connectionFactory;
+                                var databaseConnectionFactory = data.config.databaseConnectionFactory;
+                                var queueConnectionFactory = data.config.queueConnectionFactory;
                                 var queueOrigin = data.config.queueOrigin;
-                                var queueDestination = data.config.queueDestination;
-                                var webService = data.config.webService;
-                                var xmlConverter = data.xmlConverter;
 
-                                $heartBeatClient.find('input[name=beatID]').val(heartBeatClient.beatID);
-                                $heartBeatClient.find('input[name=fileName]').val(heartBeatClient.fileName);
-                                $heartBeatClient.find('input[name=timeSeries]').val(heartBeatClient.timeSeries);
-                                $heartBeatClient.find('input[name=jarFilePath]').val(heartBeatClient.jarFilePath);
+                                $('input[name=beatID]', $heartBeatClient).val( heartBeatClient.beatID );
+                                $('input[name=fileName]', $heartBeatClient).val( heartBeatClient.fileName );
+                                $('input[name=timeSeries]', $heartBeatClient).val( heartBeatClient.timeSeries );
+                                $('input[name=jarFilePath]', $heartBeatClient).val( heartBeatClient.jarFilePath );
 
-                                $connectionFactory.find('input[name=username]').val(connectionFactory.username);
-                                $connectionFactory.find('input[name=password]').val(connectionFactory.password);
-                                $connectionFactory.find('input[name=host]').val(connectionFactory.host);
-                                $connectionFactory.find('input[name=port]').val(connectionFactory.port);
-                                $connectionFactory.find('input[name=virtualHost]').val(connectionFactory.virtualHost);
-                                
-                                $queueOrigin.find('input[name=queueName]').val(queueOrigin.queueName);
-                                $queueOrigin.find('input[name=exchangeName]').val(queueOrigin.exchangeName);
-                                $queueOrigin.find('input[name=routingKey]').val(queueOrigin.routingKey);
+                                $('input[name=dbUserName]', $databaseConnectionFactory).val( databaseConnectionFactory.dbUserName );
+                                $('input[name=dbPassword]', $databaseConnectionFactory).val( databaseConnectionFactory.dbPassword );
+                                $('input[name=dbURL]', $databaseConnectionFactory).val( databaseConnectionFactory.dbURL );
+                                $('input[name=jdbcDriver]', $databaseConnectionFactory).val( databaseConnectionFactory.jdbcDriver );
 
-                                $queueDestination.find('input[name=queueName]').val(queueDestination.queueName);
-                                $queueDestination.find('input[name=exchangeName]').val(queueDestination.exchangeName);
-                                $queueDestination.find('input[name=routingKey]').val(queueDestination.routingKey);
+                                $('input[name=username]', $queueConnectionFactory).val( queueConnectionFactory.username );
+                                $('input[name=password]', $queueConnectionFactory).val( queueConnectionFactory.password );
+                                $('input[name=host]', $queueConnectionFactory).val( queueConnectionFactory.host );
+                                $('input[name=port]', $queueConnectionFactory).val( queueConnectionFactory.port );
+                                $('input[name=virtualHost]', $queueConnectionFactory).val( queueConnectionFactory.virtualHost );
 
-                                $webService.find('input[name=url]').val(webService.url);
-                                $webService.find('input[name=type]').val(webService.type);
-                                $webService.find('input[name=format]').val(webService.format);
+                                $('input[name=queueName]', $queueOrigin).val( queueOrigin.queueName );
+                                $('input[name=exchangeName]', $queueOrigin).val( queueOrigin.exchangeName );
+                                $('input[name=routingKey]', $queueOrigin).val( queueOrigin.routingKey );
 
-                                $xmlConverterTable.clear().draw();
-                                $.each(data.xmlConverter, function(index, item) {
-                                    $xmlConverterTable.rows.add([item]).draw();
-                                });
-                                var $table = $("#xmlConverterTable");
-                                var $chkbox_all = $('input[type="checkbox"]', $table);
-                                var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
+                                $insertTable.clear().draw();
+                                $updateRelationTable.clear().draw();
+                                $updateTable.clear().draw();
+                                $deleteTable.clear().draw();
 
-                                if ($chkbox_checked.length === 0) {
-                                    console.log('$chkbox_checked.length: ' + $chkbox_checked.length);
-                                    $chkbox_all.each(function() {
-                                        $(this).prop("checked", true);
-                                        $(this).addClass("toggleon");
+                                $.each(data.config.insert.table, function(index, item) {
+
+                                    $.each(item.field, function(i, field) {
+                                    	field.name = item.name;
+                                    	$insertTable.rows.add([field]).draw();
                                     });
-                                }
+                                });
+
+                                $.each(data.config.update.table, function(index, item) {
+
+                                	var condition = item.condition;
+                                	
+                                	condition.name = item.name;
+                                	$updateRelationTable.rows.add([condition]).draw();
+                                });
+                                
+                                $.each(data.config.update.table, function(index, item) {
+                                	
+                                    $.each(item.field, function(i, update) {
+                                    	update.name = item.name;
+                                    	$updateTable.rows.add([update]).draw();
+                                    });
+                                });
+                                
+                                $.each(data.config.delete.table, function(index, item) {
+
+                                	$.each(item.field, function(i, del) {
+                                    	del.name = item.name;
+                                    	$deleteTable.rows.add([del]).draw();
+                                    });
+                                });
+                                
+                                checkedAll( $("#insertTable") );
+                                checkedAll( $("#updateRelationTable") );
+                                checkedAll( $("#updateTable") );
+                                checkedAll( $("#deleteTable") );
 
                                 $("button[name=btn-update]").removeClass("hidden");
 
@@ -574,12 +867,6 @@ $(document).ready(function() {
                         }]
 
                 });
-            },
-            error: function(e) {
-                $button.enable();
-                $button.stopSpin();
-                dialog.setClosable(true);
-                dialog.setMessage('失敗');
             }
         });
     });
@@ -1509,7 +1796,7 @@ function buildInput($span_text, $input_placeholder, $input_name) {
     return $div;
 }
 
-function filedDataValidator($obj, title) {
+function fieldDataValidator($obj, title, input_name) {
     var isValid = false;
 
     function checkVal(obj) {
@@ -1526,7 +1813,7 @@ function filedDataValidator($obj, title) {
         return mes;
     }
 
-    var $obj_input = $obj.find('input[name=fileName]');
+    var $obj_input = $obj.find( ('input[name=' + input_name + ']') );
 
     function existGetMes(obj, title) {
         var vaild_mes = '';
@@ -1589,4 +1876,16 @@ function filedDataValidator($obj, title) {
         }) : isValid = true;
 
     return isValid;
+}
+function checkedAll( $table ){
+    var $chkbox_all = $('input[type="checkbox"]', $table);
+    var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
+
+    if ($chkbox_checked.length === 0) {
+
+        $chkbox_all.each(function() {
+            $(this).prop("checked", true);
+            $(this).addClass("toggleon");
+        });
+    }
 }
