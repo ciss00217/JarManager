@@ -400,6 +400,8 @@ $(document).ready(function() {
         $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
+        $webService.find('input[name=action]').val('Get');
+        $webService.find('input[name=encode]').val('Base64');
 
         $xmlConverterTable.clear().draw();
 
@@ -904,6 +906,9 @@ $(document).ready(function() {
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
                     val['format'] = $webService.find('input[name=format]').val();
+                    val['action'] = $webService.find('input[name=action]').val();
+                    val['encode'] = $webService.find('input[name=encode]').val();
+                    
                     q2w['webService'] = val;
                     val = {};
                     vo['config'] = q2w;

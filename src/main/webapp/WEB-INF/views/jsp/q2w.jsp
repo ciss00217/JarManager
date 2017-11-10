@@ -220,7 +220,19 @@
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
 													type="password" class="form-control" name="format"
-													placeholder="格式">
+													placeholder="回傳格式">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-text-height"></i></span> <input
+													type="password" class="form-control" name="action"
+													placeholder="事件代碼">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-text-height"></i></span> <input
+													type="password" class="form-control" name="encode"
+													placeholder="傳送編碼">
 											</div>
 										</div>
 									</div>

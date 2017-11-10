@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
-import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
 import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.FieldName;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
-import tw.com.jarmanager.q2w.web.mode.XmlConverter;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
