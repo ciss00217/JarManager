@@ -96,11 +96,11 @@
 										<li class="active sais-tab"><a data-toggle="tab"
 											role="tab" data-target="#heartBeatClientData">心跳協議</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#databaseConnectionFactory">資料庫連線</a></li>
+											data-target="#databaseConnectionFactoryData">資料庫連線</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#tableSetting">表格設定</a></li>
+											data-target="#tableSettingData">表格設定</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#queueConnectionFactory">佇列連線</a></li>
+											data-target="#queueConnectionFactoryData">佇列連線</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueOriginData">來源佇列</a></li>
 									</ul>
@@ -133,8 +133,8 @@
 												</div>
 											</form>
 										</div>
-										<div id="databaseConnectionFactory" class="tab-pane fade in"
-											role="tabpanel">
+										<div id="databaseConnectionFactoryData"
+											class="tab-pane fade in" role="tabpanel">
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
@@ -157,7 +157,59 @@
 													class="form-control" name="jdbcDriver" placeholder="驅動">
 											</div>
 										</div>
-										<div id="queueConnectionFactory" class="tab-pane fade in"
+										<div id="tableSettingData" class="tab-pane fade in"
+											role="tabpanel">
+
+											<div class="well well-lg">
+												<ul class="nav nav-tabs">
+													<li class="active sais-tab"><a data-toggle="tab"
+														role="tab" data-target="#databaseInsertData">新增</a></li>
+													<li class="azed-tab"><a data-toggle="tab" role="tab"
+														data-target="#databaseUpdateData">修改</a></li>
+													<li class="azed-tab"><a data-toggle="tab" role="tab"
+														data-target="#databaseDeleteData">刪除</a></li>
+												</ul>
+
+												<div class="tab-content">
+													<div id="databaseInsertData"
+														class="tab-pane fade in active" role="tabpanel">
+														<table id="insertTable" class="table dt-responsive ">
+														</table>
+													</div>
+													<div id="databaseUpdateData" class="tab-pane fade in"
+														role="tabpanel">
+														<div class="well well-lg">
+															<ul class="nav nav-tabs">
+																<li class="active sais-tab"><a data-toggle="tab"
+																	role="tab" data-target="#databaseUpdateRelationData">規則</a></li>
+																<li class="azed-tab"><a data-toggle="tab"
+																	role="tab" data-target="#databaseUpdateDetailData">內容</a></li>
+															</ul>
+
+															<div class="tab-content">
+																<div id="databaseUpdateRelationData"
+																	class="tab-pane fade in active" role="tabpanel">
+																	<table id="updateRelationTable"
+																		class="table dt-responsive ">
+																	</table>
+																</div>
+																<div id="databaseUpdateDetailData"
+																	class="tab-pane fade in" role="tabpanel">
+																	<table id="updateTable" class="table dt-responsive ">
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div id="databaseDeleteData" class="tab-pane fade in"
+														role="tabpanel">
+														<table id="deleteTable" class="table dt-responsive ">
+														</table>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div id="queueConnectionFactoryData" class="tab-pane fade in"
 											role="tabpanel">
 											<div class="input-group">
 												<span class="input-group-addon"><i
@@ -174,6 +226,11 @@
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
 													class="form-control" name="host" placeholder="主機">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-cloud"></i></span> <input type="text"
+													class="form-control" name="virtualHost" placeholder="虛擬主機">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
@@ -201,47 +258,19 @@
 													placeholder="routing key">
 											</div>
 										</div>
-										<div id="tableSetting" class="tab-pane fade in"
-											role="tabpanel">
-
-											<div class="well well-lg">
-												<ul class="nav nav-tabs">
-													<li class="active sais-tab"><a data-toggle="tab"
-														role="tab" data-target="#databaseInsert">新增</a></li>
-													<li class="azed-tab"><a data-toggle="tab" role="tab"
-														data-target="#databaseUpdate">修改</a></li>
-													<li class="azed-tab"><a data-toggle="tab" role="tab"
-														data-target="#databaseDelete">刪除</a></li>
-												</ul>
-
-												<div class="tab-content">
-													<div id="databaseInsert" class="tab-pane fade in active"
-														role="tabpanel"></div>
-													<div id="databaseUpdate" class="tab-pane fade in"
-														role="tabpanel"></div>
-													<div id="databaseDelete" class="tab-pane fade in"
-														role="tabpanel"></div>
-												</div>
-											</div>
-										</div>
 									</div>
 								</div>
-								<button type="button" class="btn btn-primary"
-									name="btn-import-data">開發資料</button>
+								<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
+								<button type="button" class="btn btn-primary hidden"
+									name="btn-update">修改設定檔</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<button type="button" class="btn btn-primary" name="btn-save">創建設定檔</button>
-			<button type="button" class="btn btn-primary hidden"
-				name="btn-update">修改設定檔</button>
+			<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
 		</div>
 	</div>
-	</div>
-	<button type="button" class="btn btn-primary" name="btn-import-data">開發資料</button>
-	</div>
-	</div>
-	</div>
+
 </body>
 </html>

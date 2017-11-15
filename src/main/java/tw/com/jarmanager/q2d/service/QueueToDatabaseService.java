@@ -22,15 +22,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
-import tw.com.jarmanager.q2w.web.mode.Config;
-import tw.com.jarmanager.q2w.web.mode.ConnectionFactory;
-import tw.com.jarmanager.q2w.web.mode.FieldName;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatClient;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatClientVO;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatConnectionFactory;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatDestination;
-import tw.com.jarmanager.q2w.web.mode.Q2W;
+import tw.com.jarmanager.q2d.web.mode.Q2D;
+import tw.com.jarmanager.q2d.web.mode.QueueConnectionFactory;
+import tw.com.jarmanager.q2d.web.mode.Clazz;
+import tw.com.jarmanager.q2d.web.mode.Config;
+import tw.com.jarmanager.q2d.web.mode.HeartBeatClient;
+import tw.com.jarmanager.q2d.web.mode.HeartBeatClientVO;
+import tw.com.jarmanager.q2d.web.mode.HeartBeatConnectionFactory;
+import tw.com.jarmanager.q2d.web.mode.HeartBeatDestination;
 import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.JarXMLUtil;
 import tw.com.jarmanager.util.XmlUtil;
@@ -47,18 +46,18 @@ public class QueueToDatabaseService {
 
 		String mes = "";
 		try {
-			String name = fileName + "-q2w-config";
-			String path = jarXmlPath + fileName + "-q2w-config.xml";
+			String name = fileName + "-q2d-config";
+			String path = jarXmlPath + fileName + "-q2d-config.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
-				mes += file.delete() ? "[成功刪除] q2w-config.xml\n" : "[刪除失敗] q2w-config.xml\n";
+				mes += file.delete() ? "[成功刪除] q2d-config.xml\n" : "[刪除失敗] q2d-config.xml\n";
 			} else {
-				mes += "[檔案不存在] q2w-config.xml\n";
+				mes += "[檔案不存在] q2d-config.xml\n";
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			mes += "[系統錯誤] q2w-config.xml\n";
+			mes += "[系統錯誤] q2d-config.xml\n";
 		}
 		try {
 			String name = fileName + "-HeatBeatClinetBeans";
@@ -114,21 +113,6 @@ public class QueueToDatabaseService {
 			logger.error(e.getMessage());
 			mes += "[系統錯誤] JarManagerAPI.xml\n";
 		}
-
-		try {
-			String name = fileName + "-xmlconverter-config";
-			String path = jarXmlPath + fileName + "-xmlconverter-config.xml";
-
-			if (XmlUtil.fileExistsJarXmlPath(name)) {
-				File file = new File(path);
-				mes += file.delete() ? "[成功刪除] xmlconverter-config.xml\n" : "[刪除失敗] xmlconverter-config.xml\n";
-			} else {
-				mes += "[檔案不存在] xmlconverter-config.xml\n";
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			mes += "[系統錯誤] xmlconverter-config.xml\n";
-		}
 		return mes;
 	}
 
@@ -164,22 +148,22 @@ public class QueueToDatabaseService {
 		return object;
 	}
 
-	public tw.com.jarmanager.q2w.web.mode.Clazz getHeartBeatVo(Q2W q2w, String fileName) {
+	public Clazz getHeartBeatVo(Q2D q2d, String fileName) {
 
 		HeartBeatConnectionFactory heartBeatConnectionFactory = new HeartBeatConnectionFactory();
 		HeartBeatDestination heartBeatDestination = new HeartBeatDestination();
 		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();
 
-		Config config = q2w.getConfig();
+		Config config = q2d.getConfig();
 
-		ConnectionFactory connectionFactory = config.getConnectionFactory();
+		QueueConnectionFactory connectionFactory = config.getQueueConnectionFactory();
 		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
 
 		heartBeatConnectionFactory.setHost(connectionFactory.getHost());
 		heartBeatConnectionFactory.setPassword(connectionFactory.getPassword());
 		heartBeatConnectionFactory.setPort(connectionFactory.getPort());
 		heartBeatConnectionFactory.setUsername(connectionFactory.getUsername());
-		heartBeatConnectionFactory.setVirtualHost("/");
+		heartBeatConnectionFactory.setVirtualHost(connectionFactory.getVirtualHost());
 
 		heartBeatClientVO.setBeatID(heartBeatClient.getBeatID());
 		heartBeatClientVO.setTimeSeries(heartBeatClient.getTimeSeries());
@@ -191,7 +175,7 @@ public class QueueToDatabaseService {
 		heartBeatDestination.setAmqpExchangeName("jms.durable.queues");
 		heartBeatDestination.setAmqpRoutingKey("jmsHeart");
 
-		tw.com.jarmanager.q2w.web.mode.Clazz clazz = new tw.com.jarmanager.q2w.web.mode.Clazz();
+		Clazz clazz = new Clazz();
 
 		clazz.setHeartBeatClientVO(heartBeatClientVO);
 		clazz.setHeartBeatConnectionFactory(heartBeatConnectionFactory);
@@ -208,8 +192,7 @@ public class QueueToDatabaseService {
 		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
 		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
 		List<String> filePathXMLList = new ArrayList<>();
-		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
+		filePathXMLList.add(fileName + "-q2d-config");
 		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
@@ -246,7 +229,6 @@ public class QueueToDatabaseService {
 		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
 		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 

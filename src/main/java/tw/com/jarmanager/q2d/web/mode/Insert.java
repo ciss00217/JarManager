@@ -3,20 +3,20 @@ package tw.com.jarmanager.q2d.web.mode;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "Insert")
+//@XmlRootElement
 public class Insert {
-	@XmlElement(name = "Table", type = Table.class)
-	private List<Table> tables;
+
+	@XmlElement(name = "Table",type=Table.class)
+    private List<Table> table = null;
 
 	@XmlTransient
-	public List<Table> getTables() {
-		return tables;
+	public List<Table> getTable() {
+		return table;
 	}
 
-	public void setTables(List<Table> tables) {
-		this.tables = tables;
+	public void setTable(List<Table> table) {
+		this.table = table;
 	}
 }

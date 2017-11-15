@@ -6,17 +6,17 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "Update")
+@XmlRootElement
 public class Update {
 	@XmlElement(name = "Table", type = Table.class)
-	private List<Table> tables;
+	private List<Table> table;
 
 	@XmlTransient
-	public List<Table> getTables() {
-		return tables;
+	public List<Table> getTable() {
+		return table;
 	}
 
-	public void setTables(List<Table> tables) {
-		this.tables = tables;
+	public void setTable(List<Table> table) {
+		this.table = table;
 	}
 }

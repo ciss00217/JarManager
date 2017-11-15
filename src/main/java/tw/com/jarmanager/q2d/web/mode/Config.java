@@ -1,8 +1,10 @@
 package tw.com.jarmanager.q2d.web.mode;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+@XmlRootElement
 public class Config {
 	@XmlElement(name = "queueConnectionFactory")
 	private QueueConnectionFactory queueConnectionFactory;

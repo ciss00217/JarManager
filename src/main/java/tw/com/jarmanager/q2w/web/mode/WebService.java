@@ -1,9 +1,28 @@
 package tw.com.jarmanager.q2w.web.mode;
 
 public class WebService {
+	
+	private String action;
+	private String encode;
 	private String url;
 	private String type;
 	private String format;
+	
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getEncode() {
+		return encode;
+	}
+
+	public void setEncode(String encode) {
+		this.encode = encode;
+	}
 
 	public String getUrl() {
 		return url;

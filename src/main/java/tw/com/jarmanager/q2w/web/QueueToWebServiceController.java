@@ -14,13 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
-import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
 import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.FieldName;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
-import tw.com.jarmanager.q2w.web.mode.XmlConverter;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
@@ -36,12 +34,12 @@ public class QueueToWebServiceController {
 		this.service = service;
 	}
 
-	
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2wConfigFileName = fileName + "-q2w-config";
 		String q2wXmlconverterConfigFileName = fileName + "-xmlconverter-config";
-//		String q2wHeatBeatClinetBeansConfigFileName = fileName + "-HeatBeatClinetBeans";
+		// String q2wHeatBeatClinetBeansConfigFileName = fileName +
+		// "-HeatBeatClinetBeans";
 
 		Q2W root = new Q2W();
 
@@ -140,12 +138,12 @@ public class QueueToWebServiceController {
 		return mes;
 	}
 
-	@RequestMapping(value = "/delete/{fileName}",method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
+	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String delete(@PathVariable("fileName") String fileName) throws Exception {
 
 		return service.removeAllConfig(fileName);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String updateToFile(@RequestBody Q2W q2w) throws Exception {
 
@@ -192,7 +190,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-xmlconverter-config";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();
@@ -201,7 +199,7 @@ public class QueueToWebServiceController {
 				config.setXmlConverter(xmlConverter);
 
 				xml = service.getObjToXml(config, Config.class);
-				XmlUtil.fileToJarXmlPath(fileName + "-xmlconverter-config", false, xml);
+				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] xmlconverter-config.xml\n";
 			} else {
 				mes += "[不存在] xmlconverter-config.xml\n";
