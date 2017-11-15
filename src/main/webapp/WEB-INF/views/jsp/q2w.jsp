@@ -219,19 +219,19 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="password" class="form-control" name="format"
+													type="text" class="form-control" name="format"
 													placeholder="回傳格式">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="password" class="form-control" name="action"
+													type="text" class="form-control" name="action"
 													placeholder="事件代碼">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="password" class="form-control" name="encode"
+													type="text" class="form-control" name="encode"
 													placeholder="傳送編碼">
 											</div>
 										</div>
