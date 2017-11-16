@@ -259,7 +259,23 @@ $(document).ready(function() {
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
         var fileName = $('#imaginary_container input[name=fileName]').val();
-
+        
+		if(fileName.length == 0){
+	        BootstrapDialog.show({
+	            title: '警告訊息',
+	            message: function(dialog) {
+	                return "請填寫要搜尋的設定檔名稱";
+	            },
+	            buttons: [{
+	                label: '確認',
+	                action: function(dialog) {
+	                    dialog.close();
+	                }
+	            }]
+	        });
+	        return false;
+		}
+		
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -330,6 +346,12 @@ $(document).ready(function() {
                                 $webService.find('input[name=url]').val(webService.url);
                                 $webService.find('input[name=type]').val(webService.type);
                                 $webService.find('input[name=format]').val(webService.format);
+                                $webService.find('input[name=apiMethod]').val(webService.apiMethod);
+                                $webService.find('input[name=apiVersion]').val(webService.apiVersion);
+                                $webService.find('input[name=apiGroup]').val(webService.apiGroup);
+                                $webService.find('input[name=apiAction]').val(webService.apiAction);
+                                $webService.find('input[name=apiKey]').val(webService.apiKey);
+                                $webService.find('input[name=sharedSecret]').val(webService.sharedSecret);
 
                                 $xmlConverterTable.clear().draw();
                                 $.each(data.xmlConverter, function(index, item) {
@@ -397,11 +419,17 @@ $(document).ready(function() {
         $queueDestination.find('input[name=exchangeName]').val('exchange');
         $queueDestination.find('input[name=routingKey]').val('ian2');
 
-        $webService.find('input[name=url]').val('http://192.168.112.164:8088/sfdelivery/');
+        $webService.find('input[name=url]').val('https://tw.ews.mall.yahooapis.com');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
-        $webService.find('input[name=action]').val('Get');
-        $webService.find('input[name=encode]').val('Base64');
+//        $webService.find('input[name=action]').val('Get');
+//        $webService.find('input[name=encode]').val('Base64');
+        $webService.find('input[name=apiMethod]').val('stauth');
+        $webService.find('input[name=apiVersion]').val('v1');
+        $webService.find('input[name=apiGroup]').val('MallCategory');
+        $webService.find('input[name=apiAction]').val('Get');
+        $webService.find('input[name=apiKey]').val('8b337636394c4a9d24292ca20fe06b66');
+        $webService.find('input[name=sharedSecret]').val('O07WYrbfP1CgdtWRFzuuFELE_QmZ6nGp7QC_yjeIGnM-');
 
         $xmlConverterTable.clear().draw();
 
@@ -746,6 +774,7 @@ $(document).ready(function() {
                     val['password'] = $connectionFactory.find('input[name=password]').val();
                     val['host'] = $connectionFactory.find('input[name=host]').val();
                     val['port'] = $connectionFactory.find('input[name=port]').val();
+                    val['virtualHost'] = $connectionFactory.find('input[name=virtualHost]').val();
                     q2w['connectionFactory'] = val;
                     val = {};
 
@@ -767,6 +796,13 @@ $(document).ready(function() {
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
                     val['format'] = $webService.find('input[name=format]').val();
+                    val['apiMethod'] = $webService.find('input[name=apiMethod]').val();
+                    val['apiVersion'] = $webService.find('input[name=apiVersion]').val();
+                    val['apiGroup'] = $webService.find('input[name=apiGroup]').val();
+                    val['apiAction'] = $webService.find('input[name=apiAction]').val();
+                    val['apiKey'] = $webService.find('input[name=apiKey]').val();
+                    val['sharedSecret'] = $webService.find('input[name=sharedSecret]').val();
+
                     q2w['webService'] = val;
                     val = {};
                     vo['config'] = q2w;
@@ -906,8 +942,14 @@ $(document).ready(function() {
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
                     val['format'] = $webService.find('input[name=format]').val();
-                    val['action'] = $webService.find('input[name=action]').val();
-                    val['encode'] = $webService.find('input[name=encode]').val();
+//                    val['action'] = $webService.find('input[name=action]').val();
+//                    val['encode'] = $webService.find('input[name=encode]').val();
+                    val['apiMethod'] = $webService.find('input[name=apiMethod]').val();
+                    val['apiVersion'] = $webService.find('input[name=apiVersion]').val();
+                    val['apiGroup'] = $webService.find('input[name=apiGroup]').val();
+                    val['apiAction'] = $webService.find('input[name=apiAction]').val();
+                    val['apiKey'] = $webService.find('input[name=apiKey]').val();
+                    val['sharedSecret'] = $webService.find('input[name=sharedSecret]').val();
                     
                     q2w['webService'] = val;
                     val = {};

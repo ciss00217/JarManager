@@ -104,7 +104,7 @@
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueDestinationData">目的佇列</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
-											data-target="#webServiceData">Web Service</a></li>
+											data-target="#webServiceData">Yahoo Web Service</a></li>
 									</ul>
 
 									<div class="tab-content">
@@ -213,26 +213,48 @@
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input type="text"
+													class="form-control" name="apiKey" placeholder="ApiKey">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input type="text"
+													class="form-control" name="sharedSecret" placeholder="SharedSecret">
+											</div>
+											<div class="input-group hidden">
+												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-picture"></i></span> <input type="text"
-													class="form-control" name="type" placeholder="類型">
+													class="form-control" name="type" placeholder="指定傳送方式" value="get">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input
+													type="text" class="form-control" name="apiMethod"
+													placeholder="Auth Method">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input
+													type="text" class="form-control" name="apiVersion"
+													placeholder="API Version">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input
+													type="text" class="form-control" name="apiGroup"
+													placeholder="API Group">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-tags"></i></span> <input
+													type="text" class="form-control" name="apiAction"
+													placeholder="API Action">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-text-height"></i></span> <input
 													type="text" class="form-control" name="format"
 													placeholder="回傳格式">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="text" class="form-control" name="action"
-													placeholder="事件代碼">
-											</div>
-											<div class="input-group">
-												<span class="input-group-addon"><i
-													class="glyphicon glyphicon-text-height"></i></span> <input
-													type="text" class="form-control" name="encode"
-													placeholder="傳送編碼">
 											</div>
 										</div>
 									</div>
