@@ -126,6 +126,20 @@ public class JarManagerController {
 
 		return isSucess;
 	}
+	
+	@RequestMapping(value = "/JarProjectVO/{id:.+}", method = RequestMethod.PUT)
+	public @ResponseBody boolean closeJarPeojectVOs(@PathVariable("id") String id,@RequestBody JarProjectVO jarProjectVO) {
+
+		boolean isSucess = false;
+		try {
+			isSucess = jarManagerService.turnJarProjectVOXml(jarProjectVO);
+		} catch (IOException | JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return isSucess;
+
+	}
 
 	@RequestMapping(value = "/JarProjectVO/{id:.+}", method = RequestMethod.DELETE)
 	public @ResponseBody boolean deleteJarPeojectVOs(@PathVariable("id") String id) {

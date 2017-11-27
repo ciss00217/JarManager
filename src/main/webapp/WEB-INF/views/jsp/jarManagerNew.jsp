@@ -120,7 +120,21 @@
 							<button type="button" class="btn btn-xs btn-info edit" value="${listValue.beatID}">
 								<i class="fa fa-pencil"></i>
 							</button>
-
+							<c:choose>
+								<c:when test="${jarManagerIsRun=='false'}"> 
+								
+								</c:when>
+								<c:when test="${listValue.needRun == 'false'}">
+										<button type="button" class="btn btn-xs btn-success openJar" value="${listValue.beatID}">
+											<i class="fa fa-circle"></i>
+										</button>
+								</c:when>
+								<c:when test="${listValue.needRun == 'true'}">
+									<button type="button" class="btn btn-xs btn-danger closeJar" value="${listValue.beatID}">
+											<i class="fa fa-minus-square"></i>
+									</button>
+								</c:when>
+							</c:choose>
 							<button type="button" class="btn btn-xs btn-danger deleteJar" value="${listValue.beatID}">
 								<i class="fa fa-trash-o"></i>
 							</button>
@@ -243,6 +257,15 @@
 		$(".deleteJar").click(function() {
 			deleteJar($(this).val());
 		});
+		
+		$(".closeJar").click(function() {
+			turnJar($(this).val(),false);
+		});
+		
+		$(".openJar").click(function() {
+			turnJar($(this).val(),true);
+		});
+		
 
 		$(".edit")
 				.bind(
@@ -456,6 +479,28 @@
 			data : JSON.stringify(data)
 		});
 	}
+	
+	function turnJar(beatID,needRun) {
+		var data = {}
+		data["needRun"] = needRun;
+		data["beatID"] = beatID;
+		
+		console.log(data);
+		$.ajax({
+			type : "PUT",
+			url : "/JarManager/JarProjectVO/" + beatID,
+			contentType : "application/json",
+			success : function(msg) {
+				if (msg) {
+					location.reload(true);
+				} else {
+					alert("error");
+				}
+			},
+			data : JSON.stringify(data)
+
+		});
+	}
 
 	function deleteJar(deleteId) {
 
@@ -468,7 +513,7 @@
 				} else {
 					alert("error");
 				}
-			},
+			}
 
 		});
 	}

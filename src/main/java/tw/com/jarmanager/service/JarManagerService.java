@@ -78,7 +78,6 @@ public class JarManagerService {
 						xMLJarPeojectVO.setFirstSuccessRun(jarProjectVOStatus.getFirstSuccessRun());
 						xMLJarPeojectVO.setNotFindCount(jarProjectVOStatus.getNotFindCount());
 						xMLJarPeojectVO.setPid(jarProjectVOStatus.getPid());
-						xMLJarPeojectVO.setNeedRun(jarProjectVOStatus.getNeedRun());
 					}
 				}
 
@@ -135,6 +134,22 @@ public class JarManagerService {
 
 		return JarManagerAPIService.updateJarProjectVOXml(jarProjectVO);
 	}
+	
+	public boolean turnJarProjectVOXml(JarProjectVO jarProjectVO) throws IOException, JMSException {
+		String beatID = jarProjectVO.getBeatID();
+		boolean isTurnOn = jarProjectVO.getNeedRun();
+
+		if (null == beatID || "".equals(beatID)) {
+			return false;
+		}
+
+		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
+		String xmlpath = (String) context.getBean("jarManagerPath");
+		JarManagerAPIService.setXmlFilePath(xmlpath);
+
+		return JarManagerAPIService.turnJarProjectVOXml(beatID, isTurnOn);
+	}
+	
 	
 	public boolean JarManagerSetUpXml(JarManagerAPIXMLVO jarManagerAPIXMLVO) throws IOException, JMSException {
 		ApplicationContext context = new FileSystemXmlApplicationContext("classpath:jarmanager-config.xml");
