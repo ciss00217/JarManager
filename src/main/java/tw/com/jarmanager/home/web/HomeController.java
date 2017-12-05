@@ -27,4 +27,8 @@ public class HomeController {
 		return "q2d";
 	}
 
+	@RequestMapping(value = "/q2sftp", method = RequestMethod.GET)
+	public String q2sftp() {
+		return "q2sftp";
+	}
 }
