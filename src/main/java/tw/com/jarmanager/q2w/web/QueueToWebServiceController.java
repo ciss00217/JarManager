@@ -37,7 +37,7 @@ public class QueueToWebServiceController {
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2wConfigFileName = fileName + "-q2w-config";
-		String q2wXmlconverterConfigFileName = fileName + "-xmlconverter-config";
+		String q2wXmlconverterConfigFileName = fileName + "-q2w-xmlconverter-config";
 
 		Q2W root = new Q2W();
 
@@ -80,7 +80,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
@@ -104,7 +104,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-xmlconverter-config";
+			String name = fileName + "-q2w-xmlconverter-config";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();
@@ -152,7 +152,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
@@ -176,7 +176,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-xmlconverter-config";
+			String name = fileName + "-q2w-xmlconverter-config";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();

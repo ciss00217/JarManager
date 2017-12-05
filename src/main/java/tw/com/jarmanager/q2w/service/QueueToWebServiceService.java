@@ -55,8 +55,8 @@ public class QueueToWebServiceService {
 			mes += "[系統錯誤] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
-			String path = jarXmlPath + fileName + "-HeatBeatClinetBeans.xml";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
+			String path = jarXmlPath + fileName + "-q2w-HeatBeatClinetBeans.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
@@ -110,8 +110,8 @@ public class QueueToWebServiceService {
 		}
 
 		try {
-			String name = fileName + "-xmlconverter-config";
-			String path = jarXmlPath + fileName + "-xmlconverter-config.xml";
+			String name = fileName + "-q2w-xmlconverter-config";
+			String path = jarXmlPath + fileName + "-q2w-xmlconverter-config.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
@@ -203,8 +203,8 @@ public class QueueToWebServiceService {
 
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2w-xmlconverter-config");
+		filePathXMLList.add(fileName + "-q2w-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
@@ -244,8 +244,8 @@ public class QueueToWebServiceService {
 
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2w-xmlconverter-config");
+		filePathXMLList.add(fileName + "-q2w-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);

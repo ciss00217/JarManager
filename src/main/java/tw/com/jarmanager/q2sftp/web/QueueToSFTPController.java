@@ -55,7 +55,7 @@ public class QueueToSFTPController {
 			mes += "[失敗] q2ftp-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2ftp-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(bankPro);
@@ -122,7 +122,7 @@ public class QueueToSFTPController {
 			mes += "[失敗] q2ftp-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2ftp-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(bankPro);

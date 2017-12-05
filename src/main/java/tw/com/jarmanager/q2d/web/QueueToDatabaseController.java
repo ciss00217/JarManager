@@ -96,7 +96,7 @@ public class QueueToDatabaseController {
 			mes += "[失敗] q2d-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2d-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2d);
@@ -159,7 +159,7 @@ public class QueueToDatabaseController {
 			mes += "[失敗] q2d-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2d-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2d);

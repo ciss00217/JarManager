@@ -92,7 +92,7 @@ public class QueueToSFTPService {
 
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2ftp-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2ftp-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
@@ -149,7 +149,7 @@ public class QueueToSFTPService {
 
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2ftp-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2ftp-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
@@ -178,8 +178,8 @@ public class QueueToSFTPService {
 			mes += "[系統錯誤] q2ftp-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
-			String path = jarXmlPath + fileName + "-HeatBeatClinetBeans.xml";
+			String name = fileName + "-q2ftp-HeatBeatClinetBeans";
+			String path = jarXmlPath + fileName + "-q2ftp-HeatBeatClinetBeans.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
