@@ -46,7 +46,7 @@ public class QueueToSFTPService {
 		return sw.toString();
 	}
 
-	public HeartBeatClientXMLVO get(BankPro bankPro) {
+	public HeartBeatClientXMLVO getHeartBeatClientXMLVO(BankPro bankPro) {
 		QueueConnectionFactory queueConnectionFactory = bankPro.getQueueConnectionFactory();
 
 		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();

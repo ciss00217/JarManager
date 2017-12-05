@@ -58,7 +58,7 @@ public class QueueToSFTPController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				HeartBeatClientXMLVO clazz = service.get(bankPro);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(bankPro);
 				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
@@ -125,7 +125,7 @@ public class QueueToSFTPController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
-				HeartBeatClientXMLVO clazz = service.get(bankPro);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(bankPro);
 				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";

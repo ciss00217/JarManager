@@ -1,7 +1,6 @@
 package tw.com.jarmanager.q2d.web;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
 import tw.com.jarmanager.q2d.service.QueueToDatabaseService;
-import tw.com.jarmanager.q2d.web.mode.Clazz;
 import tw.com.jarmanager.q2d.web.mode.Config;
 import tw.com.jarmanager.q2d.web.mode.Q2D;
-import tw.com.jarmanager.q2w.web.mode.FieldName;
-import tw.com.jarmanager.q2w.web.mode.Q2W;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller
@@ -102,8 +99,8 @@ public class QueueToDatabaseController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2d, fileName);
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2d);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -114,7 +111,7 @@ public class QueueToDatabaseController {
 			mes += "[失敗] HeatBeatClinetBeans.xml\n";
 		}
 		try {
-			mes += service.addJarProjectVOXml(q2d.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.addJarProjectVOXml(q2d.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -165,9 +162,8 @@ public class QueueToDatabaseController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2d, fileName);
-				clazz.getHeartBeatConnectionFactory().setVirtualHost("/");
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2d);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -179,7 +175,7 @@ public class QueueToDatabaseController {
 		}
 
 		try {
-			mes += service.updateJarProjectVOXml(q2d.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.updateJarProjectVOXml(q2d.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -14,7 +14,7 @@ $(document).ready(function() {
     var $queueConnectionFactory = $('#queueConnectionFactory');
     var $errorQueueConnectionFactory = $('#errorQueueConnectionFactory');
     var $sftpData = $('#sftpData');
-    
+
     $("button[name=btn-import-data]").click(function(event) {
 
         $('input[name=beatID]', $heartBeatClient).val('test');
@@ -27,7 +27,7 @@ $(document).ready(function() {
         $('input[name=port]', $connectionFactory).val('5672');
         $('input[name=username]', $connectionFactory).val('admin');
         $('input[name=virtualHost]', $connectionFactory).val('/');
-        
+
         $('input[name=exchangeName]', $queueConnectionFactory).val('exchange');
         $('input[name=queueName]', $queueConnectionFactory).val('ian');
         $('input[name=routingKey]', $queueConnectionFactory).val('ian');
@@ -43,7 +43,7 @@ $(document).ready(function() {
         $('input[name=ein]', $sftpData).val('20939790');
         $('input[name=dir]', $sftpData).val('/home/mysqlmove');
     });
-    
+
     $("button[name=btn-save]").click(function(event) {
 
         var $div;
@@ -64,9 +64,9 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
 
-                    if ( !fieldDataValidator($div, '設定檔', 'fileName') ) return false;
-                    if ( !dataValidator() ) return false;
-                    
+                    if (!fieldDataValidator($div, '設定檔', 'fileName')) return false;
+                    if (!dataValidator()) return false;
+
                     var fileName = $('input[name=fileName]', $div).val();
                     var $button = this;
                     $button.disable();
@@ -95,7 +95,7 @@ $(document).ready(function() {
                     val['port'] = $connectionFactory.find('input[name=port]').val();
                     q2sftp['connectionFactory'] = val;
                     val = {};
-                    
+
                     //Queue ConnectionFactory
                     val['username'] = $connectionFactory.find('input[name=username]').val();
                     val['password'] = $connectionFactory.find('input[name=password]').val();
@@ -105,10 +105,10 @@ $(document).ready(function() {
                     val['exchangeName'] = $queueConnectionFactory.find('input[name=exchangeName]').val();
                     val['queueName'] = $queueConnectionFactory.find('input[name=queueName]').val();
                     val['routingKey'] = $queueConnectionFactory.find('input[name=routingKey]').val();
- 
+
                     q2sftp['queueConnectionFactory'] = val;
                     val = {};
-                    
+
                     //Error Queue ConnectionFactory
                     val['username'] = $connectionFactory.find('input[name=username]').val();
                     val['password'] = $connectionFactory.find('input[name=password]').val();
@@ -118,10 +118,10 @@ $(document).ready(function() {
                     val['exchangeName'] = $errorQueueConnectionFactory.find('input[name=exchangeName]').val();
                     val['queueName'] = $errorQueueConnectionFactory.find('input[name=queueName]').val();
                     val['routingKey'] = $errorQueueConnectionFactory.find('input[name=routingKey]').val();
- 
+
                     q2sftp['errorQueueConnectionFactory'] = val;
-                    val = {};            
-                    
+                    val = {};
+
                     //SFTP Client
                     val['host'] = $sftpData.find('input[name=host]').val();
                     val['user'] = $sftpData.find('input[name=user]').val();
@@ -129,10 +129,10 @@ $(document).ready(function() {
                     val['port'] = $sftpData.find('input[name=port]').val();
                     val['ein'] = $sftpData.find('input[name=ein]').val();
                     val['dir'] = $sftpData.find('input[name=dir]').val();
- 
+
                     q2sftp['ftpClient'] = val;
                     val = {};
-                    
+
                     $.ajax({
                         type: "POST",
                         datatype: "json",
@@ -165,14 +165,14 @@ $(document).ready(function() {
             }]
         });
     });
-    
+
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
-    	var $div = $('#imaginary_container');
+        var $div = $('#imaginary_container');
         var fileName = $('input[name=fileName]', $div).val();
 
         if (!fieldDataValidator($div, '搜尋', 'fileName')) return false;
-        
+
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -219,31 +219,31 @@ $(document).ready(function() {
                                 var errorQueueConnectionFactory = data.errorQueueConnectionFactory;
                                 var heartBeatClient = data.heartBeatClient;
 
-                                $('input[name=beatID]', $heartBeatClient).val( heartBeatClient.beatID );
-                                $('input[name=fileName]', $heartBeatClient).val( heartBeatClient.fileName );
-                                $('input[name=timeSeries]', $heartBeatClient).val( heartBeatClient.timeSeries );
-                                $('input[name=jarFilePath]', $heartBeatClient).val( heartBeatClient.jarFilePath );
+                                $('input[name=beatID]', $heartBeatClient).val(heartBeatClient.beatID);
+                                $('input[name=fileName]', $heartBeatClient).val(heartBeatClient.fileName);
+                                $('input[name=timeSeries]', $heartBeatClient).val(heartBeatClient.timeSeries);
+                                $('input[name=jarFilePath]', $heartBeatClient).val(heartBeatClient.jarFilePath);
 
-                                $('input[name=host]', $connectionFactory).val( queueConnectionFactory.host );
-                                $('input[name=password]', $connectionFactory).val( queueConnectionFactory.password );
-                                $('input[name=port]', $connectionFactory).val( queueConnectionFactory.port );
-                                $('input[name=username]', $connectionFactory).val( queueConnectionFactory.username );
-                                $('input[name=virtualHost]', $connectionFactory).val( queueConnectionFactory.virtualHost );
-                                
-                                $('input[name=exchangeName]', $queueConnectionFactory).val( queueConnectionFactory.exchangeName );
-                                $('input[name=queueName]', $queueConnectionFactory).val( queueConnectionFactory.queueName );
-                                $('input[name=routingKey]', $queueConnectionFactory).val( queueConnectionFactory.routingKey );
+                                $('input[name=host]', $connectionFactory).val(queueConnectionFactory.host);
+                                $('input[name=password]', $connectionFactory).val(queueConnectionFactory.password);
+                                $('input[name=port]', $connectionFactory).val(queueConnectionFactory.port);
+                                $('input[name=username]', $connectionFactory).val(queueConnectionFactory.username);
+                                $('input[name=virtualHost]', $connectionFactory).val(queueConnectionFactory.virtualHost);
 
-                                $('input[name=exchangeName]', $errorQueueConnectionFactory).val( errorQueueConnectionFactory.exchangeName );
-                                $('input[name=queueName]', $errorQueueConnectionFactory).val( errorQueueConnectionFactory.queueName );
-                                $('input[name=routingKey]', $errorQueueConnectionFactory).val( errorQueueConnectionFactory.routingKey );
+                                $('input[name=exchangeName]', $queueConnectionFactory).val(queueConnectionFactory.exchangeName);
+                                $('input[name=queueName]', $queueConnectionFactory).val(queueConnectionFactory.queueName);
+                                $('input[name=routingKey]', $queueConnectionFactory).val(queueConnectionFactory.routingKey);
 
-                                $('input[name=user]', $sftpData).val( ftpClient.user );
-                                $('input[name=password]', $sftpData).val( ftpClient.password );
-                                $('input[name=host]', $sftpData).val( ftpClient.host );
-                                $('input[name=port]', $sftpData).val( ftpClient.port );
-                                $('input[name=ein]', $sftpData).val( ftpClient.ein );
-                                $('input[name=dir]', $sftpData).val( ftpClient.dir );
+                                $('input[name=exchangeName]', $errorQueueConnectionFactory).val(errorQueueConnectionFactory.exchangeName);
+                                $('input[name=queueName]', $errorQueueConnectionFactory).val(errorQueueConnectionFactory.queueName);
+                                $('input[name=routingKey]', $errorQueueConnectionFactory).val(errorQueueConnectionFactory.routingKey);
+
+                                $('input[name=user]', $sftpData).val(ftpClient.user);
+                                $('input[name=password]', $sftpData).val(ftpClient.password);
+                                $('input[name=host]', $sftpData).val(ftpClient.host);
+                                $('input[name=port]', $sftpData).val(ftpClient.port);
+                                $('input[name=ein]', $sftpData).val(ftpClient.ein);
+                                $('input[name=dir]', $sftpData).val(ftpClient.dir);
 
                                 $("button[name=btn-update]").removeClass("hidden");
 
@@ -276,9 +276,9 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
 
-                    if ( !fieldDataValidator( $heartBeatClient , '設定檔', 'fileName') ) return false;
+                    if (!fieldDataValidator($heartBeatClient, '設定檔', 'fileName')) return false;
 
-                    if ( !dataValidator() ) return false;
+                    if (!dataValidator()) return false;
 
                     var fileName = $('input[name=fileName]', $heartBeatClient).val();
                     var $button = this;
@@ -308,7 +308,7 @@ $(document).ready(function() {
                     val['port'] = $connectionFactory.find('input[name=port]').val();
                     q2sftp['connectionFactory'] = val;
                     val = {};
-                    
+
                     //Queue ConnectionFactory
                     val['username'] = $connectionFactory.find('input[name=username]').val();
                     val['password'] = $connectionFactory.find('input[name=password]').val();
@@ -318,10 +318,10 @@ $(document).ready(function() {
                     val['exchangeName'] = $queueConnectionFactory.find('input[name=exchangeName]').val();
                     val['queueName'] = $queueConnectionFactory.find('input[name=queueName]').val();
                     val['routingKey'] = $queueConnectionFactory.find('input[name=routingKey]').val();
- 
+
                     q2sftp['queueConnectionFactory'] = val;
                     val = {};
-                    
+
                     //Error Queue ConnectionFactory
                     val['username'] = $connectionFactory.find('input[name=username]').val();
                     val['password'] = $connectionFactory.find('input[name=password]').val();
@@ -331,10 +331,10 @@ $(document).ready(function() {
                     val['exchangeName'] = $errorQueueConnectionFactory.find('input[name=exchangeName]').val();
                     val['queueName'] = $errorQueueConnectionFactory.find('input[name=queueName]').val();
                     val['routingKey'] = $errorQueueConnectionFactory.find('input[name=routingKey]').val();
- 
+
                     q2sftp['errorQueueConnectionFactory'] = val;
-                    val = {};            
-                    
+                    val = {};
+
                     //SFTP Client
                     val['host'] = $sftpData.find('input[name=host]').val();
                     val['user'] = $sftpData.find('input[name=user]').val();
@@ -342,7 +342,7 @@ $(document).ready(function() {
                     val['port'] = $sftpData.find('input[name=port]').val();
                     val['ein'] = $sftpData.find('input[name=ein]').val();
                     val['dir'] = $sftpData.find('input[name=dir]').val();
- 
+
                     q2sftp['ftpClient'] = val;
                     val = {};
 
@@ -378,11 +378,11 @@ $(document).ready(function() {
             }]
         });
     });
-    
+
     $('#imaginary_container button[name=btn-delete]').click(function(event) {
 
-    	var $content;
-    	
+        var $content;
+
         BootstrapDialog.show({
             title: '刪除',
             message: function(dialog) {
@@ -398,7 +398,7 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
                     var $button = this;
-                    var fileName = $('input[name=fileName]', $content ).val();
+                    var fileName = $('input[name=fileName]', $content).val();
 
                     $.ajax({
                         type: "DELETE",
@@ -481,7 +481,7 @@ function fieldDataValidator($obj, title, input_name) {
         return mes;
     }
 
-    var $obj_input = $obj.find( ('input[name=' + input_name + ']') );
+    var $obj_input = $obj.find(('input[name=' + input_name + ']'));
 
     function existGetMes(obj, title) {
         var vaild_mes = '';
@@ -569,7 +569,7 @@ function dataValidator() {
     var $queueConnectionFactory_inputs = $('#queueConnectionFactory input');
     var $errorQueueConnectionFactory_inputs = $('#errorQueueConnectionFactory input');
     var $sftpData_inputs = $('#sftpData input');
-    
+
     function existGetMes(obj, title) {
         var vaild_mes = '';
         var $obj = '';
@@ -622,7 +622,7 @@ function dataValidator() {
             $content.append($obj);
         }
     });
-    
+
     $content.html() != '' ?
         BootstrapDialog.show({
             title: '警告訊息',
@@ -636,6 +636,6 @@ function dataValidator() {
                 }
             }]
         }) : isValid = true;
-        
+
     return isValid;
 }

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
 import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.FieldName;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
@@ -38,8 +38,6 @@ public class QueueToWebServiceController {
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2wConfigFileName = fileName + "-q2w-config";
 		String q2wXmlconverterConfigFileName = fileName + "-xmlconverter-config";
-		// String q2wHeatBeatClinetBeansConfigFileName = fileName +
-		// "-HeatBeatClinetBeans";
 
 		Q2W root = new Q2W();
 
@@ -53,20 +51,9 @@ public class QueueToWebServiceController {
 		if (XmlUtil.fileExistsJarXmlPath(q2wXmlconverterConfigFileName)) {
 			Config q2w = (Config) service.getJarXmleToObj(q2wXmlconverterConfigFileName, Config.class);
 			List<FieldName> xmlconverter = q2w.getXmlConverter();
-			// List<FieldName> xmlConverter = (List<FieldName> )
-			// service.getJarXmleToObj(q2wXmlconverterConfigFileName,
-			// FieldName.class);
-			// root.SE
-			logger.debug(new Gson().toJson(xmlconverter));
+
 			root.setXmlConverter(xmlconverter);
 		}
-		// if(XmlUtil.fileExistsJarXmlPath(q2wHeatBeatClinetBeansConfigFileName)){
-		// Clazz clazz = (Clazz)
-		// service.getJarXmleToObj(q2wHeatBeatClinetBeansConfigFileName,
-		// Clazz.class);
-		// logger.debug(new Gson().toJson(clazz));
-		// root.setClazz(clazz);
-		// }
 
 		return new Gson().toJson(root);
 
@@ -96,8 +83,8 @@ public class QueueToWebServiceController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -109,7 +96,7 @@ public class QueueToWebServiceController {
 		}
 
 		try {
-			mes += service.addJarProjectVOXml(q2w.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.addJarProjectVOXml(q2w.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -168,9 +155,8 @@ public class QueueToWebServiceController {
 			String name = fileName + "-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
-				clazz.getHeartBeatConnectionFactory().setVirtualHost("/");
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -182,7 +168,7 @@ public class QueueToWebServiceController {
 		}
 
 		try {
-			mes += service.updateJarProjectVOXml(q2w.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.updateJarProjectVOXml(q2w.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
