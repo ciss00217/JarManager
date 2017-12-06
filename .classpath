@@ -35,12 +35,7 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.2.0/d5d2e383d543d4f0ee439fe038283411aac6acbf/amqp-client-4.2.0-sources.jar" kind="lib" path="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.2.0/e451320551274d987b7b07d535d88a5a353776ad/amqp-client-4.2.0.jar" exported="true">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
-		</attributes>
-	</classpathentry>
-	<classpathentry sourcepath="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq.jms/rabbitmq-jms/1.7.0/b27974d6b201d77a9e218cda762d9e3fd53667af/rabbitmq-jms-1.7.0-sources.jar" kind="lib" path="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq.jms/rabbitmq-jms/1.7.0/b43cedadaea93d8eff94a9725f2f58903ca6b4ec/rabbitmq-jms-1.7.0.jar" exported="true">
+	<classpathentry sourcepath="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq.jms/rabbitmq-jms/1.8.1/d61a41903477968db9292c14bcc512ad2979212/rabbitmq-jms-1.8.1-sources.jar" kind="lib" path="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq.jms/rabbitmq-jms/1.8.1/9e9eca3a5550d37c6a7aee2d6c4eb3cbad6fa024/rabbitmq-jms-1.8.1.jar" exported="true">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
@@ -140,7 +135,12 @@
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
 	</classpathentry>
-	<classpathentry sourcepath="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.24/9f1cecd7c757ad5dde29453d43315228bb0a7c7e/slf4j-api-1.7.24-sources.jar" kind="lib" path="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.24/3f6b4bd4f8dbe8d4bea06d107a3826469b85c3e9/slf4j-api-1.7.24.jar" exported="true">
+	<classpathentry kind="lib" path="C:/Users/tibyby/.m2/repository/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" exported="true">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+		</attributes>
+	</classpathentry>
+	<classpathentry sourcepath="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.3.0/c93ccf8bfed0ba8a196938e6c4944634f6cb06a7/amqp-client-4.3.0-sources.jar" kind="lib" path="C:/Users/tibyby/.gradle/caches/modules-2/files-2.1/com.rabbitmq/amqp-client/4.3.0/d712ca9cc66fb9e73e74066c81e727dbb0dae160/amqp-client-4.3.0.jar" exported="true">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
 		</attributes>
