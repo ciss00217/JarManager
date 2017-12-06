@@ -20,6 +20,7 @@ import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
 import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
 import tw.com.heartbeat.clinet.vo.HeartBeatConnectionFactoryVO;
 import tw.com.heartbeat.clinet.vo.HeartBeatDestinationVO;
+import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.ConnectionFactory;
@@ -33,7 +34,12 @@ import tw.com.jarmanager.util.XmlUtil;
 public class QueueToWebServiceService {
 
 	private final static Logger logger = LoggerFactory.getLogger(QueueToWebServiceService.class);
-
+	
+	/**
+	 * 依照檔案名稱，移除規定路徑下，有所關連的檔案
+	 * @param 	fileName 檔案名稱
+	 * @return	關連設定檔各別刪除狀態
+	 */
 	public String removeAllConfig(String fileName) throws JAXBException {
 
 		String jarXmlPath = XmlUtil.getJarManagerConfig("jarXmlPath");
@@ -126,6 +132,12 @@ public class QueueToWebServiceService {
 		return mes;
 	}
 
+	/**
+	 * 物件轉換成XML
+	 * @param 	obj 要進行轉換的物件
+	 * @param 	classesToBeBound entity class
+	 * @return	XML字串
+	 */
 	public String getObjToXml(Object obj, Class<?> classesToBeBound) throws JAXBException {
 
 		JAXBContext context = null;
@@ -140,6 +152,12 @@ public class QueueToWebServiceService {
 		return sw.toString();
 	}
 
+	/**
+	 * 在規定路徑下，把檔案轉換成物件
+	 * @param 	fileName 要進行轉換的檔案名稱
+	 * @param 	classesToBeBound entity class
+	 * @return	轉換後的物件，以object型態回傳，使用時再轉換型態
+	 */
 	public Object getJarXmleToObj(String fileName, Class<?> classesToBeBound) {
 		File file = null;
 		Object object = null;
@@ -152,12 +170,16 @@ public class QueueToWebServiceService {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			object = jaxbUnmarshaller.unmarshal(file);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
 		return object;
 	}
 
+	/**
+	 * 心跳協議物件
+	 * @param 	q2w 資料來源，從此物件中提取，並塞至回傳物件
+	 * @return	心跳協議物件
+	 */
 	public HeartBeatClientXMLVO getHeartBeatClientXMLVO(Q2W q2w) {
 		Config config = q2w.getConfig();
 
@@ -190,6 +212,11 @@ public class QueueToWebServiceService {
 		return heartBeatClientXMLVO;
 	}
 
+	/**
+	 * 新增JarManagerAPI Config
+	 * @param 	q2w 資料來源
+	 * @return	執行結果  true:成功，false:失敗
+	 */
 	public boolean addJarProjectVOXml(Config config) throws IOException, JMSException {
 
 		JarProjectVO jarProjectVO = new JarProjectVO();
@@ -212,6 +239,11 @@ public class QueueToWebServiceService {
 		return new JarManagerService().addJarProjectVOXml(jarProjectVO);
 	}
 
+	/**
+	 * 從JarManagerAPI中，拿到識別碼所對應的jarFilePath
+	 * @param 	id 識別碼
+	 * @return	jarFilePath
+	 */
 	public String getJarFilePathFromJarApiXml(String id) throws IOException, JMSException {
 
 		JarManagerService service = new JarManagerService();
@@ -230,7 +262,12 @@ public class QueueToWebServiceService {
 		return jarFilePath;
 
 	}
-
+	
+	/**
+	 * 修改JarManagerAPI Config
+	 * @param 	config 資料來源
+	 * @return	執行結果  true:成功，false:失敗
+	 */
 	public boolean updateJarProjectVOXml(Config config) throws IOException, JMSException {
 
 		JarProjectVO jarProjectVO = new JarProjectVO();
@@ -252,4 +289,5 @@ public class QueueToWebServiceService {
 
 		return new JarManagerService().updateJarProjectVOXml(jarProjectVO);
 	}
+
 }

@@ -33,7 +33,12 @@ public class QueueToWebServiceController {
 	public QueueToWebServiceController(QueueToWebServiceService service) {
 		this.service = service;
 	}
-
+	
+	/**
+	 * 搜尋設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	json型態的設定檔資訊
+	 */
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2wConfigFileName = fileName + "-q2w-config";
@@ -58,13 +63,25 @@ public class QueueToWebServiceController {
 		return new Gson().toJson(root);
 
 	}
-
+	
+	/**
+	 * 新增設定檔
+	 * @param 	q2w 設定檔物件
+	 * @return	設定檔各別執行狀態
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String dataToFile(@RequestBody Q2W q2w) throws Exception {
 
 		String xml = null;
 		String fileName = q2w.getConfig().getHeartBeatClient().getFileName();
 		String mes = "";
+		try {
+			if(XmlUtil.isJarListHasSameFileName(fileName)){
+				return "名稱已存在，請更換名稱";
+			}
+		} catch (Exception e1) {
+			return "請洽系統管理員";
+		}
 		try {
 			String name = fileName + "-q2w-config";
 
@@ -125,12 +142,22 @@ public class QueueToWebServiceController {
 		return mes;
 	}
 
+	/**
+	 * 刪除設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	關連設定檔各別刪除狀態
+	 */
 	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String delete(@PathVariable("fileName") String fileName) throws Exception {
 
 		return service.removeAllConfig(fileName);
 	}
 
+	/**
+	 * 修改設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	關連設定檔各別修改狀態
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String updateToFile(@RequestBody Q2W q2w) throws Exception {
 

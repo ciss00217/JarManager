@@ -38,7 +38,13 @@ public class QueueToSFTPController {
 			logger.error("Can not get the file name");
 			return "Can not get the file name";
 		}
-
+		try {
+			if(XmlUtil.isJarListHasSameFileName(fileName)){
+				return "名稱已存在，請更換名稱";
+			}
+		} catch (Exception e1) {
+			return "請洽系統管理員";
+		}
 		try {
 			String name = fileName + "-q2ftp-config";
 

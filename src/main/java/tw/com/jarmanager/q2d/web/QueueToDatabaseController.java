@@ -39,7 +39,12 @@ public class QueueToDatabaseController {
 
 		return service.removeAllConfig(fileName);
 	}
-
+	
+	/**
+	 * 搜尋設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	json型態的設定檔資訊
+	 */
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2dConfigFileName = fileName + "-q2d-config";
@@ -56,7 +61,12 @@ public class QueueToDatabaseController {
 		return new Gson().toJson(root);
 
 	}
-
+	
+	/**
+	 * 新增設定檔
+	 * @param 	json 設定檔資料，型態為json
+	 * @return	設定檔各別執行狀態
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String dataToFile(@RequestBody String json) throws Exception {
 
@@ -79,7 +89,13 @@ public class QueueToDatabaseController {
 			logger.error("Can not get the file name");
 			return "Can not get the file name";
 		}
-
+		try {
+			if(XmlUtil.isJarListHasSameFileName(fileName)){
+				return "名稱已存在，請更換名稱";
+			}
+		} catch (Exception e1) {
+			return "請洽系統管理員";
+		}
 		try {
 			String name = fileName + "-q2d-config";
 
