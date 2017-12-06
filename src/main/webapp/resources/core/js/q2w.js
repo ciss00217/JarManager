@@ -13,6 +13,7 @@ $(document).ready(function() {
     var $connectionFactory = $('#connectionFactoryData');
     var $queueOrigin = $('#queueOriginData');
     var $queueDestination = $('#queueDestinationData');
+    var $queueError = $('#queueErrorData');
     var $webService = $('#webServiceData');
     var $Q2W = $('#Q2WData');
 
@@ -23,185 +24,6 @@ $(document).ready(function() {
         }).columns.adjust();
     });
 
-    function fileNameDataValidator() {
-        var isValid = false;
-
-        function checkVal(obj) {
-            var mes = '';
-            $.each(obj, function(index, input) {
-                    if ($(input).val() == '') {
-                        $mes = $('<div/>').append(
-                            $('<p/>', {
-                                'text': '● ' + input.placeholder + ' 尚未填寫'
-                            }));
-                        mes += $mes.html();
-                    }
-            });
-            return mes;
-        }
-
-        var $heartBeatClient_fileName_input = $heartBeatClient.find('input[name=fileName]');
-
-        function existGetMes(obj, title) {
-            var vaild_mes = '';
-            var $obj = '';
-
-            vaild_mes = checkVal(obj);
-
-            if (vaild_mes != '') {
-                var $obj =
-                    $('<div/>', {
-                        'class': 'alert alert-danger'
-                    }).append(
-                        $('<strong/>', {
-                            'text': title,
-                            "css": {
-                                'font-size': '22px'
-                            }
-                        }),
-                        vaild_mes
-                    );
-            }
-            return $obj;
-        }
-
-        var $content =
-            $('<div/>', {
-                'css': {
-                    'height': '250px',
-                    'overflow': 'auto'
-                }
-            });
-
-        var title_array = {};
-        title_array['$heartBeatClient_fileName_input'] = '註冊檔';
-
-        var element_array = {};
-        element_array['$heartBeatClient_fileName_input'] = $heartBeatClient_fileName_input;
-
-        $.each(title_array, function(element_key, title) {
-
-            if (existGetMes(element_array[element_key], title) != '') {
-                console.log('進入');
-                var $obj = existGetMes(element_array[element_key], title);
-                $content.append($obj);
-            }
-        });
-        
-        console.log('$content.html():'+$content.html() != '');
-        
-        $content.html() != '' ?
-            BootstrapDialog.show({
-                title: '警告訊息',
-                message: function(dialog) {
-                    return $content;
-                },
-                buttons: [{
-                    label: '確認',
-                    action: function(dialog) {
-                        dialog.close();
-                    }
-                }]
-            }) : isValid = true;
-            
-        return isValid;
-    }
-    
-    function dataValidator() {
-        var isValid = false;
-
-        function checkVal(obj) {
-            var mes = '';
-            $.each(obj, function(index, input) {
-                if (!$(input).closest('div').hasClass("hidden")) {
-                    if ($(input).val() == '') {
-                        $mes = $('<div/>').append(
-                            $('<p/>', {
-                                'text': '● ' + input.placeholder + ' 尚未填寫'
-                            }));
-                        mes += $mes.html();
-                    }
-                }
-            });
-            return mes;
-        }
-
-        var $heartBeatClient_inputs = $('input', $heartBeatClient);
-        var $connectionFactory_inputs = $('input', $connectionFactory);
-        var $queueOrigin_inputs = $('input', $queueOrigin);
-        var $queueDestination_inputs = $('input', $queueDestination);
-        var $webService_inputs = $('input', $webService);
-
-        function existGetMes(obj, title) {
-            var vaild_mes = '';
-            var $obj = '';
-
-            vaild_mes = checkVal(obj);
-
-            if (vaild_mes != '') {
-                var $obj =
-                    $('<div/>', {
-                        'class': 'alert alert-danger'
-                    }).append(
-                        $('<strong/>', {
-                            'text': title,
-                            "css": {
-                                'font-size': '18px'
-                            }
-                        }),
-                        vaild_mes
-                    );
-            }
-            return $obj;
-        }
-
-        var $content =
-            $('<div/>', {
-                'css': {
-                    'height': '250px',
-                    'overflow': 'auto'
-                }
-            });
-
-        var title_array = {};
-        title_array['$heartBeatClient_inputs'] = '心跳協議';
-        title_array['$connectionFactory_inputs'] = '資料庫連線';
-        title_array['$queueOrigin_inputs'] = '來源佇列';
-        title_array['$queueDestination_inputs'] = '目的佇列';
-        title_array['$webService_inputs'] = 'Web Service';
-
-        var element_array = {};
-        element_array['$heartBeatClient_inputs'] = $heartBeatClient_inputs;
-        element_array['$connectionFactory_inputs'] = $connectionFactory_inputs;
-        element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
-        element_array['$queueDestination_inputs'] = $queueDestination_inputs;
-        element_array['$webService_inputs'] = $webService_inputs;
-
-        $.each(title_array, function(element_key, title) {
-
-            if (existGetMes(element_array[element_key], title) != '') {
-                var $obj = existGetMes(element_array[element_key], title);
-                $content.append($obj);
-            }
-        });
-        
-        $content.html() != '' ?
-            BootstrapDialog.show({
-                title: '警告訊息',
-                message: function(dialog) {
-                    return $content;
-                },
-                buttons: [{
-                    label: '確認',
-                    action: function(dialog) {
-                        dialog.close();
-                    }
-                }]
-            }) : isValid = true;
-            
-        return isValid;
-    }
-    
     $('#imaginary_container button[name=btn-delete]').click(function(event) {
 
         BootstrapDialog.show({
@@ -240,8 +62,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -259,23 +79,23 @@ $(document).ready(function() {
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
         var fileName = $('#imaginary_container input[name=fileName]').val();
-        
-		if(fileName.length == 0){
-	        BootstrapDialog.show({
-	            title: '警告訊息',
-	            message: function(dialog) {
-	                return "請填寫要搜尋的設定檔名稱";
-	            },
-	            buttons: [{
-	                label: '確認',
-	                action: function(dialog) {
-	                    dialog.close();
-	                }
-	            }]
-	        });
-	        return false;
-		}
-		
+
+        if (fileName.length == 0) {
+            BootstrapDialog.show({
+                title: '警告訊息',
+                message: function(dialog) {
+                    return "請填寫要搜尋的設定檔名稱";
+                },
+                buttons: [{
+                    label: '確認',
+                    action: function(dialog) {
+                        dialog.close();
+                    }
+                }]
+            });
+            return false;
+        }
+
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -321,6 +141,7 @@ $(document).ready(function() {
                                 var connectionFactory = data.config.connectionFactory;
                                 var queueOrigin = data.config.queueOrigin;
                                 var queueDestination = data.config.queueDestination;
+                                var queueError = data.config.queueError;
                                 var webService = data.config.webService;
                                 var xmlConverter = data.xmlConverter;
 
@@ -334,7 +155,7 @@ $(document).ready(function() {
                                 $connectionFactory.find('input[name=host]').val(connectionFactory.host);
                                 $connectionFactory.find('input[name=port]').val(connectionFactory.port);
                                 $connectionFactory.find('input[name=virtualHost]').val(connectionFactory.virtualHost);
-                                
+
                                 $queueOrigin.find('input[name=queueName]').val(queueOrigin.queueName);
                                 $queueOrigin.find('input[name=exchangeName]').val(queueOrigin.exchangeName);
                                 $queueOrigin.find('input[name=routingKey]').val(queueOrigin.routingKey);
@@ -343,6 +164,10 @@ $(document).ready(function() {
                                 $queueDestination.find('input[name=exchangeName]').val(queueDestination.exchangeName);
                                 $queueDestination.find('input[name=routingKey]').val(queueDestination.routingKey);
 
+                                $queueError.find('input[name=queueName]').val(queueError.queueName);
+                                $queueError.find('input[name=exchangeName]').val(queueError.exchangeName);
+                                $queueError.find('input[name=routingKey]').val(queueError.routingKey);
+                                
                                 $webService.find('input[name=url]').val(webService.url);
                                 $webService.find('input[name=type]').val(webService.type);
                                 $webService.find('input[name=format]').val(webService.format);
@@ -391,8 +216,6 @@ $(document).ready(function() {
                 });
             },
             error: function(e) {
-                $button.enable();
-                $button.stopSpin();
                 dialog.setClosable(true);
                 dialog.setMessage('失敗');
             }
@@ -419,11 +242,13 @@ $(document).ready(function() {
         $queueDestination.find('input[name=exchangeName]').val('exchange');
         $queueDestination.find('input[name=routingKey]').val('ian2');
 
+        $queueError.find('input[name=queueName]').val('kevin');
+        $queueError.find('input[name=exchangeName]').val('exchange');
+        $queueError.find('input[name=routingKey]').val('kevin');
+        
         $webService.find('input[name=url]').val('https://tw.ews.mall.yahooapis.com');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
-//        $webService.find('input[name=action]').val('Get');
-//        $webService.find('input[name=encode]').val('Base64');
         $webService.find('input[name=apiMethod]').val('stauth');
         $webService.find('input[name=apiVersion]').val('v1');
         $webService.find('input[name=apiGroup]').val('MallCategory');
@@ -637,14 +462,14 @@ $(document).ready(function() {
             text: '新增',
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
-            	
-            	var $dialog;
-            	
+
+                var $dialog;
+
                 BootstrapDialog.show({
                     title: '新增',
                     message: function(dialog) {
 
-                    	$dialog =
+                        $dialog =
                             $('<div/>').append(
                                 buildInput('來源', '來源欄位', 'source'),
                                 buildInput('目標', '目標欄位', 'destination'),
@@ -744,11 +569,11 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
-                	
-                    if( !fileNameDataValidator() ) return false;
-                    
-                    if( !dataValidator() ) return false;
-                    
+
+                    if (!fieldDataValidator($heartBeatClient, '設定檔', 'fileName')) return false;
+
+                    if (!dataValidator()) return false;
+
                     var fileName = $heartBeatClient.find('input[name=fileName]').val();
                     var $button = this;
                     $button.disable();
@@ -792,6 +617,13 @@ $(document).ready(function() {
                     q2w['queueDestination'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2w['queueError'] = val;
+                    val = {};
+                    
                     //Web Service
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
@@ -851,8 +683,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -870,13 +700,13 @@ $(document).ready(function() {
     $("button[name=btn-save]").click(function(event) {
 
         var $div;
-        
+
         BootstrapDialog.show({
             title: '確認是否送出',
             message: function(dialog) {
-            	$div = buildInput('名稱', '設定檔名稱', 'fileName');
-                $('input[name=fileName]', $div).val( $heartBeatClient.find('input[name=fileName]').val() );
-                
+                $div = buildInput('名稱', '設定檔名稱', 'fileName');
+                $('input[name=fileName]', $div).val($heartBeatClient.find('input[name=fileName]').val());
+
                 var $content =
                     $('<div/>', {
                         'id': 'btnSaveDialog'
@@ -889,12 +719,12 @@ $(document).ready(function() {
             buttons: [{
                 label: '確認',
                 action: function(dialog) {
-                    $heartBeatClient.find('input[name=fileName]').val( $('input[name=fileName]', $div).val() );
-                	
-                    if( !fileNameDataValidator() ) return false;
-                    
-                    if( !dataValidator() ) return false;
-                    
+                    $heartBeatClient.find('input[name=fileName]').val($('input[name=fileName]', $div).val());
+
+                    if (!fieldDataValidator($div, '設定檔', 'fileName')) return false;
+
+                    if (!dataValidator()) return false;
+
                     var fileName = $('#btnSaveDialog input[name=fileName]').val();
                     var $button = this;
                     $button.disable();
@@ -938,19 +768,24 @@ $(document).ready(function() {
                     q2w['queueDestination'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2w['queueError'] = val;
+                    val = {};
+                    
                     //Web Service
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
                     val['format'] = $webService.find('input[name=format]').val();
-//                    val['action'] = $webService.find('input[name=action]').val();
-//                    val['encode'] = $webService.find('input[name=encode]').val();
                     val['apiMethod'] = $webService.find('input[name=apiMethod]').val();
                     val['apiVersion'] = $webService.find('input[name=apiVersion]').val();
                     val['apiGroup'] = $webService.find('input[name=apiGroup]').val();
                     val['apiAction'] = $webService.find('input[name=apiAction]').val();
                     val['apiKey'] = $webService.find('input[name=apiKey]').val();
                     val['sharedSecret'] = $webService.find('input[name=sharedSecret]').val();
-                    
+
                     q2w['webService'] = val;
                     val = {};
                     vo['config'] = q2w;
@@ -995,8 +830,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -1011,3 +844,189 @@ $(document).ready(function() {
         });
     });
 });
+
+/**
+ * 單欄位檢查
+ * @param $obj 包含要檢查欄位的物件
+ * @param title 欄位提示文字
+ * @param input_name input名稱屬性
+ */
+function fieldDataValidator($obj, title, input_name) {
+    var isValid = false;
+
+    function checkVal(obj) {
+        var mes = '';
+        $.each(obj, function(index, input) {
+            if ($(input).val() == '') {
+                $mes = $('<div/>').append(
+                    $('<p/>', {
+                        'text': '● ' + input.placeholder + ' 尚未填寫'
+                    }));
+                mes += $mes.html();
+            }
+        });
+        return mes;
+    }
+
+    var $obj_input = $obj.find(('input[name=' + input_name + ']'));
+
+    function existGetMes(obj, title) {
+        var vaild_mes = '';
+        var $obj = '';
+
+        vaild_mes = checkVal(obj);
+
+        if (vaild_mes != '') {
+            var $obj =
+                $('<div/>', {
+                    'class': 'alert alert-danger'
+                }).append(
+                    $('<strong/>', {
+                        'text': title,
+                        "css": {
+                            'font-size': '22px'
+                        }
+                    }),
+                    vaild_mes
+                );
+        }
+        return $obj;
+    }
+
+    var $content =
+        $('<div/>', {
+            'css': {
+                'height': '250px',
+                'overflow': 'auto'
+            }
+        });
+
+    var title_array = {};
+    title_array['$obj_input'] = title;
+
+    var element_array = {};
+    element_array['$obj_input'] = $obj_input;
+
+    $.each(title_array, function(element_key, title) {
+
+        if (existGetMes(element_array[element_key], title) != '') {
+
+            var $obj = existGetMes(element_array[element_key], title);
+            $content.append($obj);
+        }
+    });
+
+    $content.html() != '' ?
+        BootstrapDialog.show({
+            title: '警告訊息',
+            message: function(dialog) {
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        }) : isValid = true;
+
+    return isValid;
+}
+
+function dataValidator() {
+    var isValid = false;
+
+    function checkVal(obj) {
+        var mes = '';
+        $.each(obj, function(index, input) {
+            if (!$(input).closest('div').hasClass("hidden")) {
+                if ($(input).val() == '') {
+                    $mes = $('<div/>').append(
+                        $('<p/>', {
+                            'text': '● ' + input.placeholder + ' 尚未填寫'
+                        }));
+                    mes += $mes.html();
+                }
+            }
+        });
+        return mes;
+    }
+
+    var $heartBeatClient_inputs = $('#heartBeatClientData input');
+    var $connectionFactory_inputs = $('#connectionFactoryData input');
+    var $queueOrigin_inputs = $('#queueOriginData input');
+    var $queueDestination_inputs = $('#queueDestinationData input');
+    var $queueError_inputs = $('#queueErrorData input');
+    var $webService_inputs = $('#webServiceData input');
+
+    function existGetMes(obj, title) {
+        var vaild_mes = '';
+        var $obj = '';
+
+        vaild_mes = checkVal(obj);
+
+        if (vaild_mes != '') {
+            var $obj =
+                $('<div/>', {
+                    'class': 'alert alert-danger'
+                }).append(
+                    $('<strong/>', {
+                        'text': title,
+                        "css": {
+                            'font-size': '18px'
+                        }
+                    }),
+                    vaild_mes
+                );
+        }
+        return $obj;
+    }
+
+    var $content =
+        $('<div/>', {
+            'css': {
+                'height': '250px',
+                'overflow': 'auto'
+            }
+        });
+
+    var title_array = {};
+    title_array['$heartBeatClient_inputs'] = '心跳協議';
+    title_array['$connectionFactory_inputs'] = '資料庫連線';
+    title_array['$queueOrigin_inputs'] = '來源佇列';
+    title_array['$queueDestination_inputs'] = '目的佇列';
+    title_array['$queueError_inputs'] = '錯誤佇列';
+    title_array['$webService_inputs'] = 'Web Service';
+
+    var element_array = {};
+    element_array['$heartBeatClient_inputs'] = $heartBeatClient_inputs;
+    element_array['$connectionFactory_inputs'] = $connectionFactory_inputs;
+    element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
+    element_array['$queueDestination_inputs'] = $queueDestination_inputs;
+    element_array['$queueError_inputs'] = $queueError_inputs;
+    element_array['$webService_inputs'] = $webService_inputs;
+
+    $.each(title_array, function(element_key, title) {
+
+        if (existGetMes(element_array[element_key], title) != '') {
+            var $obj = existGetMes(element_array[element_key], title);
+            $content.append($obj);
+        }
+    });
+
+    $content.html() != '' ?
+        BootstrapDialog.show({
+            title: '警告訊息',
+            message: function(dialog) {
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        }) : isValid = true;
+
+    return isValid;
+}

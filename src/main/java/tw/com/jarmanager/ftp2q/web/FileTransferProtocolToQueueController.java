@@ -1,7 +1,5 @@
 package tw.com.jarmanager.ftp2q.web;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +17,6 @@ import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
 import tw.com.jarmanager.ftp2q.mode.FTP2QConfig;
 import tw.com.jarmanager.ftp2q.mode.FTP2QMode;
 import tw.com.jarmanager.ftp2q.service.FileTransferProtocolToQueueService;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
-import tw.com.jarmanager.q2w.web.mode.Config;
-import tw.com.jarmanager.q2w.web.mode.FieldName;
-import tw.com.jarmanager.q2w.web.mode.Q2W;
 import tw.com.jarmanager.util.XmlUtil;
 
 @Controller

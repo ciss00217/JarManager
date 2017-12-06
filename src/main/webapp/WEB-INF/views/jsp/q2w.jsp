@@ -58,6 +58,7 @@
 					<li role="presentation" class="active"><a href="home">Home</a></li>
 					<li role="presentation"><a href="q2w">Q2W</a></li>
 					<li role="presentation"><a href="q2d">Q2D</a></li>
+					<li role="presentation"><a href="q2sftp">Q2SFTP</a></li>
 					<li role="presentation"><a href="JarProjectVOs">JarManager</a></li>
 				</ul>
 			</div>
@@ -103,6 +104,8 @@
 											data-target="#queueOriginData">來源佇列</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueDestinationData">目的佇列</a></li>
+										<li class="azed-tab"><a data-toggle="tab" role="tab"
+											data-target="#queueErrorData">錯誤佇列</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#webServiceData">Yahoo Web Service</a></li>
 									</ul>
@@ -169,7 +172,7 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="queueName" placeholder="名稱">
+													class="form-control" name="queueName" placeholder="佇列名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i
@@ -189,7 +192,27 @@
 											<div class="input-group">
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
-													class="form-control" name="queueName" placeholder="名稱">
+													class="form-control" name="queueName" placeholder="佇列名稱">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-random"></i></span> <input type="text"
+													class="form-control" name="exchangeName"
+													placeholder="exchange name">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-link"></i></span> <input
+													type="password" class="form-control" name="routingKey"
+													placeholder="routing key">
+											</div>
+										</div>
+										<div id="queueErrorData" class="tab-pane fade in"
+											role="tabpanel">
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-user"></i></span> <input type="text"
+													class="form-control" name="queueName" placeholder="佇列名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i

@@ -38,6 +38,7 @@
 					<li role="presentation"><a href="q2w">Q2W</a></li>
 					<li role="presentation"><a href="q2d">Q2D</a></li>
 					<li role="presentation"><a href="ftp2q">FTP2Q</a></li>
+					<li role="presentation"><a href="q2sftp">Q2SFTP</a></li>
 					<li role="presentation"><a href="JarProjectVOs">JarManager</a></li>
 				</ul>
 			</div>

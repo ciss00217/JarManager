@@ -10,13 +10,16 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
+import tw.com.jarmanager.api.service.JarManagerAPIService;
+
 public class XmlUtil {
 
 	private final static Logger logger = LoggerFactory.getLogger(XmlUtil.class);
-
-	/*
-	 * 目的:從JarManagerConfig文件中，提取出所需參數的值 
-	 * name: 要提取的值對應的名稱
+	
+	/**
+	 * 從JarManagerConfig文件中，提取出所需參數的值
+	 * @param	name 要提取的值，所對應的名稱
+	 * @return	名稱對應的值
 	 */
 	public static String getJarManagerConfig(String name) {
 		ApplicationContext context = null;
@@ -29,12 +32,13 @@ public class XmlUtil {
 		}
 		return name;
 	}
-
-	/*
-	 * 目的:寫入XML至JarManagerConfig文件中規定的路徑下 
-	 * fileName: 要建立的檔案名稱 
-	 * type: 檔案寫入方式
-	 * true為附加上去，false則是覆寫 content: XML內文
+	
+	/**
+	 * 寫入XML至JarManagerConfig文件中規定的路徑下
+	 * @param 	fileName 要建立的檔案名稱
+	 * @param 	type 檔案寫入方式(true為附加上去，false則是覆寫)
+	 * @param 	content XML內文
+	 * @return	執行結果  true:成功，false:失敗
 	 */
 	public static boolean fileToJarXmlPath(String fileName, boolean type, String content) {
 		File file = null;
@@ -54,10 +58,11 @@ public class XmlUtil {
 		return result;
 	}
 
-	/*
-	 * 目的: 確認檔案是否存在於JarManagerConfig文件中規定的路徑下 
-	 * fileName: 檔案名稱
-	 */
+	/**
+	 * 確認檔案是否存在於JarManagerConfig文件中規定的路徑下 
+	 * @param fileName 檔案名稱
+	 * @return	執行結果  true:存在，false:不存在
+	 */	
 	public static boolean fileExistsJarXmlPath(String fileName) {
 		File file = null;
 		boolean result = false;
@@ -71,5 +76,18 @@ public class XmlUtil {
 			logger.error(e.getMessage());
 		}
 		return result;
+	}
+	
+	/**
+	 * 判斷名稱是否存在JarManagerAPI中
+	 * @param 	fileName 
+	 * @return	執行結果  true:存在，false:不存在
+	 */
+	public static boolean isJarListHasSameFileName(String fileName)  {
+		String jarManagerPath = XmlUtil.getJarManagerConfig("jarManagerPath");
+		JarManagerAPIService jarManagerAPIService = new JarManagerAPIService();
+		jarManagerAPIService.setXmlFilePath(jarManagerPath);
+		  
+		return jarManagerAPIService.isJarListHasSameFileName(fileName);
 	}
 }

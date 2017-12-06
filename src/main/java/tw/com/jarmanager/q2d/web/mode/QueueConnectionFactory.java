@@ -4,7 +4,7 @@ public class QueueConnectionFactory {
 	private String host;
 	private String virtualHost;
 	private String password;
-	private long port;
+	private int port;
 	private String username;
 
 	public String getHost() {
@@ -31,11 +31,11 @@ public class QueueConnectionFactory {
 		this.password = password;
 	}
 
-	public long getPort() {
+	public int getPort() {
 		return port;
 	}
 
-	public void setPort(long port) {
+	public void setPort(int port) {
 		this.port = port;
 	}
 

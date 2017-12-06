@@ -9,8 +9,8 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
-@XmlType(propOrder = { "heartBeatClient", "connectionFactory", "queueDestination", "queueOrigin", "webService",
-		"xmlConverter" })
+@XmlType(propOrder = { "heartBeatClient", "connectionFactory", "queueDestination", "queueOrigin", "queueError",
+		"webService", "xmlConverter" })
 public class Config {
 
 	@XmlElement(name = "HeartBeatClient")
@@ -25,11 +25,23 @@ public class Config {
 	@XmlElement(name = "queueOrigin")
 	private QueueOrigin queueOrigin;
 
+	@XmlElement(name = "queueError")
+	private QueueError queueError;
+
 	@XmlElement(name = "webService")
 	private WebService webService;
-	
-	@XmlElement(name = "fieldName",type=FieldName.class)
+
+	@XmlElement(name = "fieldName", type = FieldName.class)
 	private List<FieldName> xmlConverter;
+
+	@XmlTransient
+	public QueueError getQueueError() {
+		return queueError;
+	}
+
+	public void setQueueError(QueueError queueError) {
+		this.queueError = queueError;
+	}
 
 	@XmlTransient
 	public List<FieldName> getXmlConverter() {

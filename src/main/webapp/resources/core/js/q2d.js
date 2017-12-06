@@ -14,6 +14,7 @@ $(document).ready(function() {
     var $tableSetting = $('#tableSettingData');
     var $queueConnectionFactory = $('#queueConnectionFactoryData');
     var $queueOrigin = $('#queueOriginData');
+    var $queueError = $('#queueErrorData');
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
         $.fn.dataTable.tables({
@@ -44,6 +45,10 @@ $(document).ready(function() {
         $('input[name=exchangeName]', $queueOrigin).val('exchange');
         $('input[name=routingKey]', $queueOrigin).val('ian');
 
+        $('input[name=queueName]', $queueError).val('ian2');
+        $('input[name=exchangeName]', $queueError).val('exchange');
+        $('input[name=routingKey]', $queueError).val('ian2');
+        
         $insertTable.clear().draw();
 
         $insertTable.rows.add([{
@@ -66,7 +71,7 @@ $(document).ready(function() {
         $('input[name=checkbox-group-select]', $insertTable.table().node())[0].checked = true;
         $('input[name=checkbox-group-select]', $insertTable.table().node())[1].checked = true;
         $('input[name=checkbox-group-select]', $insertTable.table().node())[2].checked = true;
-        
+
         $updateTable.clear().draw();
 
         $updateTable.rows.add([{
@@ -89,12 +94,12 @@ $(document).ready(function() {
             "source": 'WarehouseCode',
             "destination": 'user_id',
             "type": 'VARCHAR'
-        }]).draw();       
+        }]).draw();
         $('input[name=checkbox-group-select]', $updateTable.table().node())[0].checked = true;
         $('input[name=checkbox-group-select]', $updateTable.table().node())[1].checked = true;
         $('input[name=checkbox-group-select]', $updateTable.table().node())[2].checked = true;
         $('input[name=checkbox-group-select]', $updateTable.table().node())[3].checked = true;
-        
+
         $updateRelationTable.clear().draw();
 
         $updateRelationTable.rows.add([{
@@ -109,7 +114,7 @@ $(document).ready(function() {
             "destination": 'user_id',
             "type": 'VARCHAR',
             "relation": '='
-        }]).draw();       
+        }]).draw();
         $('input[name=checkbox-group-select]', $updateRelationTable.table().node())[0].checked = true;
         $('input[name=checkbox-group-select]', $updateRelationTable.table().node())[1].checked = true;
 
@@ -123,7 +128,7 @@ $(document).ready(function() {
             "source": 'WarehouseCode',
             "destination": 'user_id',
             "type": 'VARCHAR'
-        }]).draw();       
+        }]).draw();
         $('input[name=checkbox-group-select]', $deleteTable.table().node())[0].checked = true;
         $('input[name=checkbox-group-select]', $deleteTable.table().node())[1].checked = true;
     });
@@ -148,7 +153,9 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
 
-                    if (!fieldDataValidator($div, '設定檔', 'fileName')) return false;
+                    if ( !fieldDataValidator($div, '設定檔', 'fileName') ) return false;
+                    
+                    if ( !dataValidator() ) return false;
 
                     var fileName = $('input[name=fileName]', $div).val();
                     var $button = this;
@@ -199,8 +206,15 @@ $(document).ready(function() {
                     q2d['queueOrigin'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2d['queueError'] = val;
+                    val = {};
+
                     var Table = {};
-                    
+
                     //Insert Table
                     cells = $insertTable.cells().nodes();
                     $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
@@ -249,17 +263,17 @@ $(document).ready(function() {
                     });
                     Table['table'] = tables;
                     q2d['insert'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
-                    
+
                     //Update Relation Table
-                    
-        			$.each( $updateRelationTable.rows().data() , function(index, data) {
-        				condition[data.name] = data;
+
+                    $.each($updateRelationTable.rows().data(), function(index, data) {
+                        condition[data.name] = data;
                     });
-                    
+
                     //Update Table
                     cells = $updateTable.cells().nodes();
                     $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
@@ -281,11 +295,11 @@ $(document).ready(function() {
                         var table = {};
                         var con = {};
                         Table = {};
-                        
+
                         table['name'] = tableName;
 
                         table['condition'] = condition[tableName];
-                        
+
                         $checkboxs.each(function(index, checkbox) {
 
                             var row = $(checkbox).closest('tr');
@@ -296,13 +310,13 @@ $(document).ready(function() {
                                 var field = {};
                                 var fieldVal = {};
                                 var tableDetail = {};
-                                
+
                                 if (tableName == data.name) {
 
                                     fieldVal['source'] = data.source;
                                     fieldVal['destination'] = data.destination;
                                     fieldVal['type'] = data.type;
-                                    
+
                                     tmp.push(fieldVal);
                                     table['field'] = tmp;
                                 }
@@ -314,7 +328,7 @@ $(document).ready(function() {
 
                     Table['table'] = tables;
                     q2d['update'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
@@ -368,11 +382,11 @@ $(document).ready(function() {
 
                     Table['table'] = tables;
                     q2d['delete'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
-                    
+
                     vo['config'] = q2d;
 
                     $.ajax({
@@ -392,8 +406,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -407,7 +419,7 @@ $(document).ready(function() {
             }]
         });
     });
-    
+
     $("button[name=btn-update]").click(function(event) {
 
         BootstrapDialog.show({
@@ -416,9 +428,9 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
 
-                    if (!fieldDataValidator( $heartBeatClient , '設定檔', 'fileName')) return false;
-                    
-//                    if( !dataValidator() ) return false;
+                    if (!fieldDataValidator($heartBeatClient, '設定檔', 'fileName')) return false;
+
+                    if (!dataValidator()) return false;
 
                     var fileName = $('input[name=fileName]', $heartBeatClient).val();
                     var $button = this;
@@ -469,8 +481,15 @@ $(document).ready(function() {
                     q2d['queueOrigin'] = val;
                     val = {};
 
-                    var Table = {};
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2d['queueError'] = val;
+                    val = {};
                     
+                    var Table = {};
+
                     //Insert Table
                     cells = $insertTable.cells().nodes();
                     $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
@@ -519,17 +538,17 @@ $(document).ready(function() {
                     });
                     Table['table'] = tables;
                     q2d['insert'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
-                    
+
                     //Update Relation Table
-                    
-        			$.each( $updateRelationTable.rows().data() , function(index, data) {
-        				condition[data.name] = data;
+
+                    $.each($updateRelationTable.rows().data(), function(index, data) {
+                        condition[data.name] = data;
                     });
-                    
+
                     //Update Table
                     cells = $updateTable.cells().nodes();
                     $checkboxs = $(cells).find('input[name=checkbox-group-select]:checked');
@@ -551,11 +570,11 @@ $(document).ready(function() {
                         var table = {};
                         var con = {};
                         Table = {};
-                        
+
                         table['name'] = tableName;
 
                         table['condition'] = condition[tableName];
-                        
+
                         $checkboxs.each(function(index, checkbox) {
 
                             var row = $(checkbox).closest('tr');
@@ -566,13 +585,13 @@ $(document).ready(function() {
                                 var field = {};
                                 var fieldVal = {};
                                 var tableDetail = {};
-                                
+
                                 if (tableName == data.name) {
 
                                     fieldVal['source'] = data.source;
                                     fieldVal['destination'] = data.destination;
                                     fieldVal['type'] = data.type;
-                                    
+
                                     tmp.push(fieldVal);
                                     table['field'] = tmp;
                                 }
@@ -584,7 +603,7 @@ $(document).ready(function() {
 
                     Table['table'] = tables;
                     q2d['update'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
@@ -638,11 +657,11 @@ $(document).ready(function() {
 
                     Table['table'] = tables;
                     q2d['delete'] = Table;
-                    
+
                     tables = [];
                     tableNames = [];
                     Table = {};
-                    
+
                     vo['config'] = q2d;
 
                     $.ajax({
@@ -662,8 +681,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -677,11 +694,11 @@ $(document).ready(function() {
             }]
         });
     });
-    
+
     $('#imaginary_container button[name=btn-delete]').click(function(event) {
 
-    	var $content;
-    	
+        var $content;
+
         BootstrapDialog.show({
             title: '刪除',
             message: function(dialog) {
@@ -697,7 +714,7 @@ $(document).ready(function() {
                 label: '確認',
                 action: function(dialog) {
                     var $button = this;
-                    var fileName = $('input[name=fileName]', $content ).val();
+                    var fileName = $('input[name=fileName]', $content).val();
 
                     $.ajax({
                         type: "DELETE",
@@ -716,8 +733,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -731,14 +746,14 @@ $(document).ready(function() {
             }]
         });
     });
-    
+
     $('#imaginary_container button[name=btn-search]').click(function(event) {
 
-    	var $div = $('#imaginary_container');
+        var $div = $('#imaginary_container');
         var fileName = $('input[name=fileName]', $div).val();
 
         if (!fieldDataValidator($div, '搜尋', 'fileName')) return false;
-        
+
         $.ajax({
             type: "GET",
             datatype: "json",
@@ -785,26 +800,30 @@ $(document).ready(function() {
                                 var queueConnectionFactory = data.config.queueConnectionFactory;
                                 var queueOrigin = data.config.queueOrigin;
 
-                                $('input[name=beatID]', $heartBeatClient).val( heartBeatClient.beatID );
-                                $('input[name=fileName]', $heartBeatClient).val( heartBeatClient.fileName );
-                                $('input[name=timeSeries]', $heartBeatClient).val( heartBeatClient.timeSeries );
-                                $('input[name=jarFilePath]', $heartBeatClient).val( heartBeatClient.jarFilePath );
+                                $('input[name=beatID]', $heartBeatClient).val(heartBeatClient.beatID);
+                                $('input[name=fileName]', $heartBeatClient).val(heartBeatClient.fileName);
+                                $('input[name=timeSeries]', $heartBeatClient).val(heartBeatClient.timeSeries);
+                                $('input[name=jarFilePath]', $heartBeatClient).val(heartBeatClient.jarFilePath);
 
-                                $('input[name=dbUserName]', $databaseConnectionFactory).val( databaseConnectionFactory.dbUserName );
-                                $('input[name=dbPassword]', $databaseConnectionFactory).val( databaseConnectionFactory.dbPassword );
-                                $('input[name=dbURL]', $databaseConnectionFactory).val( databaseConnectionFactory.dbURL );
-                                $('input[name=jdbcDriver]', $databaseConnectionFactory).val( databaseConnectionFactory.jdbcDriver );
+                                $('input[name=dbUserName]', $databaseConnectionFactory).val(databaseConnectionFactory.dbUserName);
+                                $('input[name=dbPassword]', $databaseConnectionFactory).val(databaseConnectionFactory.dbPassword);
+                                $('input[name=dbURL]', $databaseConnectionFactory).val(databaseConnectionFactory.dbURL);
+                                $('input[name=jdbcDriver]', $databaseConnectionFactory).val(databaseConnectionFactory.jdbcDriver);
 
-                                $('input[name=username]', $queueConnectionFactory).val( queueConnectionFactory.username );
-                                $('input[name=password]', $queueConnectionFactory).val( queueConnectionFactory.password );
-                                $('input[name=host]', $queueConnectionFactory).val( queueConnectionFactory.host );
-                                $('input[name=port]', $queueConnectionFactory).val( queueConnectionFactory.port );
-                                $('input[name=virtualHost]', $queueConnectionFactory).val( queueConnectionFactory.virtualHost );
+                                $('input[name=username]', $queueConnectionFactory).val(queueConnectionFactory.username);
+                                $('input[name=password]', $queueConnectionFactory).val(queueConnectionFactory.password);
+                                $('input[name=host]', $queueConnectionFactory).val(queueConnectionFactory.host);
+                                $('input[name=port]', $queueConnectionFactory).val(queueConnectionFactory.port);
+                                $('input[name=virtualHost]', $queueConnectionFactory).val(queueConnectionFactory.virtualHost);
 
-                                $('input[name=queueName]', $queueOrigin).val( queueOrigin.queueName );
-                                $('input[name=exchangeName]', $queueOrigin).val( queueOrigin.exchangeName );
-                                $('input[name=routingKey]', $queueOrigin).val( queueOrigin.routingKey );
+                                $('input[name=queueName]', $queueOrigin).val(queueOrigin.queueName);
+                                $('input[name=exchangeName]', $queueOrigin).val(queueOrigin.exchangeName);
+                                $('input[name=routingKey]', $queueOrigin).val(queueOrigin.routingKey);
 
+                                $('input[name=queueName]', $queueError).val(queueOrigin.queueName);
+                                $('input[name=exchangeName]', $queueError).val(queueOrigin.exchangeName);
+                                $('input[name=routingKey]', $queueError).val(queueOrigin.routingKey);
+                                
                                 $insertTable.clear().draw();
                                 $updateRelationTable.clear().draw();
                                 $updateTable.clear().draw();
@@ -813,39 +832,39 @@ $(document).ready(function() {
                                 $.each(data.config.insert.table, function(index, item) {
 
                                     $.each(item.field, function(i, field) {
-                                    	field.name = item.name;
-                                    	$insertTable.rows.add([field]).draw();
+                                        field.name = item.name;
+                                        $insertTable.rows.add([field]).draw();
                                     });
                                 });
 
                                 $.each(data.config.update.table, function(index, item) {
 
-                                	var condition = item.condition;
-                                	
-                                	condition.name = item.name;
-                                	$updateRelationTable.rows.add([condition]).draw();
+                                    var condition = item.condition;
+
+                                    condition.name = item.name;
+                                    $updateRelationTable.rows.add([condition]).draw();
                                 });
-                                
+
                                 $.each(data.config.update.table, function(index, item) {
-                                	
+
                                     $.each(item.field, function(i, update) {
-                                    	update.name = item.name;
-                                    	$updateTable.rows.add([update]).draw();
+                                        update.name = item.name;
+                                        $updateTable.rows.add([update]).draw();
                                     });
                                 });
-                                
+
                                 $.each(data.config.delete.table, function(index, item) {
 
-                                	$.each(item.field, function(i, del) {
-                                    	del.name = item.name;
-                                    	$deleteTable.rows.add([del]).draw();
+                                    $.each(item.field, function(i, del) {
+                                        del.name = item.name;
+                                        $deleteTable.rows.add([del]).draw();
                                     });
                                 });
-                                
-                                checkedAll( $("#insertTable") );
-                                checkedAll( $("#updateRelationTable") );
-                                checkedAll( $("#updateTable") );
-                                checkedAll( $("#deleteTable") );
+
+                                checkedAll($("#insertTable"));
+                                checkedAll($("#updateRelationTable"));
+                                checkedAll($("#updateTable"));
+                                checkedAll($("#deleteTable"));
 
                                 $("button[name=btn-update]").removeClass("hidden");
 
@@ -870,7 +889,7 @@ $(document).ready(function() {
             }
         });
     });
-    
+
     $insertTable = $("#insertTable").DataTable({
         dom: "Blr<t>ip",
         scrollY: "50th",
@@ -1286,7 +1305,7 @@ $(document).ready(function() {
             }
         }]
     });
-    
+
     $updateRelationTable = $("#updateRelationTable").DataTable({
         dom: "Blr<t>ip",
         scrollY: "50th",
@@ -1453,9 +1472,9 @@ $(document).ready(function() {
             text: '新增',
             className: 'btn btn-primary',
             action: function(e, dt, node, config) {
-            	
-//            	console.log($updateRelationTable.rows().data());
-            	
+
+                //            	console.log($updateRelationTable.rows().data());
+
                 var $dialog;
 
                 BootstrapDialog.show({
@@ -1503,7 +1522,7 @@ $(document).ready(function() {
             }
         }]
     });
-    
+
     $deleteTable = $("#deleteTable").DataTable({
         dom: "Blr<t>ip",
         scrollY: "50th",
@@ -1711,12 +1730,13 @@ $(document).ready(function() {
             }
         }]
     });
-    
-    //註冊修改功能
+
     registerBtnForDt();
 });
 
-
+/**
+ * 註冊修改功能
+ */
 function registerBtnForDt() {
     var dtArray = ['insertTable', 'updateTable', 'deleteTable'];
     $.each(dtArray, function(index, id) {
@@ -1778,6 +1798,12 @@ function registerBtnForDt() {
     });
 }
 
+/**
+ * 回傳包含 bootstrap input 的物件
+ * @param $span_text 標題文字
+ * @param $input_placeholder 欄位提示文字
+ * @param $input_name input名稱屬性
+ */
 function buildInput($span_text, $input_placeholder, $input_name) {
 
     var $div =
@@ -1796,6 +1822,12 @@ function buildInput($span_text, $input_placeholder, $input_name) {
     return $div;
 }
 
+/**
+ * 單欄位檢查
+ * @param $obj 包含要檢查欄位的物件
+ * @param title 欄位提示文字
+ * @param input_name input名稱屬性
+ */
 function fieldDataValidator($obj, title, input_name) {
     var isValid = false;
 
@@ -1813,7 +1845,7 @@ function fieldDataValidator($obj, title, input_name) {
         return mes;
     }
 
-    var $obj_input = $obj.find( ('input[name=' + input_name + ']') );
+    var $obj_input = $obj.find(('input[name=' + input_name + ']'));
 
     function existGetMes(obj, title) {
         var vaild_mes = '';
@@ -1877,7 +1909,8 @@ function fieldDataValidator($obj, title, input_name) {
 
     return isValid;
 }
-function checkedAll( $table ){
+
+function checkedAll($table) {
     var $chkbox_all = $('input[type="checkbox"]', $table);
     var $chkbox_checked = $('input[type="checkbox"]:checked', $table);
 
@@ -1888,4 +1921,95 @@ function checkedAll( $table ){
             $(this).addClass("toggleon");
         });
     }
+}
+
+function dataValidator() {
+    var isValid = false;
+
+    function checkVal(obj) {
+        var mes = '';
+        $.each(obj, function(index, input) {
+            if (!$(input).closest('div').hasClass("hidden")) {
+                if ($(input).val() == '') {
+                    $mes = $('<div/>').append(
+                        $('<p/>', {
+                            'text': '● ' + input.placeholder + ' 尚未填寫'
+                        }));
+                    mes += $mes.html();
+                }
+            }
+        });
+        return mes;
+    }
+    var $heartBeatClient_inputs = $('#heartBeatClientData input');
+    var $databaseConnectionFactory_inputs = $('#databaseConnectionFactoryData input');
+    var $queueConnectionFactory_inputs = $('#queueConnectionFactoryData input');
+    var $queueOrigin_inputs = $('#queueOriginData input');
+
+    function existGetMes(obj, title) {
+        var vaild_mes = '';
+        var $obj = '';
+
+        vaild_mes = checkVal(obj);
+
+        if (vaild_mes != '') {
+            var $obj =
+                $('<div/>', {
+                    'class': 'alert alert-danger'
+                }).append(
+                    $('<strong/>', {
+                        'text': title,
+                        "css": {
+                            'font-size': '18px'
+                        }
+                    }),
+                    vaild_mes
+                );
+        }
+        return $obj;
+    }
+
+    var $content =
+        $('<div/>', {
+            'css': {
+                'height': '250px',
+                'overflow': 'auto'
+            }
+        });
+
+    var title_array = {};
+    title_array['$heartBeatClient_inputs'] = '心跳協議';
+    title_array['$databaseConnectionFactory_inputs'] = '資料庫連線';
+    title_array['$queueConnectionFactory_inputs'] = '佇列連線';
+    title_array['$queueOrigin_inputs'] = '來源佇列';
+
+    var element_array = {};
+    element_array['$heartBeatClient_inputs'] = $heartBeatClient_inputs;
+    element_array['$databaseConnectionFactory_inputs'] = $databaseConnectionFactory_inputs;
+    element_array['$queueConnectionFactory_inputs'] = $queueConnectionFactory_inputs;
+    element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
+
+    $.each(title_array, function(element_key, title) {
+
+        if (existGetMes(element_array[element_key], title) != '') {
+            var $obj = existGetMes(element_array[element_key], title);
+            $content.append($obj);
+        }
+    });
+
+    $content.html() != '' ?
+        BootstrapDialog.show({
+            title: '警告訊息',
+            message: function(dialog) {
+                return $content;
+            },
+            buttons: [{
+                label: '確認',
+                action: function(dialog) {
+                    dialog.close();
+                }
+            }]
+        }) : isValid = true;
+
+    return isValid;
 }

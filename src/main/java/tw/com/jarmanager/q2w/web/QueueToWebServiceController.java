@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
 import tw.com.jarmanager.q2w.service.QueueToWebServiceService;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.FieldName;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
@@ -33,13 +33,16 @@ public class QueueToWebServiceController {
 	public QueueToWebServiceController(QueueToWebServiceService service) {
 		this.service = service;
 	}
-
+	
+	/**
+	 * 搜尋設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	json型態的設定檔資訊
+	 */
 	@RequestMapping(value = "/search/{fileName}", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	public @ResponseBody String searchFile(@PathVariable("fileName") String fileName) throws Exception {
 		String q2wConfigFileName = fileName + "-q2w-config";
-		String q2wXmlconverterConfigFileName = fileName + "-xmlconverter-config";
-		// String q2wHeatBeatClinetBeansConfigFileName = fileName +
-		// "-HeatBeatClinetBeans";
+		String q2wXmlconverterConfigFileName = fileName + "-q2w-xmlconverter-config";
 
 		Q2W root = new Q2W();
 
@@ -53,31 +56,32 @@ public class QueueToWebServiceController {
 		if (XmlUtil.fileExistsJarXmlPath(q2wXmlconverterConfigFileName)) {
 			Config q2w = (Config) service.getJarXmleToObj(q2wXmlconverterConfigFileName, Config.class);
 			List<FieldName> xmlconverter = q2w.getXmlConverter();
-			// List<FieldName> xmlConverter = (List<FieldName> )
-			// service.getJarXmleToObj(q2wXmlconverterConfigFileName,
-			// FieldName.class);
-			// root.SE
-			logger.debug(new Gson().toJson(xmlconverter));
+
 			root.setXmlConverter(xmlconverter);
 		}
-		// if(XmlUtil.fileExistsJarXmlPath(q2wHeatBeatClinetBeansConfigFileName)){
-		// Clazz clazz = (Clazz)
-		// service.getJarXmleToObj(q2wHeatBeatClinetBeansConfigFileName,
-		// Clazz.class);
-		// logger.debug(new Gson().toJson(clazz));
-		// root.setClazz(clazz);
-		// }
 
 		return new Gson().toJson(root);
 
 	}
-
+	
+	/**
+	 * 新增設定檔
+	 * @param 	q2w 設定檔物件
+	 * @return	設定檔各別執行狀態
+	 */
 	@RequestMapping(method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String dataToFile(@RequestBody Q2W q2w) throws Exception {
 
 		String xml = null;
 		String fileName = q2w.getConfig().getHeartBeatClient().getFileName();
 		String mes = "";
+		try {
+			if(XmlUtil.isJarListHasSameFileName(fileName)){
+				return "名稱已存在，請更換名稱";
+			}
+		} catch (Exception e1) {
+			return "請洽系統管理員";
+		}
 		try {
 			String name = fileName + "-q2w-config";
 
@@ -93,11 +97,11 @@ public class QueueToWebServiceController {
 			mes += "[失敗] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -109,7 +113,7 @@ public class QueueToWebServiceController {
 		}
 
 		try {
-			mes += service.addJarProjectVOXml(q2w.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.addJarProjectVOXml(q2w.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,7 +121,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-xmlconverter-config";
+			String name = fileName + "-q2w-xmlconverter-config";
 
 			if (!XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();
@@ -138,12 +142,22 @@ public class QueueToWebServiceController {
 		return mes;
 	}
 
+	/**
+	 * 刪除設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	關連設定檔各別刪除狀態
+	 */
 	@RequestMapping(value = "/delete/{fileName}", method = RequestMethod.DELETE, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String delete(@PathVariable("fileName") String fileName) throws Exception {
 
 		return service.removeAllConfig(fileName);
 	}
 
+	/**
+	 * 修改設定檔
+	 * @param 	fileName 設定檔名稱
+	 * @return	關連設定檔各別修改狀態
+	 */
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/plain; charset=utf-8")
 	public @ResponseBody String updateToFile(@RequestBody Q2W q2w) throws Exception {
 
@@ -165,12 +179,11 @@ public class QueueToWebServiceController {
 			mes += "[失敗] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
-				Clazz clazz = service.getHeartBeatVo(q2w, fileName);
-				clazz.getHeartBeatConnectionFactory().setVirtualHost("/");
-				xml = service.getObjToXml(clazz, Clazz.class);
+				HeartBeatClientXMLVO clazz = service.getHeartBeatClientXMLVO(q2w);
+				xml = service.getObjToXml(clazz, HeartBeatClientXMLVO.class);
 				XmlUtil.fileToJarXmlPath(name, false, xml);
 				mes += "[成功] HeatBeatClinetBeans.xml\n";
 			} else {
@@ -182,7 +195,7 @@ public class QueueToWebServiceController {
 		}
 
 		try {
-			mes += service.updateJarProjectVOXml(q2w.getConfig(), fileName) ? "[成功] JarManagerAPI.xml\n"
+			mes += service.updateJarProjectVOXml(q2w.getConfig()) ? "[成功] JarManagerAPI.xml\n"
 					: "[已存在] JarManagerAPI.xml\n";
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -190,7 +203,7 @@ public class QueueToWebServiceController {
 			mes += "[失敗] JarManagerAPI.xml\n";
 		}
 		try {
-			String name = fileName + "-xmlconverter-config";
+			String name = fileName + "-q2w-xmlconverter-config";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				List<FieldName> xmlConverter = q2w.getXmlConverter();

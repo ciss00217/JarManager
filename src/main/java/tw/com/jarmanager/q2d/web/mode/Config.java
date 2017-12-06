@@ -4,22 +4,42 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import tw.com.jarmanager.q2w.web.mode.QueueError;
+
 @XmlRootElement
 public class Config {
 	@XmlElement(name = "queueConnectionFactory")
 	private QueueConnectionFactory queueConnectionFactory;
+	
 	@XmlElement(name = "databaseConnectionFactory")
 	private DatabaseConnectionFactory databaseConnectionFactory;
+	
 	@XmlElement(name = "queueOrigin")
 	private QueueOrigin queueOrigin;
+
+	@XmlElement(name = "queueError")
+	private QueueError queueError;
+	
 	@XmlElement(name = "HeartBeatClient")
 	private HeartBeatClient heartBeatClient;
+	
 	@XmlElement(name = "Insert")
 	private Insert insert;
+	
 	@XmlElement(name = "Delete")
 	private Delete delete;
+	
 	@XmlElement(name = "Update")
 	private Update update;
+
+	@XmlTransient
+	public QueueError getQueueError() {
+		return queueError;
+	}
+
+	public void setQueueError(QueueError queueError) {
+		this.queueError = queueError;
+	}
 
 	@XmlTransient
 	public QueueConnectionFactory getQueueConnectionFactory() {

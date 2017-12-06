@@ -14,22 +14,17 @@ import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatConnectionFactoryVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatDestinationVO;
 import tw.com.jarmanager.api.service.JarManagerAPIService;
 import tw.com.jarmanager.api.vo.JarProjectVO;
-import tw.com.jarmanager.q2w.web.mode.Clazz;
 import tw.com.jarmanager.q2w.web.mode.Config;
 import tw.com.jarmanager.q2w.web.mode.ConnectionFactory;
-import tw.com.jarmanager.q2w.web.mode.FieldName;
 import tw.com.jarmanager.q2w.web.mode.HeartBeatClient;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatClientVO;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatConnectionFactory;
-import tw.com.jarmanager.q2w.web.mode.HeartBeatDestination;
 import tw.com.jarmanager.q2w.web.mode.Q2W;
 import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.JarXMLUtil;
@@ -39,7 +34,12 @@ import tw.com.jarmanager.util.XmlUtil;
 public class QueueToWebServiceService {
 
 	private final static Logger logger = LoggerFactory.getLogger(QueueToWebServiceService.class);
-
+	
+	/**
+	 * 依照檔案名稱，移除規定路徑下，有所關連的檔案
+	 * @param 	fileName 檔案名稱
+	 * @return	關連設定檔各別刪除狀態
+	 */
 	public String removeAllConfig(String fileName) throws JAXBException {
 
 		String jarXmlPath = XmlUtil.getJarManagerConfig("jarXmlPath");
@@ -61,8 +61,8 @@ public class QueueToWebServiceService {
 			mes += "[系統錯誤] q2w-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
-			String path = jarXmlPath + fileName + "-HeatBeatClinetBeans.xml";
+			String name = fileName + "-q2w-HeatBeatClinetBeans";
+			String path = jarXmlPath + fileName + "-q2w-HeatBeatClinetBeans.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
@@ -116,8 +116,8 @@ public class QueueToWebServiceService {
 		}
 
 		try {
-			String name = fileName + "-xmlconverter-config";
-			String path = jarXmlPath + fileName + "-xmlconverter-config.xml";
+			String name = fileName + "-q2w-xmlconverter-config";
+			String path = jarXmlPath + fileName + "-q2w-xmlconverter-config.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
@@ -132,6 +132,12 @@ public class QueueToWebServiceService {
 		return mes;
 	}
 
+	/**
+	 * 物件轉換成XML
+	 * @param 	obj 要進行轉換的物件
+	 * @param 	classesToBeBound entity class
+	 * @return	XML字串
+	 */
 	public String getObjToXml(Object obj, Class<?> classesToBeBound) throws JAXBException {
 
 		JAXBContext context = null;
@@ -146,6 +152,12 @@ public class QueueToWebServiceService {
 		return sw.toString();
 	}
 
+	/**
+	 * 在規定路徑下，把檔案轉換成物件
+	 * @param 	fileName 要進行轉換的檔案名稱
+	 * @param 	classesToBeBound entity class
+	 * @return	轉換後的物件，以object型態回傳，使用時再轉換型態
+	 */
 	public Object getJarXmleToObj(String fileName, Class<?> classesToBeBound) {
 		File file = null;
 		Object object = null;
@@ -158,59 +170,68 @@ public class QueueToWebServiceService {
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			object = jaxbUnmarshaller.unmarshal(file);
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage());
 		}
 		return object;
 	}
 
-	public tw.com.jarmanager.q2w.web.mode.Clazz getHeartBeatVo(Q2W q2w, String fileName) {
-
-		HeartBeatConnectionFactory heartBeatConnectionFactory = new HeartBeatConnectionFactory();
-		HeartBeatDestination heartBeatDestination = new HeartBeatDestination();
-		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();
-
+	/**
+	 * 心跳協議物件
+	 * @param 	q2w 資料來源，從此物件中提取，並塞至回傳物件
+	 * @return	心跳協議物件
+	 */
+	public HeartBeatClientXMLVO getHeartBeatClientXMLVO(Q2W q2w) {
 		Config config = q2w.getConfig();
 
 		ConnectionFactory connectionFactory = config.getConnectionFactory();
 		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
 
-		heartBeatConnectionFactory.setHost(connectionFactory.getHost());
-		heartBeatConnectionFactory.setPassword(connectionFactory.getPassword());
-		heartBeatConnectionFactory.setPort(connectionFactory.getPort());
-		heartBeatConnectionFactory.setUsername(connectionFactory.getUsername());
-		heartBeatConnectionFactory.setVirtualHost(connectionFactory.getVirtualHost());
-
+		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();
 		heartBeatClientVO.setBeatID(heartBeatClient.getBeatID());
+		heartBeatClientVO.setFileName(heartBeatClient.getFileName());
 		heartBeatClientVO.setTimeSeries(heartBeatClient.getTimeSeries());
-		heartBeatClientVO.setFileName(fileName);
 
-		heartBeatDestination.setDestinationName("jmsHeart");
-		heartBeatDestination.setAmqp("true");
-		heartBeatDestination.setAmqpQueueName("jmsHeart");
-		heartBeatDestination.setAmqpExchangeName("jms.durable.queues");
-		heartBeatDestination.setAmqpRoutingKey("jmsHeart");
+		HeartBeatConnectionFactoryVO heartBeatConnectionFactoryVO = new HeartBeatConnectionFactoryVO();
+		heartBeatConnectionFactoryVO.setHost(connectionFactory.getHost());
+		heartBeatConnectionFactoryVO.setPassword(connectionFactory.getPassword());
+		heartBeatConnectionFactoryVO.setPort(connectionFactory.getPort());
+		heartBeatConnectionFactoryVO.setUsername(connectionFactory.getUsername());
+		heartBeatConnectionFactoryVO.setVirtualHost(connectionFactory.getVirtualHost());
 
-		tw.com.jarmanager.q2w.web.mode.Clazz clazz = new tw.com.jarmanager.q2w.web.mode.Clazz();
+		HeartBeatDestinationVO heartBeatDestinationVO = new HeartBeatDestinationVO();
+		heartBeatDestinationVO.setDestinationName("jmsHeart");
+		heartBeatDestinationVO.setAmqp(true);
+		heartBeatDestinationVO.setAmqpQueueName("jmsHeart");
+		heartBeatDestinationVO.setAmqpExchangeName("jms.durable.queues");
+		heartBeatDestinationVO.setAmqpRoutingKey("jmsHeart");
 
-		clazz.setHeartBeatClientVO(heartBeatClientVO);
-		clazz.setHeartBeatConnectionFactory(heartBeatConnectionFactory);
-		clazz.setHeartBeatDestination(heartBeatDestination);
-
-		return clazz;
+		HeartBeatClientXMLVO heartBeatClientXMLVO = new HeartBeatClientXMLVO();
+		heartBeatClientXMLVO.setHeartBeatClientVO(heartBeatClientVO);
+		heartBeatClientXMLVO.setHeartBeatConnectionFactoryVO(heartBeatConnectionFactoryVO);
+		heartBeatClientXMLVO.setDestination(heartBeatDestinationVO);
+		return heartBeatClientXMLVO;
 	}
 
-	public boolean addJarProjectVOXml(Config config, String fileName) throws IOException, JMSException {
-		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
+	/**
+	 * 新增JarManagerAPI Config
+	 * @param 	q2w 資料來源
+	 * @return	執行結果  true:成功，false:失敗
+	 */
+	public boolean addJarProjectVOXml(Config config) throws IOException, JMSException {
+
 		JarProjectVO jarProjectVO = new JarProjectVO();
-		jarProjectVO.setBeatID(heartBeatClient.getBeatID());
-		jarProjectVO.setFileName(heartBeatClient.getFileName());
-		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
-		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
+
+		jarProjectVO.setBeatID(config.getHeartBeatClient().getBeatID());
+		jarProjectVO.setFileName(config.getHeartBeatClient().getFileName());
+		jarProjectVO.setJarFilePath(config.getHeartBeatClient().getJarFilePath());
+		jarProjectVO.setTimeSeries(config.getHeartBeatClient().getTimeSeries());
+
+		String fileName = config.getHeartBeatClient().getFileName();
+
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2w-xmlconverter-config");
+		filePathXMLList.add(fileName + "-q2w-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
@@ -218,6 +239,11 @@ public class QueueToWebServiceService {
 		return new JarManagerService().addJarProjectVOXml(jarProjectVO);
 	}
 
+	/**
+	 * 從JarManagerAPI中，拿到識別碼所對應的jarFilePath
+	 * @param 	id 識別碼
+	 * @return	jarFilePath
+	 */
 	public String getJarFilePathFromJarApiXml(String id) throws IOException, JMSException {
 
 		JarManagerService service = new JarManagerService();
@@ -236,21 +262,32 @@ public class QueueToWebServiceService {
 		return jarFilePath;
 
 	}
+	
+	/**
+	 * 修改JarManagerAPI Config
+	 * @param 	config 資料來源
+	 * @return	執行結果  true:成功，false:失敗
+	 */
+	public boolean updateJarProjectVOXml(Config config) throws IOException, JMSException {
 
-	public boolean updateJarProjectVOXml(Config config, String fileName) throws IOException, JMSException {
-		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
 		JarProjectVO jarProjectVO = new JarProjectVO();
-		jarProjectVO.setBeatID(heartBeatClient.getBeatID());
-		jarProjectVO.setFileName(heartBeatClient.getFileName());
-		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
-		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
+
+		jarProjectVO.setBeatID(config.getHeartBeatClient().getBeatID());
+		jarProjectVO.setFileName(config.getHeartBeatClient().getFileName());
+		jarProjectVO.setJarFilePath(config.getHeartBeatClient().getJarFilePath());
+		jarProjectVO.setTimeSeries(config.getHeartBeatClient().getTimeSeries());
+
+		String fileName = config.getHeartBeatClient().getFileName();
+
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-xmlconverter-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2w-xmlconverter-config");
+		filePathXMLList.add(fileName + "-q2w-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+
 		return new JarManagerService().updateJarProjectVOXml(jarProjectVO);
 	}
+
 }

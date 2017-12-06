@@ -14,22 +14,17 @@ import javax.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import tw.com.jarmanager.api.service.JarManagerAPIService;
+import tw.com.heartbeat.clinet.vo.HeartBeatClientVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatClientXMLVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatConnectionFactoryVO;
+import tw.com.heartbeat.clinet.vo.HeartBeatDestinationVO;
 import tw.com.jarmanager.api.vo.JarProjectVO;
-import tw.com.jarmanager.q2d.web.mode.Q2D;
-import tw.com.jarmanager.q2d.web.mode.QueueConnectionFactory;
-import tw.com.jarmanager.q2d.web.mode.Clazz;
 import tw.com.jarmanager.q2d.web.mode.Config;
 import tw.com.jarmanager.q2d.web.mode.HeartBeatClient;
-import tw.com.jarmanager.q2d.web.mode.HeartBeatClientVO;
-import tw.com.jarmanager.q2d.web.mode.HeartBeatConnectionFactory;
-import tw.com.jarmanager.q2d.web.mode.HeartBeatDestination;
+import tw.com.jarmanager.q2d.web.mode.Q2D;
+import tw.com.jarmanager.q2d.web.mode.QueueConnectionFactory;
 import tw.com.jarmanager.service.JarManagerService;
 import tw.com.jarmanager.util.JarXMLUtil;
 import tw.com.jarmanager.util.XmlUtil;
@@ -60,8 +55,8 @@ public class QueueToDatabaseService {
 			mes += "[系統錯誤] q2d-config.xml\n";
 		}
 		try {
-			String name = fileName + "-HeatBeatClinetBeans";
-			String path = jarXmlPath + fileName + "-HeatBeatClinetBeans.xml";
+			String name = fileName + "-q2d-HeatBeatClinetBeans";
+			String path = jarXmlPath + fileName + "-q2d-HeatBeatClinetBeans.xml";
 
 			if (XmlUtil.fileExistsJarXmlPath(name)) {
 				File file = new File(path);
@@ -148,52 +143,51 @@ public class QueueToDatabaseService {
 		return object;
 	}
 
-	public Clazz getHeartBeatVo(Q2D q2d, String fileName) {
-
-		HeartBeatConnectionFactory heartBeatConnectionFactory = new HeartBeatConnectionFactory();
-		HeartBeatDestination heartBeatDestination = new HeartBeatDestination();
-		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();
-
+	public HeartBeatClientXMLVO getHeartBeatClientXMLVO(Q2D q2d) {
 		Config config = q2d.getConfig();
 
 		QueueConnectionFactory connectionFactory = config.getQueueConnectionFactory();
 		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
 
-		heartBeatConnectionFactory.setHost(connectionFactory.getHost());
-		heartBeatConnectionFactory.setPassword(connectionFactory.getPassword());
-		heartBeatConnectionFactory.setPort(connectionFactory.getPort());
-		heartBeatConnectionFactory.setUsername(connectionFactory.getUsername());
-		heartBeatConnectionFactory.setVirtualHost(connectionFactory.getVirtualHost());
-
+		HeartBeatClientVO heartBeatClientVO = new HeartBeatClientVO();
 		heartBeatClientVO.setBeatID(heartBeatClient.getBeatID());
+		heartBeatClientVO.setFileName(heartBeatClient.getFileName());
 		heartBeatClientVO.setTimeSeries(heartBeatClient.getTimeSeries());
-		heartBeatClientVO.setFileName(fileName);
 
-		heartBeatDestination.setDestinationName("jmsHeart");
-		heartBeatDestination.setAmqp("true");
-		heartBeatDestination.setAmqpQueueName("jmsHeart");
-		heartBeatDestination.setAmqpExchangeName("jms.durable.queues");
-		heartBeatDestination.setAmqpRoutingKey("jmsHeart");
+		HeartBeatConnectionFactoryVO heartBeatConnectionFactoryVO = new HeartBeatConnectionFactoryVO();
+		heartBeatConnectionFactoryVO.setHost(connectionFactory.getHost());
+		heartBeatConnectionFactoryVO.setPassword(connectionFactory.getPassword());
+		heartBeatConnectionFactoryVO.setPort(connectionFactory.getPort());
+		heartBeatConnectionFactoryVO.setUsername(connectionFactory.getUsername());
+		heartBeatConnectionFactoryVO.setVirtualHost(connectionFactory.getVirtualHost());
 
-		Clazz clazz = new Clazz();
+		HeartBeatDestinationVO heartBeatDestinationVO = new HeartBeatDestinationVO();
+		heartBeatDestinationVO.setDestinationName("jmsHeart");
+		heartBeatDestinationVO.setAmqp(true);
+		heartBeatDestinationVO.setAmqpQueueName("jmsHeart");
+		heartBeatDestinationVO.setAmqpExchangeName("jms.durable.queues");
+		heartBeatDestinationVO.setAmqpRoutingKey("jmsHeart");
 
-		clazz.setHeartBeatClientVO(heartBeatClientVO);
-		clazz.setHeartBeatConnectionFactory(heartBeatConnectionFactory);
-		clazz.setHeartBeatDestination(heartBeatDestination);
-
-		return clazz;
+		HeartBeatClientXMLVO heartBeatClientXMLVO = new HeartBeatClientXMLVO();
+		heartBeatClientXMLVO.setHeartBeatClientVO(heartBeatClientVO);
+		heartBeatClientXMLVO.setHeartBeatConnectionFactoryVO(heartBeatConnectionFactoryVO);
+		heartBeatClientXMLVO.setDestination(heartBeatDestinationVO);
+		return heartBeatClientXMLVO;
 	}
 
-	public boolean addJarProjectVOXml(Config config, String fileName) throws IOException, JMSException {
-		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
+	public boolean addJarProjectVOXml(Config config) throws IOException, JMSException {
 		JarProjectVO jarProjectVO = new JarProjectVO();
-		jarProjectVO.setBeatID(heartBeatClient.getBeatID());
-		jarProjectVO.setFileName(heartBeatClient.getFileName());
-		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
-		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
+
+		jarProjectVO.setBeatID(config.getHeartBeatClient().getBeatID());
+		jarProjectVO.setFileName(config.getHeartBeatClient().getFileName());
+		jarProjectVO.setJarFilePath(config.getHeartBeatClient().getJarFilePath());
+		jarProjectVO.setTimeSeries(config.getHeartBeatClient().getTimeSeries());
+
+		String fileName = config.getHeartBeatClient().getFileName();
+
 		List<String> filePathXMLList = new ArrayList<>();
 		filePathXMLList.add(fileName + "-q2d-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2d-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
@@ -220,19 +214,23 @@ public class QueueToDatabaseService {
 
 	}
 
-	public boolean updateJarProjectVOXml(Config config, String fileName) throws IOException, JMSException {
-		HeartBeatClient heartBeatClient = config.getHeartBeatClient();
+	public boolean updateJarProjectVOXml(Config config) throws IOException, JMSException {
 		JarProjectVO jarProjectVO = new JarProjectVO();
-		jarProjectVO.setBeatID(heartBeatClient.getBeatID());
-		jarProjectVO.setFileName(heartBeatClient.getFileName());
-		jarProjectVO.setJarFilePath(heartBeatClient.getJarFilePath());
-		jarProjectVO.setTimeSeries(heartBeatClient.getTimeSeries());
+
+		jarProjectVO.setBeatID(config.getHeartBeatClient().getBeatID());
+		jarProjectVO.setFileName(config.getHeartBeatClient().getFileName());
+		jarProjectVO.setJarFilePath(config.getHeartBeatClient().getJarFilePath());
+		jarProjectVO.setTimeSeries(config.getHeartBeatClient().getTimeSeries());
+
+		String fileName = config.getHeartBeatClient().getFileName();
+
 		List<String> filePathXMLList = new ArrayList<>();
-		filePathXMLList.add(fileName + "-q2w-config");
-		filePathXMLList.add(fileName + "-HeatBeatClinetBeans");
+		filePathXMLList.add(fileName + "-q2d-config");
+		filePathXMLList.add(fileName + "-q2d-HeatBeatClinetBeans");
 		jarProjectVO.setFilePathXMLList(filePathXMLList);
 
 		jarProjectVO = JarXMLUtil.addPathInJarXmlPath(jarProjectVO);
+
 		return new JarManagerService().updateJarProjectVOXml(jarProjectVO);
 	}
 }
