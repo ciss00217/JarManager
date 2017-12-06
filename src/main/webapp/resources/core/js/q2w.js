@@ -13,6 +13,7 @@ $(document).ready(function() {
     var $connectionFactory = $('#connectionFactoryData');
     var $queueOrigin = $('#queueOriginData');
     var $queueDestination = $('#queueDestinationData');
+    var $queueError = $('#queueErrorData');
     var $webService = $('#webServiceData');
     var $Q2W = $('#Q2WData');
 
@@ -61,8 +62,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -142,6 +141,7 @@ $(document).ready(function() {
                                 var connectionFactory = data.config.connectionFactory;
                                 var queueOrigin = data.config.queueOrigin;
                                 var queueDestination = data.config.queueDestination;
+                                var queueError = data.config.queueError;
                                 var webService = data.config.webService;
                                 var xmlConverter = data.xmlConverter;
 
@@ -164,6 +164,10 @@ $(document).ready(function() {
                                 $queueDestination.find('input[name=exchangeName]').val(queueDestination.exchangeName);
                                 $queueDestination.find('input[name=routingKey]').val(queueDestination.routingKey);
 
+                                $queueError.find('input[name=queueName]').val(queueError.queueName);
+                                $queueError.find('input[name=exchangeName]').val(queueError.exchangeName);
+                                $queueError.find('input[name=routingKey]').val(queueError.routingKey);
+                                
                                 $webService.find('input[name=url]').val(webService.url);
                                 $webService.find('input[name=type]').val(webService.type);
                                 $webService.find('input[name=format]').val(webService.format);
@@ -212,8 +216,6 @@ $(document).ready(function() {
                 });
             },
             error: function(e) {
-                $button.enable();
-                $button.stopSpin();
                 dialog.setClosable(true);
                 dialog.setMessage('失敗');
             }
@@ -240,6 +242,10 @@ $(document).ready(function() {
         $queueDestination.find('input[name=exchangeName]').val('exchange');
         $queueDestination.find('input[name=routingKey]').val('ian2');
 
+        $queueError.find('input[name=queueName]').val('kevin');
+        $queueError.find('input[name=exchangeName]').val('exchange');
+        $queueError.find('input[name=routingKey]').val('kevin');
+        
         $webService.find('input[name=url]').val('https://tw.ews.mall.yahooapis.com');
         $webService.find('input[name=type]').val('get');
         $webService.find('input[name=format]').val('xml');
@@ -611,6 +617,13 @@ $(document).ready(function() {
                     q2w['queueDestination'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2w['queueError'] = val;
+                    val = {};
+                    
                     //Web Service
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
@@ -670,8 +683,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -757,6 +768,13 @@ $(document).ready(function() {
                     q2w['queueDestination'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2w['queueError'] = val;
+                    val = {};
+                    
                     //Web Service
                     val['url'] = $webService.find('input[name=url]').val();
                     val['type'] = $webService.find('input[name=type]').val();
@@ -812,8 +830,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -940,6 +956,7 @@ function dataValidator() {
     var $connectionFactory_inputs = $('#connectionFactoryData input');
     var $queueOrigin_inputs = $('#queueOriginData input');
     var $queueDestination_inputs = $('#queueDestinationData input');
+    var $queueError_inputs = $('#queueErrorData input');
     var $webService_inputs = $('#webServiceData input');
 
     function existGetMes(obj, title) {
@@ -978,6 +995,7 @@ function dataValidator() {
     title_array['$connectionFactory_inputs'] = '資料庫連線';
     title_array['$queueOrigin_inputs'] = '來源佇列';
     title_array['$queueDestination_inputs'] = '目的佇列';
+    title_array['$queueError_inputs'] = '錯誤佇列';
     title_array['$webService_inputs'] = 'Web Service';
 
     var element_array = {};
@@ -985,6 +1003,7 @@ function dataValidator() {
     element_array['$connectionFactory_inputs'] = $connectionFactory_inputs;
     element_array['$queueOrigin_inputs'] = $queueOrigin_inputs;
     element_array['$queueDestination_inputs'] = $queueDestination_inputs;
+    element_array['$queueError_inputs'] = $queueError_inputs;
     element_array['$webService_inputs'] = $webService_inputs;
 
     $.each(title_array, function(element_key, title) {

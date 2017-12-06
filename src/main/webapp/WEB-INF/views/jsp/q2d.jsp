@@ -104,6 +104,8 @@
 											data-target="#queueConnectionFactoryData">佇列連線</a></li>
 										<li class="azed-tab"><a data-toggle="tab" role="tab"
 											data-target="#queueOriginData">來源佇列</a></li>
+										<li class="azed-tab"><a data-toggle="tab" role="tab"
+											data-target="#queueErrorData">錯誤佇列</a></li>
 									</ul>
 
 									<div class="tab-content">
@@ -245,6 +247,26 @@
 												<span class="input-group-addon"><i
 													class="glyphicon glyphicon-user"></i></span> <input type="text"
 													class="form-control" name="queueName" placeholder="名稱">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-random"></i></span> <input type="text"
+													class="form-control" name="exchangeName"
+													placeholder="exchange name">
+											</div>
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-link"></i></span> <input
+													type="password" class="form-control" name="routingKey"
+													placeholder="routing key">
+											</div>
+										</div>
+										<div id="queueErrorData" class="tab-pane fade in"
+											role="tabpanel">
+											<div class="input-group">
+												<span class="input-group-addon"><i
+													class="glyphicon glyphicon-user"></i></span> <input type="text"
+													class="form-control" name="queueName" placeholder="佇列名稱">
 											</div>
 											<div class="input-group">
 												<span class="input-group-addon"><i

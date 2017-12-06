@@ -14,6 +14,7 @@ $(document).ready(function() {
     var $tableSetting = $('#tableSettingData');
     var $queueConnectionFactory = $('#queueConnectionFactoryData');
     var $queueOrigin = $('#queueOriginData');
+    var $queueError = $('#queueErrorData');
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
         $.fn.dataTable.tables({
@@ -44,6 +45,10 @@ $(document).ready(function() {
         $('input[name=exchangeName]', $queueOrigin).val('exchange');
         $('input[name=routingKey]', $queueOrigin).val('ian');
 
+        $('input[name=queueName]', $queueError).val('ian2');
+        $('input[name=exchangeName]', $queueError).val('exchange');
+        $('input[name=routingKey]', $queueError).val('ian2');
+        
         $insertTable.clear().draw();
 
         $insertTable.rows.add([{
@@ -199,6 +204,13 @@ $(document).ready(function() {
                     val['exchangeName'] = $queueOrigin.find('input[name=exchangeName]').val();
                     val['routingKey'] = $queueOrigin.find('input[name=routingKey]').val();
                     q2d['queueOrigin'] = val;
+                    val = {};
+
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2d['queueError'] = val;
                     val = {};
 
                     var Table = {};
@@ -394,8 +406,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -471,6 +481,13 @@ $(document).ready(function() {
                     q2d['queueOrigin'] = val;
                     val = {};
 
+                    //Queue Error
+                    val['queueName'] = $queueError.find('input[name=queueName]').val();
+                    val['exchangeName'] = $queueError.find('input[name=exchangeName]').val();
+                    val['routingKey'] = $queueError.find('input[name=routingKey]').val();
+                    q2d['queueError'] = val;
+                    val = {};
+                    
                     var Table = {};
 
                     //Insert Table
@@ -664,8 +681,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -718,8 +733,6 @@ $(document).ready(function() {
                             }, 2000);
                         },
                         error: function(e) {
-                            $button.enable();
-                            $button.stopSpin();
                             dialog.setClosable(true);
                             dialog.setMessage('失敗');
                         }
@@ -807,6 +820,10 @@ $(document).ready(function() {
                                 $('input[name=exchangeName]', $queueOrigin).val(queueOrigin.exchangeName);
                                 $('input[name=routingKey]', $queueOrigin).val(queueOrigin.routingKey);
 
+                                $('input[name=queueName]', $queueError).val(queueOrigin.queueName);
+                                $('input[name=exchangeName]', $queueError).val(queueOrigin.exchangeName);
+                                $('input[name=routingKey]', $queueError).val(queueOrigin.routingKey);
+                                
                                 $insertTable.clear().draw();
                                 $updateRelationTable.clear().draw();
                                 $updateTable.clear().draw();
